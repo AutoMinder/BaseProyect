@@ -25,16 +25,18 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-
+            MyAppHost()
         }
     }
 }
+
+
 
 @Composable
 fun MyAppHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(), /*TODO add conditional to decide which is the host*/
-    startDestination: String = "login"
+    startDestination: String = "principal_menu"
 ) {
     NavHost(
         navController = navController,
