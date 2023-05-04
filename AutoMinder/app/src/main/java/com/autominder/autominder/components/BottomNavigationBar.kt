@@ -22,7 +22,7 @@ fun BottomNavigationBar(navHostController: NavHostController, items: List<Destin
     val currentRoute = currentRoute(navHostController)
 
     BottomNavigation(
-        backgroundColor = md_theme_light_tertiaryContainer, /*TODO Fix the color of this*/
+        backgroundColor = androidx.compose.material3.MaterialTheme.colorScheme.secondaryContainer, 
 
         )
     {
