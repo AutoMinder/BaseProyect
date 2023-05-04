@@ -19,9 +19,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.autominder.autominder.components.BottomNavigationBar
 import com.autominder.autominder.forgotPassword.ForgotPasswordScreen
 import com.autominder.autominder.login.ui.LoginScreen
 import com.autominder.autominder.login.ui.LoginViewModel
+import com.autominder.autominder.navigation.Destinations
+import com.autominder.autominder.navigation.NavigationHost
 import com.autominder.autominder.principalMenu.PrincipalMenuScreen
 import com.autominder.autominder.register.RegisterScreen
 import com.autominder.autominder.ui.theme.AutoMinderTheme
@@ -32,54 +35,29 @@ class MainActivity : ComponentActivity() {
         setContent {
             AutoMinderTheme(useDarkTheme = false) {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    MyAppHost()
+                    DefaultPreview()
                 }
             }
         }
     }
 }
 
-@Composable
-fun MyAppHost(
-    modifier: Modifier = Modifier,
-    navController: NavHostController = rememberNavController(), /*TODO add conditional to decide which is the host*/
-    startDestination: String = "principal_menu"
-) {
-    NavHost(
-        navController = navController,
-        modifier = modifier,
-        startDestination = startDestination
-    ) {
-        composable("login") {
-            LoginScreen(LoginViewModel(), navController)
-        }
-        composable("register") {
-            RegisterScreen()
-        }
-        composable("forgot_password") {
-            ForgotPasswordScreen()
-        }
-        composable("principal_menu") {
-            PrincipalMenuScreen()
-        }
-    }
-}
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
+    val navController = rememberNavController()
+    val navigationItem = listOf(Destinations.PrincipalMenu, Destinations.Login, Destinations.Register)
+
     Scaffold(
         topBar = {
             //TopAppBar
         },
-        bottomBar = {
-            // BottomBar()
-        }
+        bottomBar = { BottomNavigationBar(navHostController = navController, items = navigationItem, )  }
     ) { contentPadding ->
         // Screen content
         Box(modifier = Modifier.padding(contentPadding)) {
-            MyAppHost(
-            )
+            NavigationHost(navController = navController)
         }
     }
 }
