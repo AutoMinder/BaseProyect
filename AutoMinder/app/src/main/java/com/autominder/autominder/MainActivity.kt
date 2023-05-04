@@ -47,13 +47,19 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DefaultPreview() {
     val navController = rememberNavController()
-    val navigationItem = listOf(Destinations.PrincipalMenu, Destinations.Login, Destinations.Register)
+    val navigationItem =
+        listOf(Destinations.MyCars, Destinations.PrincipalMenu, Destinations.UserInfo)
 
     Scaffold(
         topBar = {
             //TopAppBar
         },
-        bottomBar = { BottomNavigationBar(navHostController = navController, items = navigationItem, )  }
+        bottomBar = {
+            BottomNavigationBar(
+                navHostController = navController,
+                items = navigationItem,
+            )
+        }
     ) { contentPadding ->
         // Screen content
         Box(modifier = Modifier.padding(contentPadding)) {

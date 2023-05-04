@@ -9,8 +9,10 @@ import androidx.navigation.compose.rememberNavController
 import com.autominder.autominder.forgotPassword.ForgotPasswordScreen
 import com.autominder.autominder.login.ui.LoginScreen
 import com.autominder.autominder.login.ui.LoginViewModel
+import com.autominder.autominder.myCars.ui.MyCarsScreen
 import com.autominder.autominder.principalMenu.PrincipalMenuScreen
 import com.autominder.autominder.register.RegisterScreen
+import com.autominder.autominder.userInfo.UserInfoScreen
 
 @Composable
 fun NavigationHost(
@@ -35,6 +37,12 @@ fun NavigationHost(
         }
         composable("principal_menu") {
             PrincipalMenuScreen()
+        }
+        composable("my_cars"){
+            MyCarsScreen()
+        }
+        composable("user_info"){
+            UserInfoScreen()
         }
     }
 }
