@@ -14,7 +14,7 @@ import com.autominder.autominder.navigation.Destinations
 fun BottomNavigationBar(navHostController: NavHostController, items: List<Destinations>) {
     val currentRoute = currentRoute(navHostController)
 
-    BottomNavigation(backgroundColor = androidx.compose.material3.MaterialTheme.colorScheme.secondaryContainer)
+    BottomNavigation(backgroundColor = androidx.compose.material3.MaterialTheme.colorScheme.primaryContainer)
     {
         items.forEach { screen ->
             BottomNavigationItem(

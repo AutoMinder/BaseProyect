@@ -5,7 +5,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.autominder.autominder.forgotPassword.ForgotPasswordScreen
 import com.autominder.autominder.login.ui.LoginScreen
 import com.autominder.autominder.login.ui.LoginViewModel
