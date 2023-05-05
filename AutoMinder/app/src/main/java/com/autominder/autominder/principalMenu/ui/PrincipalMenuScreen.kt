@@ -11,26 +11,35 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.autominder.autominder.principalMenu.data.Alerts
+import com.autominder.autominder.principalMenu.ui.PrincipalMenuViewModel
 
 @Composable
 @Preview(showBackground = true)
 fun PrincipalMenuScreen() {
+    val viewModel = PrincipalMenuViewModel()
+
     Box(
         Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        PrincipalMenu()
+        PrincipalMenu(viewModel)
 
     }
 }
 
 @Composable
-fun PrincipalMenu() {
+fun PrincipalMenu(viewModel: PrincipalMenuViewModel) {
+    val alerts: Alerts by viewModel.alerts
+
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -58,7 +67,7 @@ fun AutominderHeader() {
 * TODO: Add the "fetch" of the alerts from the database
 *  */
 @Composable
-fun AlertsSection() {
+fun AlertsSection(alerts: Alerts) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
