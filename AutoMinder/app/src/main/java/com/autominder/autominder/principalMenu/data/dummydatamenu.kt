@@ -1,6 +1,6 @@
 package com.autominder.autominder.principalMenu.data
 
-val alertsdummy = listOf(Alerts(
+val dummyAlerts = listOf(Alerts(
     "Alerta 1",
     "Descripcion 1",
     "Fecha 1",

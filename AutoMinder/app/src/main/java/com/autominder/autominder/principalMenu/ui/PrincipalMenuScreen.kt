@@ -18,13 +18,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.autominder.autominder.principalMenu.data.Alerts
-import com.autominder.autominder.principalMenu.data.AlertsRepository
 import com.autominder.autominder.principalMenu.ui.PrincipalMenuViewModel
 
 @Composable
 @Preview(showBackground = true)
-fun PrincipalMenuScreen(viewModel: PrincipalMenuViewModel = PrincipalMenuViewModel(alertsRepository = AlertsRepository())) {
+fun PrincipalMenuScreen(
+    viewModel: PrincipalMenuViewModel = viewModel(
+        factory = PrincipalMenuViewModel.Factory,
+    )
+) {
     Box(
         Modifier
             .fillMaxSize()
@@ -36,6 +40,8 @@ fun PrincipalMenuScreen(viewModel: PrincipalMenuViewModel = PrincipalMenuViewMod
 
 @Composable
 fun PrincipalMenu(viewModel: PrincipalMenuViewModel) {
+
+
     val alertListState = viewModel.alertsList.observeAsState(emptyList())
     Box(
         modifier = Modifier
@@ -77,7 +83,7 @@ fun AlertsSection(alerts: State<List<Alerts>>) {
                         .fillMaxWidth()
                         .padding(16.dp),
 
-                )
+                    )
             }
         }
         items(alerts.value) { alert ->
