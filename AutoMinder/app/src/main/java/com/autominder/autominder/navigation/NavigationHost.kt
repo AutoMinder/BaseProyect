@@ -41,7 +41,13 @@ fun NavigationHost(
             MyCarsScreen()
         }
         composable("user_info"){
-            UserInfoScreen()
+            UserInfoScreen(navController)
+        }
+        composable("change_password"){
+            // TODO(): Add change password screen
+        }
+        composable("contact_developers"){
+            // TODO(): Add contact developers screen
         }
     }
 }

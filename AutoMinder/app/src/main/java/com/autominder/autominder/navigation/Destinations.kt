@@ -19,4 +19,8 @@ sealed class Destinations(
     object ForgotPassword : Destinations("forgot_password",
         "Forgot Password", Icons.Filled.Add) /*TODO Add the correct vector*/
     object PrincipalMenu : Destinations("principal_menu", "Principal Menu", Icons.Filled.Home)
+
+    object ChangePassword : Destinations("change_password", "Change Password", Icons.Filled.Add)
+
+    object ContactDevelopers : Destinations("contact_developers", "Contact Developers", Icons.Filled.Add)
 }
