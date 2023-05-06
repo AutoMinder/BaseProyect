@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 @Preview
 fun TopBar() {
     androidx.compose.material.TopAppBar(
-        backgroundColor = MaterialTheme.colorScheme.primary,
+        backgroundColor = MaterialTheme.colorScheme.tertiary,
 
         ) {
         Text(
