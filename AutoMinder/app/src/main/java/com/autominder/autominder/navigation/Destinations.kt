@@ -22,5 +22,4 @@ sealed class Destinations(
 
     object ChangePassword : Destinations("change_password", "Change Password", Icons.Filled.Add)
 
-    object ContactDevelopers : Destinations("contact_developers", "Contact Developers", Icons.Filled.Add)
 }

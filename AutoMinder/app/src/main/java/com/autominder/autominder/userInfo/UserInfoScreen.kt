@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
@@ -18,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -32,31 +32,33 @@ import com.autominder.autominder.R
 @Preview(showBackground = true)
 @Composable
 fun UserInfoScreenPreview() {
+    val viewModel = UserInfoViewModel()
     val navController = rememberNavController()
-    UserInfoScreen(navController)
+    UserInfoScreen(navController, viewModel)
 }
 
 @Composable
-fun UserInfoScreen(navController: NavController) {
+fun UserInfoScreen(navController: NavController, viewModel: UserInfoViewModel) {
     Box(
         modifier = Modifier
             .fillMaxSize()
     ) {
         UserInfo(
-            navController
+            navController,
+            viewModel
         )
     }
 }
 
 @Composable
-fun UserInfo(navController: NavController) {
+fun UserInfo(navController: NavController, viewModel: UserInfoViewModel) {
     LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
         item {
             TitleBar("Usuario") // TODO(): Dato quemado cambiar cuando se tengan los users
             Spacer(modifier = Modifier.padding(15.dp))
             UserImage()
             Spacer(modifier = Modifier.padding(30.dp))
-            ButtonWrapper(navController)
+            ButtonWrapper(navController, viewModel)
         }
     }
 
@@ -91,17 +93,25 @@ fun UserImage() {
 
 
 @Composable
-fun ButtonWrapper(navController: NavController) {
+fun ButtonWrapper(navController: NavController, viewModel: UserInfoViewModel) {
+    val context = LocalContext.current
     Column(
-        modifier = Modifier.fillMaxWidth().padding(0.dp,0.dp,0.dp,32.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(0.dp, 0.dp, 0.dp, 32.dp),
         verticalArrangement = Arrangement.spacedBy(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val modifier = Modifier.fillMaxWidth().padding(16.dp, 0.dp, 16.dp, 0.dp)
+        val modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp, 0.dp, 16.dp, 0.dp)
 
         ChangePasswordButton(navController, modifier)
-        ContactDevelopersButton(navController, modifier)
-        ObdBuyLinkButton(navController, modifier)
+
+        ContactDevelopersButton(modifier) { viewModel.onContactDevelopersClicked(context) }
+
+        //TODO: AGREGAR PERMISO PARA ABRIR LINKS EXTERNOS (Biblioteca Accompanist)
+        ObdBuyLinkButton(modifier) { viewModel.onBuyLinkClicked(context) }
     }
 }
 
@@ -116,20 +126,21 @@ fun ChangePasswordButton(navController: NavController, modifier: Modifier) {
 }
 
 @Composable
-fun ContactDevelopersButton(navController: NavController, modifier: Modifier) {
+fun ContactDevelopersButton(
+    modifier: Modifier,
+    onContactDevelopersClicked: () -> Unit
+) {
     Button(
-        //TODO(): Cambiar ruta de navegacion
-        onClick = { navController.navigate("contact_developers") }, modifier
+        onClick = { onContactDevelopersClicked() }, modifier
     ) {
         Text(text = "CONTACTA A LOS DESARROLLADORES")
     }
 }
 
 @Composable
-fun ObdBuyLinkButton(navController: NavController, modifier: Modifier) {
+fun ObdBuyLinkButton(modifier: Modifier, onBuyLinkClicked: () -> Unit) {
     Button(
-        //TODO(): Cambiar ruta de navegacion y se coloca link de compra externo?
-        onClick = { navController.navigate("forgot_password") }, modifier
+        onClick = { onBuyLinkClicked() }, modifier
     ) {
         Text(text = "LINK DE COMPRA DE OBD")
     }
