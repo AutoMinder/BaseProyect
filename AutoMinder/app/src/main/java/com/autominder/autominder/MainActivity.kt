@@ -43,7 +43,7 @@ fun DefaultPreview() {
     Scaffold(
         topBar = {
             //TopAppBar
-                 TopBar()
+                 TopBar(navController)
         },
         bottomBar = {
             BottomNavigationBar(

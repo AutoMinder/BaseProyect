@@ -4,6 +4,7 @@ import androidx.compose.foundation.border
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 
@@ -20,12 +21,23 @@ import com.autominder.autominder.navigation.Destinations
 fun BottomNavigationBar(navHostController: NavHostController, items: List<Destinations>) {
     val currentRoute = currentRoute(navHostController)
 
-    BottomNavigation(backgroundColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
-        modifier = Modifier.border(0.1.dp, androidx.compose.material3.MaterialTheme.colorScheme.onSurface))
+    BottomNavigation(
+        backgroundColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
+        modifier = Modifier.border(
+            0.1.dp,
+            androidx.compose.material3.MaterialTheme.colorScheme.onSurface
+        )
+    )
     {
         items.forEach { screen ->
             BottomNavigationItem(
-                icon = { Icon(imageVector = screen.icon, contentDescription = screen.title) },
+                icon = {
+                    Icon(
+                        imageVector = screen.icon,
+                        contentDescription = screen.title,
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                },
                 selected = currentRoute == screen.route,
                 onClick = {
                     navHostController.navigate(screen.route) {
