@@ -12,13 +12,14 @@ import androidx.compose.ui.unit.dp
 @Preview
 fun TopBar() {
     androidx.compose.material.TopAppBar(
-        backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+        backgroundColor = MaterialTheme.colorScheme.tertiary,
 
         ) {
         Text(
             text = "AutoMinder",
             modifier = Modifier.padding(18.dp, 0.dp, 0.dp, 0.dp),
-            style = MaterialTheme.typography.headlineMedium
+            style = MaterialTheme.typography.headlineMedium,
+            color = MaterialTheme.colorScheme.onPrimary
         )
     }
 
