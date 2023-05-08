@@ -9,7 +9,7 @@ import com.autominder.autominder.forgotPassword.ForgotPasswordScreen
 import com.autominder.autominder.login.ui.LoginScreen
 import com.autominder.autominder.login.ui.LoginViewModel
 import com.autominder.autominder.myCars.ui.MyCarsScreen
-import com.autominder.autominder.principalMenu.PrincipalMenuScreen
+import com.autominder.autominder.principalMenu.ui.PrincipalMenuScreen
 import com.autominder.autominder.register.RegisterScreen
 import com.autominder.autominder.userInfo.UserInfoScreen
 
