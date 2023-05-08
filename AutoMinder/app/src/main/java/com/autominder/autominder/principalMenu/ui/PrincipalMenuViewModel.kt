@@ -1,6 +1,5 @@
 package com.autominder.autominder.principalMenu.ui
 
-import android.text.Spannable.Factory
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -8,8 +7,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.CreationExtras
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.autominder.autominder.AutoMinderApplication
 import com.autominder.autominder.principalMenu.data.Alerts
 import com.autominder.autominder.principalMenu.data.AlertsRepository
@@ -46,9 +43,7 @@ class PrincipalMenuViewModel(
                 extras: CreationExtras
             ): T {
                 val application = checkNotNull(extras[APPLICATION_KEY])
-
                 val savedStateHandle = extras.createSavedStateHandle()
-
                 return PrincipalMenuViewModel(
                     (application as AutoMinderApplication).alertsRepository,
                     savedStateHandle
