@@ -12,6 +12,9 @@ import com.autominder.autominder.myCars.ui.MyCarsScreen
 import com.autominder.autominder.principalMenu.ui.PrincipalMenuScreen
 import com.autominder.autominder.register.RegisterScreen
 import com.autominder.autominder.userInfo.UserInfoScreen
+import com.autominder.autominder.userInfo.UserInfoViewModel
+import com.autominder.autominder.userInfo.changePassword.ChangePasswordScreen
+import com.autominder.autominder.userInfo.changePassword.ChangePasswordViewModel
 
 @Composable
 fun NavigationHost(
@@ -41,7 +44,10 @@ fun NavigationHost(
             MyCarsScreen()
         }
         composable("user_info"){
-            UserInfoScreen()
+            UserInfoScreen(navController, UserInfoViewModel())
+        }
+        composable("change_password"){
+            ChangePasswordScreen(navController, ChangePasswordViewModel())
         }
     }
 }

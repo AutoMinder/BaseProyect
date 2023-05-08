@@ -35,7 +35,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 @Composable
 @Preview(showBackground = true)
-fun LoginScreenPreview() {
+fun LoginScreenPreview() {        //TODO(): Cambiar ruta de navegacion
+
     val viewModel = LoginViewModel()
     val navController = rememberNavController()
     LoginScreen(viewModel, navController)
