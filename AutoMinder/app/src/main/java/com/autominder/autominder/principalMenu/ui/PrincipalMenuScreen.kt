@@ -9,6 +9,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
+<<<<<<< HEAD
+=======
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+>>>>>>> 65bc1b351d9cd205b4382a7d8f6cae33b24a35b7
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -81,7 +86,9 @@ fun AlertCard(alert: Alerts) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .height(100.dp)
+            .height(100.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+
     ) {
         Text(text = alert.alertName)
     }
