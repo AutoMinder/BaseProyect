@@ -37,10 +37,10 @@ fun NavigationHost(
         composable("forgot_password") {
             ForgotPasswordScreen()
         }
-        composable("principal_menu") {
+        composable("principal_menu" ) {
             PrincipalMenuScreen()
         }
-        composable("my_cars"){
+        composable("my_cars", ){
             MyCarsScreen()
         }
         composable("user_info"){
