@@ -1,7 +1,9 @@
 package com.autominder.autominder.navigation
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -9,6 +11,7 @@ import com.autominder.autominder.forgotPassword.ForgotPasswordScreen
 import com.autominder.autominder.login.ui.LoginScreen
 import com.autominder.autominder.login.ui.LoginViewModel
 import com.autominder.autominder.myCars.ui.MyCarsScreen
+import com.autominder.autominder.myCars.ui.MyCarsViewModel
 import com.autominder.autominder.principalMenu.ui.PrincipalMenuScreen
 import com.autominder.autominder.register.RegisterScreen
 import com.autominder.autominder.userInfo.UserInfoScreen
@@ -25,7 +28,7 @@ fun NavigationHost(
 
     NavHost(
         navController = navController,
-        modifier = modifier,
+        modifier = Modifier.padding(8.dp),
         startDestination = startDestination
     ) {
         composable("login") {
@@ -37,16 +40,16 @@ fun NavigationHost(
         composable("forgot_password") {
             ForgotPasswordScreen()
         }
-        composable("principal_menu" ) {
+        composable("principal_menu") {
             PrincipalMenuScreen()
         }
-        composable("my_cars", ){
+        composable("my_cars") {
             MyCarsScreen()
         }
-        composable("user_info"){
+        composable("user_info") {
             UserInfoScreen(navController, UserInfoViewModel())
         }
-        composable("change_password"){
+        composable("change_password") {
             ChangePasswordScreen(navController, ChangePasswordViewModel())
         }
     }
