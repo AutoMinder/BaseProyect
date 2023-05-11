@@ -8,5 +8,5 @@ data class CarDataModel(
     val kilometers: String,
     val kilometersDate: String,
     val owner: String,
-    val hidde: Boolean
+    val hidden: Boolean
 )
