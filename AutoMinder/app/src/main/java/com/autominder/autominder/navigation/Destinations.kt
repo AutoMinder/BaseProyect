@@ -30,4 +30,6 @@ sealed class Destinations(
 
     object ChangePassword : Destinations("change_password", "Change Password", Icons.Filled.Add)
 
+    object CarInfo : Destinations("car_info", "Car Info", Icons.Filled.Add)
+
 }

@@ -17,6 +17,7 @@ import com.autominder.autominder.components.BottomNavigationBar
 import com.autominder.autominder.components.TopBar
 import com.autominder.autominder.navigation.Destinations
 import com.autominder.autominder.navigation.NavigationHost
+import com.autominder.autominder.navigation.PrincipalScaffold
 import com.autominder.autominder.ui.theme.AutoMinderTheme
 
 class MainActivity : ComponentActivity() {
@@ -25,36 +26,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             AutoMinderTheme(useDarkTheme = isSystemInDarkTheme()) {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    DefaultPreview()
+                    PrincipalScaffold()
                 }
             }
-        }
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    val navController = rememberNavController()
-    val navigationItem =
-        listOf(Destinations.MyCars, Destinations.PrincipalMenu, Destinations.UserInfo)
-
-    Scaffold(
-        topBar = {
-            //TopAppBar
-                 TopBar(navController)
-        },
-        bottomBar = {
-            BottomNavigationBar(
-                navHostController = navController,
-                items = navigationItem,
-            )
-        }
-    ) { contentPadding ->
-        // Screen content
-        Box(modifier = Modifier.padding(contentPadding)) {
-            NavigationHost(navController = navController)
         }
     }
 }

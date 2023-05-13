@@ -26,21 +26,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.autominder.autominder.myCars.data.CarDataModel
-import com.autominder.autominder.principalMenu.ui.PrincipalMenuViewModel
 
 @Composable
-@Preview
 fun MyCarsScreen(
+    navController: NavController,
     viewModel: MyCarsViewModel = viewModel(
-        factory = MyCarsViewModel.Factory, //Creates the factory for the view model
+        factory = MyCarsViewModel.Factory,
     )
+
 ) {
     Scaffold(
         floatingActionButton = { FloatingAddButtonCar() },
     ) { contentPadding ->
         Box(modifier = Modifier.padding(contentPadding)) {
-            MainScreenCars(viewModel)
+            MainScreenCars(viewModel, navController)
         }
     }
 }
@@ -55,13 +56,13 @@ fun FloatingAddButtonCar() {
 }
 
 @Composable
-fun MainScreenCars(viewModel: MyCarsViewModel) {
+fun MainScreenCars(viewModel: MyCarsViewModel, navController: NavController?) {
     val myCarListState = viewModel.myCarsList.observeAsState(emptyList())
-    MyCarSection(myCarListState)
+    MyCarSection(myCarListState, navController)
 }
 
 @Composable
-fun MyCarSection(myCarListState: State<List<CarDataModel>>) {
+fun MyCarSection(myCarListState: State<List<CarDataModel>>, navController: NavController?) {
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         if (myCarListState.value.isEmpty()) {
             item {
@@ -73,19 +74,20 @@ fun MyCarSection(myCarListState: State<List<CarDataModel>>) {
             }
         } else {
             items(myCarListState.value) { car ->
-                CardCar(car)
+                CardCar(car, navController)
             }
         }
     }
 }
 
 @Composable
-fun CardCar(car: CarDataModel) {
+fun CardCar(car: CarDataModel, navController: NavController?) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(22.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer)
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer),
+        onClick = { navController?.navigate("car_info")}
     ) {
         Column(
             modifier = Modifier
