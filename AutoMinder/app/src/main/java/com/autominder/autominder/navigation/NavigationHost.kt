@@ -7,6 +7,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.autominder.autominder.addcar.ui.AddCarScreen
 import com.autominder.autominder.carinfo.ui.CarInfoScreen
 import com.autominder.autominder.forgotPassword.ForgotPasswordScreen
 import com.autominder.autominder.login.ui.LoginScreen
@@ -54,6 +55,9 @@ fun NavigationHost(
         }
         composable("car_info") {
             CarInfoScreen()
+        }
+        composable("add_car") {
+            AddCarScreen()
         }
     }
 }

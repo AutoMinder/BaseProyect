@@ -23,7 +23,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -38,7 +37,7 @@ fun MyCarsScreen(
 
 ) {
     Scaffold(
-        floatingActionButton = { FloatingAddButtonCar() },
+        floatingActionButton = { FloatingAddButtonCar(navController) },
     ) { contentPadding ->
         Box(modifier = Modifier.padding(contentPadding)) {
             MainScreenCars(viewModel, navController)
@@ -47,9 +46,9 @@ fun MyCarsScreen(
 }
 
 @Composable
-fun FloatingAddButtonCar() {
+fun FloatingAddButtonCar(navController: NavController) {
     androidx.compose.material3.FloatingActionButton(
-        onClick = { /*TODO*/ },
+        onClick = { navController.navigate("add_car") },
     ) {
         Icon(imageVector = Icons.Default.Add, contentDescription = "Add button")
     }
@@ -87,7 +86,7 @@ fun CardCar(car: CarDataModel, navController: NavController?) {
             .fillMaxWidth()
             .padding(22.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer),
-        onClick = { navController?.navigate("car_info")}
+        onClick = { navController?.navigate("car_info") }
     ) {
         Column(
             modifier = Modifier

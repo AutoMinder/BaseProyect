@@ -43,6 +43,11 @@ fun PrincipalScaffold() {
             bottomBarState.value = false
             topAppBarState.value = true
         }
+        "add_car" -> {
+            bottomBarState.value = false
+            topAppBarState.value = true
+        }
+
     }
 
 

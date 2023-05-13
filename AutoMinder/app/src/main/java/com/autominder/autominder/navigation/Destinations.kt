@@ -32,4 +32,6 @@ sealed class Destinations(
 
     object CarInfo : Destinations("car_info", "Car Info", Icons.Filled.Add)
 
+    object AddCar : Destinations("add_car", "Add Car", Icons.Filled.Add)
+
 }
