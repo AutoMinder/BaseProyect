@@ -14,9 +14,8 @@ import com.autominder.autominder.navigation.Destinations
 @Composable
 fun TopBar(navController: NavHostController) {
     androidx.compose.material.TopAppBar(
-        backgroundColor = MaterialTheme.colorScheme.primary,
-
-        ) {
+        backgroundColor = MaterialTheme.colorScheme.primary
+    ) {
         Text(
             text = navController.currentBackStackEntryAsState().value?.destination?.route?.let {
                 getTitleByRoute(
