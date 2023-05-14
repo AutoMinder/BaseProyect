@@ -4,9 +4,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.autominder.autominder.addcar.ui.AddCarScreen
 import com.autominder.autominder.carinfo.ui.CarInfoScreen
 import com.autominder.autominder.forgotPassword.ForgotPasswordScreen
@@ -24,7 +27,10 @@ import com.autominder.autominder.userInfo.changePassword.ChangePasswordViewModel
 @Composable
 fun NavigationHost(
     navController: NavHostController,
-    startDestination: String = "principal_menu"
+    startDestination: String = "principal_menu",
+    viewModel: MyCarsViewModel = viewModel(
+        factory = MyCarsViewModel.Factory
+    )
 ) {
 
     NavHost(
@@ -53,8 +59,22 @@ fun NavigationHost(
         composable("change_password") {
             ChangePasswordScreen(navController, ChangePasswordViewModel())
         }
-        composable("car_info") {
-            CarInfoScreen()
+        composable("car_info/{carId}",
+            arguments = listOf(
+                navArgument("carId") {
+                    type = NavType.IntType
+                }
+            )
+        ) {
+            val carId = it.arguments?.getInt("carId")
+            if (carId != null) {
+                val car = viewModel.fetchCarById(carId)
+                if (car != null) {
+                    CarInfoScreen(car)
+                }
+            }
+
+
         }
         composable("add_car") {
             AddCarScreen()

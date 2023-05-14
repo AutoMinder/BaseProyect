@@ -1,6 +1,7 @@
 package com.autominder.autominder.myCars.data
 
 data class CarDataModel(
+    val id: Int,
     val name: String,
     val brand: String,
     val model: String,

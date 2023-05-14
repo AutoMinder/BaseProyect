@@ -2,9 +2,9 @@ package com.autominder.autominder.myCars.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,11 +23,12 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -40,6 +41,9 @@ import com.autominder.autominder.R
 import com.autominder.autominder.myCars.data.CarDataModel
 
 
+//*
+// This function recieves the navController and the viewModel for my cars
+// *//
 @Composable
 fun MyCarsScreen(
     navController: NavController,
@@ -48,6 +52,11 @@ fun MyCarsScreen(
     )
 
 ) {
+
+    //*
+    // The Scaffold is the one in charge to add the floating button
+    // and the content in { } is the one that will be displayed
+    // *//
     Scaffold(
         floatingActionButton = { FloatingAddButtonCar(navController) },
     ) { contentPadding ->
@@ -57,6 +66,10 @@ fun MyCarsScreen(
     }
 }
 
+
+//*
+//Floating button to add a new car, it will navigate to the add car screen
+// *//
 @Composable
 fun FloatingAddButtonCar(navController: NavController) {
     androidx.compose.material3.FloatingActionButton(
@@ -66,15 +79,32 @@ fun FloatingAddButtonCar(navController: NavController) {
     }
 }
 
+//*
+//This two are the main screen of the cars, it will display all the cars
+// It receives the view model and nav controller
+// *//
+
 @Composable
 fun MainScreenCars(viewModel: MyCarsViewModel, navController: NavController?) {
+    //* This val is containing the list of the view model *//
     val myCarListState = viewModel.myCarsList.observeAsState(emptyList())
+
+    //Call to the function that will display the list of cars, it recieves the list and the nav controller
     MyCarSection(myCarListState, navController)
 }
 
 @Composable
-fun MyCarSection(myCarListState: State<List<CarDataModel>>, navController: NavController?) {
+fun MyCarSection(
+    myCarListState: State<List<CarDataModel>>,
+    navController: NavController?,
+
+) {
+
+    //* Lazy column to show the different cars (is like the RecyclerView)  *//
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
+
+
+        //* Check if the list of cars is empty *//
         if (myCarListState.value.isEmpty()) {
             item {
                 Text(
@@ -84,21 +114,32 @@ fun MyCarSection(myCarListState: State<List<CarDataModel>>, navController: NavCo
                 )
             }
         } else {
+            //* Renders the card car *//
             items(myCarListState.value) { car ->
-                CardCar(car, navController)
+                if (navController != null) {
+                    CardCar(car, navController)
+                }
             }
         }
     }
 }
 
+//* This is the individual carCard for each of the cars*//
 @Composable
-fun CardCar(car: CarDataModel, navController: NavController?) {
+fun CardCar(car: CarDataModel, navController: NavController) {
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
+
+
+            //* If clicked, it will navigate to the details of the specific car with the id*//
+            .clickable {
+                navController.navigate("car_info/${car.id}")
+            }
             .padding(22.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer),
-        onClick = { navController?.navigate("car_info") }
+
     ) {
         Box(
             modifier = Modifier
@@ -146,15 +187,4 @@ fun CardCar(car: CarDataModel, navController: NavController?) {
             )
         }
     }
-}
-
-@Composable
-@Preview
-fun PreviewCard() {
-    CardCar(
-        CarDataModel(
-            "My Yaris", "Toyota", "Yaris", "2001",
-            "100", "100", "Melvin", false
-        ), null
-    )
 }
