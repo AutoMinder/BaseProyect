@@ -1,11 +1,9 @@
 package com.autominder.autominder.userInfo.changePassword
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -35,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Preview(showBackground = true)
@@ -42,24 +41,43 @@ import kotlinx.coroutines.launch
 fun ChangePasswordScreenPreview() {
     val navController = rememberNavController()
     val viewModel = ChangePasswordViewModel()
-    Box(Modifier.fillMaxSize()){
+    Box(Modifier.fillMaxSize()) {
         ChangePasswordScreen(navController, viewModel)
     }
 }
 
 @Composable
 fun ChangePasswordScreen(navController: NavController, viewModel: ChangePasswordViewModel) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    ) {
-        HeaderTitle()
-        Spacer(modifier = Modifier.padding(35.dp))
-        ChangePasswordBox(viewModel)
+    val actualPassword: String by viewModel.actualPassword.observeAsState(initial = "")
+    val newPassword: String by viewModel.newPassword.observeAsState(initial = "")
+    val confirmNewPassword: String by viewModel.confirmNewPassword.observeAsState(initial = "")
+    val changePasswordEnable: Boolean by viewModel.changePasswordEnable.observeAsState(initial = false)
+    val isLoading: Boolean by viewModel.isLoading.observeAsState(initial = false)
+    val coroutineScope = rememberCoroutineScope()
+
+    if (isLoading) {
+        Box(Modifier.fillMaxSize()) {
+            CircularProgressIndicator(Modifier.align(Alignment.Center))
+        }
+    } else {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
+            HeaderTitle()
+            Spacer(modifier = Modifier.padding(35.dp))
+            ChangePasswordBox(
+                viewModel,
+                actualPassword,
+                newPassword,
+                confirmNewPassword,
+                changePasswordEnable,
+                coroutineScope
+            )
+        }
     }
 }
-
 
 @Composable
 fun HeaderTitle() {
@@ -73,37 +91,35 @@ fun HeaderTitle() {
 }
 
 @Composable
-fun ChangePasswordBox(viewModel: ChangePasswordViewModel) {
-    val changePasswordEnable: Boolean by viewModel.changePasswordEnable.observeAsState(initial = false)
-    val isLoading: Boolean by viewModel.isLoading.observeAsState(initial = false)
-    val coroutineScope = rememberCoroutineScope()
-
-    if (isLoading) {
-        Box(Modifier.fillMaxSize()) {
-            CircularProgressIndicator(Modifier.align(Alignment.Center))
-        }
-    } else {
-        Card(
+fun ChangePasswordBox(
+    viewModel: ChangePasswordViewModel,
+    actualPassword: String,
+    newPassword: String,
+    confirmNewPassword: String,
+    changePasswordEnable: Boolean,
+    coroutineScope: CoroutineScope
+) {
+    Card(
+        modifier = Modifier
+            .padding(16.dp, 0.dp, 16.dp, 16.dp)
+            .height(350.dp)
+    ) {
+        Column(
+            verticalArrangement = Arrangement.Center,
             modifier = Modifier
-                .padding(16.dp, 0.dp, 16.dp, 16.dp)
-                .height(350.dp)
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-            ) {
-                ChangePasswordHeader()
-                ChangePasswordFieldsWrapper(viewModel)
-                ChangePasswordButton(changePasswordEnable) {
-                    coroutineScope.launch {
-                        viewModel.onPasswordSelected()
-                    }
+            ChangePasswordHeader()
+            ChangePasswordFieldsWrapper(viewModel, actualPassword, newPassword, confirmNewPassword)
+            ChangePasswordButton(changePasswordEnable) {
+                coroutineScope.launch {
+                    viewModel.onPasswordSelected()
                 }
             }
         }
     }
+
 }
 
 @Composable
@@ -119,10 +135,12 @@ fun ChangePasswordHeader() {
 }
 
 @Composable
-fun ChangePasswordFieldsWrapper(viewModel: ChangePasswordViewModel) {
-    val actualPassword: String by viewModel.actualPassword.observeAsState(initial = "")
-    val newPassword: String by viewModel.newPassword.observeAsState(initial = "")
-    val confirmNewPassword: String by viewModel.confirmNewPassword.observeAsState(initial = "")
+fun ChangePasswordFieldsWrapper(
+    viewModel: ChangePasswordViewModel,
+    actualPassword: String,
+    newPassword: String,
+    confirmNewPassword: String
+) {
 
 
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
