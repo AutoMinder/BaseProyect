@@ -57,7 +57,7 @@ fun NavigationHost(
             UserInfoScreen(navController, UserInfoViewModel())
         }
         composable("change_password") {
-            ChangePasswordScreen(navController, ChangePasswordViewModel())
+            ChangePasswordScreen(ChangePasswordViewModel())
         }
         composable("car_info/{carId}",
             arguments = listOf(

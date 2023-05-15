@@ -1,6 +1,8 @@
 package com.autominder.autominder.userInfo.changePassword
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,8 +19,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.material3.Button
+
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.material3.CardDefaults
+
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -28,30 +38,55 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-
-//TODO: VIEWMODEL
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Preview(showBackground = true)
 @Composable
 fun ChangePasswordScreenPreview() {
-    val navController = rememberNavController()
     val viewModel = ChangePasswordViewModel()
-    ChangePasswordScreen(navController, viewModel)
-}
-
-@Composable
-fun ChangePasswordScreen(navController: NavController, viewModel: ChangePasswordViewModel) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    ) {
-        HeaderTitle()
-        Spacer(modifier = Modifier.padding(35.dp))
-        ChangePasswordBox()
+    Box(Modifier.fillMaxSize()) {
+        ChangePasswordScreen(viewModel)
     }
 }
 
+@Composable
+fun ChangePasswordScreen(viewModel: ChangePasswordViewModel) {
+    val actualPassword: String by viewModel.actualPassword.observeAsState(initial = "")
+    val newPassword: String by viewModel.newPassword.observeAsState(initial = "")
+    val confirmNewPassword: String by viewModel.confirmNewPassword.observeAsState(initial = "")
+    val changePasswordEnable: Boolean by viewModel.changePasswordEnable.observeAsState(initial = false)
+    val isLoading: Boolean by viewModel.isLoading.observeAsState(initial = false)
+    val coroutineScope = rememberCoroutineScope()
+    val toastMessage: Boolean by viewModel.toastMessage.observeAsState(initial = false)
+
+    if (toastMessage && !isLoading) {
+        PasswordChangedMessage()
+    }
+
+    if (isLoading) {
+        Box(Modifier.fillMaxSize()) {
+            CircularProgressIndicator(Modifier.align(Alignment.Center))
+        }
+    } else {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
+            HeaderTitle()
+            Spacer(modifier = Modifier.padding(35.dp))
+            ChangePasswordBox(
+                viewModel,
+                actualPassword,
+                newPassword,
+                confirmNewPassword,
+                changePasswordEnable,
+                coroutineScope
+            )
+        }
+    }
+}
 
 @Composable
 fun HeaderTitle() {
@@ -65,7 +100,14 @@ fun HeaderTitle() {
 }
 
 @Composable
-fun ChangePasswordBox() {
+fun ChangePasswordBox(
+    viewModel: ChangePasswordViewModel,
+    actualPassword: String,
+    newPassword: String,
+    confirmNewPassword: String,
+    changePasswordEnable: Boolean,
+    coroutineScope: CoroutineScope
+) {
     Card(
         modifier = Modifier
             .padding(16.dp, 0.dp, 16.dp, 16.dp)
@@ -79,10 +121,15 @@ fun ChangePasswordBox() {
                 .padding(16.dp)
         ) {
             ChangePasswordHeader()
-            ChangePasswordFieldsWrapper()
-            ChangePasswordButton()
+            ChangePasswordFieldsWrapper(viewModel, actualPassword, newPassword, confirmNewPassword)
+            ChangePasswordButton(changePasswordEnable) {
+                coroutineScope.launch {
+                    viewModel.onPasswordSelected()
+                }
+            }
         }
     }
+
 }
 
 @Composable
@@ -99,20 +146,45 @@ fun ChangePasswordHeader() {
 }
 
 @Composable
-fun ChangePasswordFieldsWrapper() {
+fun ChangePasswordFieldsWrapper(
+    viewModel: ChangePasswordViewModel,
+    actualPassword: String,
+    newPassword: String,
+    confirmNewPassword: String
+) {
+
+
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        ActualPasswordTextField()
-        NewPasswordTextField()
-        ConfirmNewPasswordTextField()
+        ActualPasswordTextField(actualPassword) {
+            viewModel.onPasswordChange(
+                it,
+                newPassword,
+                confirmNewPassword
+            )
+        }
+        NewPasswordTextField(newPassword) {
+            viewModel.onPasswordChange(
+                actualPassword,
+                it,
+                confirmNewPassword
+            )
+        }
+        ConfirmNewPasswordTextField(confirmNewPassword) {
+            viewModel.onPasswordChange(
+                actualPassword,
+                newPassword,
+                it
+            )
+        }
     }
 }
 
 
 @Composable
-fun ActualPasswordTextField() {
+fun ActualPasswordTextField(actualPassword: String, onPasswordChange: (String) -> Unit) {
     OutlinedTextField(
-        value = "",
-        onValueChange = { /*TODO*/ },
+        value = actualPassword,
+        onValueChange = { onPasswordChange(it) },
         label = { Text("Contraseña actual") },
         shape = MaterialTheme.shapes.small,
         modifier = Modifier
@@ -125,10 +197,10 @@ fun ActualPasswordTextField() {
 }
 
 @Composable
-fun NewPasswordTextField() {
+fun NewPasswordTextField(newPassword: String, onPasswordChange: (String) -> Unit) {
     OutlinedTextField(
-        value = "",
-        onValueChange = { /*TODO*/ },
+        value = newPassword,
+        onValueChange = { onPasswordChange(it) },
         label = { Text("Nueva contraseña") },
         shape = MaterialTheme.shapes.small,
         modifier = Modifier
@@ -141,10 +213,10 @@ fun NewPasswordTextField() {
 }
 
 @Composable
-fun ConfirmNewPasswordTextField() {
+fun ConfirmNewPasswordTextField(confirmNewPassword: String, onPasswordChange: (String) -> Unit) {
     OutlinedTextField(
-        value = "",
-        onValueChange = { /*TODO*/ },
+        value = confirmNewPassword,
+        onValueChange = { onPasswordChange(it) },
         label = { Text("Confirmar nueva contraseña") },
         shape = MaterialTheme.shapes.small,
         modifier = Modifier
@@ -157,14 +229,27 @@ fun ConfirmNewPasswordTextField() {
 }
 
 @Composable
-fun ChangePasswordButton() {
+fun ChangePasswordButton(changePasswordEnable: Boolean, onPasswordSelected: () -> Unit) {
 
     Button(
-        onClick = { /*TODO*/ },
+        onClick = { onPasswordSelected() },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp, 16.dp)
+            .padding(16.dp, 16.dp),
+        enabled = changePasswordEnable
     ) {
         Text(text = "Cambiar contraseña", color = Color.White)
     }
+}
+
+/*
+    TODO(): Hacer un toast mas bonito
+ */
+@Composable
+fun PasswordChangedMessage() {
+    Toast.makeText(
+        LocalContext.current,
+        "La contraseña ha sido cambiada con exito",
+        Toast.LENGTH_SHORT
+    ).show()
 }
