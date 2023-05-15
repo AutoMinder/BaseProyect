@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -121,7 +122,7 @@ fun ChangePasswordButton(navController: NavController, modifier: Modifier) {
         //TODO(): Cambiar ruta de navegacion
         onClick = { navController.navigate("change_password") }, modifier
     ) {
-        Text(text = "CAMBIAR CONTRASEÑA")
+        Text(text = "CAMBIAR CONTRASEÑA", color = MaterialTheme.colorScheme.onPrimary)
     }
 }
 
@@ -133,7 +134,7 @@ fun ContactDevelopersButton(
     Button(
         onClick = { onContactDevelopersClicked() }, modifier
     ) {
-        Text(text = "CONTACTA A LOS DESARROLLADORES")
+        Text(text = "CONTACTA A LOS DESARROLLADORES", color = MaterialTheme.colorScheme.onPrimary)
     }
 }
 
@@ -142,6 +143,6 @@ fun ObdBuyLinkButton(modifier: Modifier, onBuyLinkClicked: () -> Unit) {
     Button(
         onClick = { onBuyLinkClicked() }, modifier
     ) {
-        Text(text = "LINK DE COMPRA DE OBD")
+        Text(text = "LINK DE COMPRA DE OBD", color = MaterialTheme.colorScheme.onPrimary)
     }
 }
