@@ -9,7 +9,6 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.autominder.autominder.AutoMinderApplication
 import com.autominder.autominder.myCars.data.CarDataModel
 import com.autominder.autominder.myCars.data.MyCarsRepository
-import com.autominder.autominder.principalMenu.ui.PrincipalMenuViewModel
 
 class MyCarsViewModel(
     private val repository: MyCarsRepository,
@@ -21,6 +20,10 @@ class MyCarsViewModel(
 
     init {
         fetchMyCars()
+    }
+
+    fun fetchCarById(id: Int): CarDataModel? {
+        return repository.getCarById(id)
     }
 
     private fun fetchMyCars() {
@@ -36,7 +39,6 @@ class MyCarsViewModel(
     }
 
     companion object {
-
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(

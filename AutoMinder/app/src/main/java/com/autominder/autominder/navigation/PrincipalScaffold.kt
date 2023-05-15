@@ -35,7 +35,7 @@ fun PrincipalScaffold() {
             bottomBarState.value = true
             topAppBarState.value = true
         }
-        "car_info" -> {
+        "car_info/{carId}" -> {
             bottomBarState.value = false
             topAppBarState.value = true
         }
