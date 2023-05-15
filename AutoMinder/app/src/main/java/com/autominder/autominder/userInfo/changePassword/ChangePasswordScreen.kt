@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.material3.Button
+import androidx.compose.material3.CardDefaults
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -68,7 +69,8 @@ fun ChangePasswordBox() {
     Card(
         modifier = Modifier
             .padding(16.dp, 0.dp, 16.dp, 16.dp)
-            .height(350.dp)
+            .height(350.dp),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer)
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -91,7 +93,8 @@ fun ChangePasswordHeader() {
             .fillMaxWidth()
             .padding(8.dp),
         textAlign = TextAlign.Center,
-        fontSize = 22.sp
+        fontSize = 22.sp,
+        color = MaterialTheme.colorScheme.onPrimaryContainer
     )
 }
 
