@@ -1,5 +1,6 @@
 package com.autominder.autominder.userInfo.changePassword
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +25,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -39,21 +41,25 @@ import kotlinx.coroutines.launch
 @Preview(showBackground = true)
 @Composable
 fun ChangePasswordScreenPreview() {
-    val navController = rememberNavController()
     val viewModel = ChangePasswordViewModel()
     Box(Modifier.fillMaxSize()) {
-        ChangePasswordScreen(navController, viewModel)
+        ChangePasswordScreen(viewModel)
     }
 }
 
 @Composable
-fun ChangePasswordScreen(navController: NavController, viewModel: ChangePasswordViewModel) {
+fun ChangePasswordScreen(viewModel: ChangePasswordViewModel) {
     val actualPassword: String by viewModel.actualPassword.observeAsState(initial = "")
     val newPassword: String by viewModel.newPassword.observeAsState(initial = "")
     val confirmNewPassword: String by viewModel.confirmNewPassword.observeAsState(initial = "")
     val changePasswordEnable: Boolean by viewModel.changePasswordEnable.observeAsState(initial = false)
     val isLoading: Boolean by viewModel.isLoading.observeAsState(initial = false)
     val coroutineScope = rememberCoroutineScope()
+    val toastMessage: Boolean by viewModel.toastMessage.observeAsState(initial = false)
+
+    if (toastMessage && !isLoading) {
+        PasswordChangedMessage()
+    }
 
     if (isLoading) {
         Box(Modifier.fillMaxSize()) {
@@ -229,4 +235,16 @@ fun ChangePasswordButton(changePasswordEnable: Boolean, onPasswordSelected: () -
     ) {
         Text(text = "Cambiar contraseña", color = Color.White)
     }
+}
+
+/*
+    TODO(): Hacer un toast mas bonito
+ */
+@Composable
+fun PasswordChangedMessage() {
+    Toast.makeText(
+        LocalContext.current,
+        "La contraseña ha sido cambiada con exito",
+        Toast.LENGTH_SHORT
+    ).show()
 }

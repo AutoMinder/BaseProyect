@@ -23,12 +23,16 @@ class ChangePasswordViewModel : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
+    private val _toastMessage = MutableLiveData<Boolean>()
+    val toastMessage: LiveData<Boolean> = _toastMessage
+
     fun onPasswordChange(actualPassword: String, newPassword: String, confirmNewPassword: String) {
         _actualPassword.value = actualPassword
         _newPassword.value = newPassword
         _confirmNewPassword.value = confirmNewPassword
 
         _changePasswordEnable.value = isValidActualPassword(actualPassword) && isValidNewPassword(
+            actualPassword,
             newPassword,
             confirmNewPassword
         )
@@ -44,12 +48,13 @@ class ChangePasswordViewModel : ViewModel() {
     Valida el formato de contraseñas y confirma que se haya confirmado la contraseña
     TODO(): Almacenar la nueva contraseña
      */
-    private fun isValidNewPassword(newPassword: String, confirmNewPassword: String): Boolean =
-        newPassword.length > 6 && newPassword == confirmNewPassword
+    private fun isValidNewPassword(actualPassword:String, newPassword: String, confirmNewPassword: String): Boolean =
+        newPassword.length > 6 && newPassword == confirmNewPassword && newPassword != actualPassword
 
     suspend fun onPasswordSelected() {
         _isLoading.value = true
         delay(2000)
         _isLoading.value = false
+        _toastMessage.value = true
     }
 }
