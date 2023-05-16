@@ -3,7 +3,6 @@ package com.autominder.autominder.carinfo.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,14 +15,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.autominder.autominder.carinfo.data.CarMaintenanceData
 import com.autominder.autominder.myCars.data.CarDataModel
 import com.autominder.autominder.myCars.data.myCarsdummy
 import com.autominder.autominder.myCars.ui.MyCarsViewModel
@@ -44,6 +44,20 @@ fun CarInfoScreen(
         factory = CarInfoViewModel.Factory,
     )
 ) {
+    val mileage = infoViewModel.millage.observeAsState()
+    val carId = infoViewModel.carId.observeAsState()
+    val date = infoViewModel.date.observeAsState()
+    val carInfoStateList = infoViewModel.carInfoList.observeAsState(emptyList())
+
+    val carInfo = CarMaintenanceData(
+        1,
+        "",
+        "",
+        mileage.value!!,
+        "",
+        20.0,
+        1
+    )
 
     Scaffold(
         bottomBar = {
@@ -51,13 +65,14 @@ fun CarInfoScreen(
         }
     ) {
         Box(modifier = Modifier.padding(it)) {
-            CarInfoMainScreen(car)
+            CarInfoMainScreen(car, carInfo)
         }
     }
 }
 
 @Composable
-fun CarInfoMainScreen(car: CarDataModel) {
+fun CarInfoMainScreen(car: CarDataModel, carInfo: CarMaintenanceData?) {
+
     Card(
         modifier = Modifier.padding(16.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer)
@@ -73,6 +88,7 @@ fun CarInfoMainScreen(car: CarDataModel) {
                 CarBrand(car)
                 CarModel(car)
                 CarYearCard(car)
+                CarMileage(carInfo)
             }
         }
     }
@@ -189,6 +205,38 @@ fun CarYearCard(car: CarDataModel) {
     }
 }
 
+@Composable
+fun CarMileage(carInfo: CarMaintenanceData?) {
+    Card(
+        modifier = Modifier
+            .padding(16.dp)
+            .width(280.dp)
+            .height(50.dp),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        )
+        {
+            Text(
+                text = "Millaje",
+                fontWeight = FontWeight(600),
+                fontSize = 24.sp,
+                color = MaterialTheme.colorScheme.onSecondaryContainer
+            )
+
+            Text(
+                text = carInfo?.mileage.toString(),
+                fontWeight = FontWeight(600),
+                fontSize = 24.sp,
+                color = MaterialTheme.colorScheme.onSecondaryContainer
+            )
+        }
+    }
+}
 
 @Composable
 @Preview

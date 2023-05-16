@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.autominder.autominder.R
+import com.autominder.autominder.carinfo.ui.CarInfoViewModel
 import com.autominder.autominder.myCars.data.CarDataModel
 
 
@@ -98,7 +99,7 @@ fun MyCarSection(
     myCarListState: State<List<CarDataModel>>,
     navController: NavController?,
 
-) {
+    ) {
 
     //* Lazy column to show the different cars (is like the RecyclerView)  *//
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
@@ -126,7 +127,12 @@ fun MyCarSection(
 
 //* This is the individual carCard for each of the cars*//
 @Composable
-fun CardCar(car: CarDataModel, navController: NavController) {
+fun CardCar(
+    car: CarDataModel, navController: NavController,
+    infoViewModel: CarInfoViewModel = viewModel(
+        factory = CarInfoViewModel.Factory
+    )
+) {
 
     Card(
         modifier = Modifier
@@ -136,11 +142,12 @@ fun CardCar(car: CarDataModel, navController: NavController) {
             //* If clicked, it will navigate to the details of the specific car with the id*//
             .clickable {
                 navController.navigate("car_info/${car.id}")
+                infoViewModel.setCarId(car.id)
             }
             .padding(22.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer),
 
-    ) {
+        ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()

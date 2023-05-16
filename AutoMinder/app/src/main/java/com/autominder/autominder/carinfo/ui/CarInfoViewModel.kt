@@ -24,15 +24,12 @@ class CarInfoViewModel(
     private val _id = MutableLiveData<Int>()
     val carId: LiveData<Int> = _id
 
-    init {
-        fetchCarMaintenanceInfoById(_id.value!!)
-    }
 
     fun setCarId(id: Int) {
         _id.value = id
     }
 
-    private fun fetchCarMaintenanceInfoById(id: Int): CarMaintenanceData? {
+    fun fetchCarMaintenanceInfoById(id: Int): CarMaintenanceData? {
         return repository.getCarMaintenanceById(id)
     }
 
