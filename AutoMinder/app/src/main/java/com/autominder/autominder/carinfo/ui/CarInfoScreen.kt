@@ -28,36 +28,36 @@ import com.autominder.autominder.myCars.data.CarDataModel
 import com.autominder.autominder.myCars.data.myCarsdummy
 import com.autominder.autominder.myCars.ui.MyCarsViewModel
 
-
+//
+// Screen to show the car details
+// MyCarsScreen sends the id, and the navigationHost "search" the car
+// with the respective id
+// *
+//
 @Composable
 fun CarInfoScreen(
     car: CarDataModel,
     viewModel: MyCarsViewModel = viewModel(
         factory = MyCarsViewModel.Factory,
+    ),
+    infoViewModel: CarInfoViewModel = viewModel(
+        factory = CarInfoViewModel.Factory,
     )
 ) {
 
     Scaffold(
         bottomBar = {
-            //CarInfoTopBar(car)
+            //TODO: Call the BottomNavigationForCarInfo
         }
-    ) { contentPadding ->
-        Box(modifier = Modifier.padding(contentPadding)) {
+    ) {
+        Box(modifier = Modifier.padding(it)) {
             CarInfoMainScreen(car)
         }
     }
 }
-//*TODO
-//
-// *//
-@Composable
-fun BottomBar() {
-}
-
 
 @Composable
 fun CarInfoMainScreen(car: CarDataModel) {
-
     Card(
         modifier = Modifier.padding(16.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer)
@@ -68,20 +68,25 @@ fun CarInfoMainScreen(car: CarDataModel) {
                 .fillMaxSize()
         ) {
             item {
-                Text(
-                    text = car.name,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight(600),
-                )
-
+                //Calling all the cards of individual information
+                CarNameHeader(car)
                 CarBrand(car)
                 CarModel(car)
                 CarYearCard(car)
             }
         }
     }
+}
+
+@Composable
+fun CarNameHeader(car: CarDataModel) {
+    Text(
+        text = car.name,
+        modifier = Modifier.fillMaxWidth(),
+        textAlign = TextAlign.Center,
+        fontSize = 32.sp,
+        fontWeight = FontWeight(600),
+    )
 }
 
 @Composable
