@@ -44,20 +44,14 @@ fun CarInfoScreen(
         factory = CarInfoViewModel.Factory,
     )
 ) {
+
+
     val mileage = infoViewModel.millage.observeAsState()
     val carId = infoViewModel.carId.observeAsState()
     val date = infoViewModel.date.observeAsState()
     val carInfoStateList = infoViewModel.carInfoList.observeAsState(emptyList())
-
-    val carInfo = CarMaintenanceData(
-        1,
-        "",
-        "",
-        mileage.value!!,
-        "",
-        20.0,
-        1
-    )
+    val carInfo = carInfoStateList.value.find { it.carId == car.id }
+    infoViewModel.fetchCarMaintenanceInfoByCarId(car.id)
 
     Scaffold(
         bottomBar = {

@@ -29,8 +29,17 @@ class CarInfoViewModel(
         _id.value = id
     }
 
-    fun fetchCarMaintenanceInfoById(id: Int): CarMaintenanceData? {
-        return repository.getCarMaintenanceById(id)
+
+    fun fetchCarMaintenanceInfoByCarId(carId: Int) {
+        setLoading(true)
+        repository.getCarMaintenanceByCarId(carId).let { car ->
+            carInfoList.postValue(car)
+            setLoading(false)
+        }
+    }
+
+    private fun setLoading(loading: Boolean) {
+        _isLoading.value = loading
     }
 
     companion object {

@@ -133,6 +133,9 @@ fun CardCar(
         factory = CarInfoViewModel.Factory
     )
 ) {
+    /*val onIdUpdated: (Int) -> Unit = { id ->
+        infoViewModel.setCarId(id)
+    }*/
 
     Card(
         modifier = Modifier
@@ -142,7 +145,7 @@ fun CardCar(
             //* If clicked, it will navigate to the details of the specific car with the id*//
             .clickable {
                 navController.navigate("car_info/${car.id}")
-                infoViewModel.setCarId(car.id)
+                //onIdUpdated(car.id)
             }
             .padding(22.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer),
