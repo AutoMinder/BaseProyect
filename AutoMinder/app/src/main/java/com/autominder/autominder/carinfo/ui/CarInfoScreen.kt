@@ -51,7 +51,7 @@ fun CarInfoScreen(
     Scaffold(
         bottomBar = {
             //TODO: Call the BottomNavigationForCarInfo
-        }
+        },
     ) {
         Box(modifier = Modifier.padding(it)) {
             CarInfoMainScreen(car, carInfo)

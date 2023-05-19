@@ -102,7 +102,11 @@ fun MyCarSection(
     ) {
 
     //* Lazy column to show the different cars (is like the RecyclerView)  *//
-    LazyColumn(modifier = Modifier.fillMaxWidth()) {
+    LazyColumn(modifier = Modifier
+        .fillMaxWidth()
+        .padding(16.dp))
+
+    {
 
 
         //* Check if the list of cars is empty *//
@@ -145,16 +149,13 @@ fun CardCar(
             //* If clicked, it will navigate to the details of the specific car with the id*//
             .clickable {
                 navController.navigate("car_info/${car.id}")
-                //onIdUpdated(car.id)
-            }
-            .padding(22.dp),
+            },
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer),
 
         ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-
                 .height(200.dp)
         ) {
             Text(
