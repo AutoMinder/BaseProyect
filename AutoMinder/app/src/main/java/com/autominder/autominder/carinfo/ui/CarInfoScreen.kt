@@ -43,6 +43,8 @@ fun CarInfoScreen(
     infoViewModel: CarInfoViewModel = viewModel(
         factory = CarInfoViewModel.Factory,
     )
+
+
 ) {
     val carInfoStateList = infoViewModel.carInfoList.observeAsState(emptyList())
     val carInfo = carInfoStateList.value.find { it.carId == car.id }
@@ -71,6 +73,7 @@ fun CarInfoMainScreen(car: CarDataModel, carInfo: CarMaintenanceData?) {
                 .fillMaxSize()
         ) {
             item {
+
                 //Calling all the cards of individual information
                 CarNameHeader(car)
                 CarBrand(car)
