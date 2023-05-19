@@ -2,7 +2,6 @@ package com.autominder.autominder.addcar.ui
 
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -33,14 +33,15 @@ import androidx.compose.ui.unit.sp
 @Preview(showBackground = true)
 @Composable
 fun AddCarScreenPreview() {
-    AddCarScreen()
+    val viewModel = AddCarViewModel()
+    AddCarScreen(viewModel)
 }
 
 @Composable
-fun AddCarScreen() {
+fun AddCarScreen(viewModel: AddCarViewModel) {
     Column(modifier = Modifier.fillMaxSize()) {
         HeaderText()
-        AddCarForm()
+        AddCarForm(viewModel)
     }
 }
 
@@ -51,33 +52,72 @@ fun HeaderText() {
         fontSize = 24.sp,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top= 32.dp, bottom = 16.dp),
+            .padding(top = 32.dp, bottom = 16.dp),
         textAlign = TextAlign.Center,
         fontWeight = FontWeight.Bold
     )
 }
 
 @Composable
-fun AddCarForm() {
+fun AddCarForm(viewModel: AddCarViewModel) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
-        item { FieldsWrapper() }
+        item { FieldsWrapper(viewModel) }
     }
 }
 
 @Composable
-fun FieldsWrapper() {
+fun FieldsWrapper(viewModel: AddCarViewModel) {
     val context = LocalContext.current
     //TODO(): Hacer con dummydata y luego con la API
     val carBrands = arrayOf("Toyota", "Nissan", "Hyundai", "Isuzu", "BMW")
     val carModels = arrayOf("Yaris", "Corolla", "Hyundai", "Isuzu", "BMW")
 
+    //viewModel values
+    val profileCarName: String by viewModel.profileCarName.observeAsState(initial = "")
+    val carYear: String by viewModel.carYear.observeAsState(initial = "")
+    val carKilometers: String by viewModel.carKilometers.observeAsState("")
+    val carLastOilChange: String by viewModel.carLastOilChange.observeAsState(initial = "")
+    val carLastMaintenance: String by viewModel.carLastMaintenance.observeAsState(initial = "")
+
+
+    CarName(profileCarName) {
+        viewModel.onAddCarChange(it, carYear, carKilometers, carLastOilChange, carLastMaintenance)
+    }
     CarBrandMenu(context, carBrands)
     CarModelMenu(context, carModels)
-    CarYear()
-    CarDistance()
-    CarLastOilChange()
-    CarLastMaintenance()
+    CarYear(carYear) {
+        viewModel.onAddCarChange(profileCarName, it, carKilometers, carLastOilChange, carLastMaintenance)
+    }
+    CarDistance(carKilometers) {
+        viewModel.onAddCarChange(profileCarName, carYear, it, carLastOilChange, carLastMaintenance)
+    }
+    CarLastOilChange(carLastOilChange) {
+        viewModel.onAddCarChange(profileCarName, carYear, carKilometers, it, carLastMaintenance)
+    }
+    CarLastMaintenance(carLastMaintenance) {
+        viewModel.onAddCarChange(profileCarName, carYear, carKilometers, carLastOilChange, it)
+    }
     SaveCar()
+}
+
+@Composable
+fun CarName(profileCarName: String, onAddCarChange: (String) -> Unit) {
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        TextField(
+            value = profileCarName,
+            onValueChange = {
+                onAddCarChange(it)
+            },
+            label = { Text(text = "Nombre del perfil del vehiculo") },
+            placeholder = { Text(text = "Your Placeholder/Hint") },
+        )
+    }
 }
 
 @Composable
@@ -171,11 +211,9 @@ fun CarModelMenu(context: Context, carModels: Array<String>) {
 }
 
 @Composable
-fun CarYear() {
+fun CarYear(carYear: String, onAddCarChange: (String) -> Unit) {
     //TODO():
     val carYears = arrayOf("2021", "2020", "2019", "2018", "2017")
-
-    var text by remember { mutableStateOf(TextFieldValue("")) }
 
     Box(
         modifier = Modifier
@@ -184,9 +222,9 @@ fun CarYear() {
         contentAlignment = Alignment.Center
     ) {
         TextField(
-            value = text,
+            value = carYear,
             onValueChange = {
-                text = it
+                onAddCarChange(it)
             },
             label = { Text(text = "Año del vehiculo") },
             placeholder = { Text(text = "Your Placeholder/Hint") },
@@ -195,10 +233,8 @@ fun CarYear() {
 }
 
 @Composable
-fun CarDistance() {
+fun CarDistance(carKilometers: String, onAddCarChange: (String) -> Unit) {
     //TODO(): Hacer con dummydata y luego con la API
-
-    var text by remember { mutableStateOf(TextFieldValue("")) }
 
     Box(
         modifier = Modifier
@@ -207,9 +243,9 @@ fun CarDistance() {
         contentAlignment = Alignment.Center
     ) {
         TextField(
-            value = text,
+            value = carKilometers,
             onValueChange = {
-                text = it
+                onAddCarChange(it)
             },
             label = { Text(text = "Distancia recorrida del vehiculo") },
             placeholder = { Text(text = "Your Placeholder/Hint") },
@@ -218,10 +254,8 @@ fun CarDistance() {
 }
 
 @Composable
-fun CarLastOilChange() {
+fun CarLastOilChange(carLastOilChange: String, onAddCarChange: (String) -> Unit) {
     //TODO(): Hacer con dummydata y luego con la API
-
-    var text by remember { mutableStateOf(TextFieldValue("")) }
 
     Box(
         modifier = Modifier
@@ -230,9 +264,9 @@ fun CarLastOilChange() {
         contentAlignment = Alignment.Center
     ) {
         TextField(
-            value = text,
+            value = carLastOilChange,
             onValueChange = {
-                text = it
+                onAddCarChange(it)
             },
             label = { Text(text = "Ultimo cambio de aceite") },
             placeholder = { Text(text = "Your Placeholder/Hint") },
@@ -241,10 +275,8 @@ fun CarLastOilChange() {
 }
 
 @Composable
-fun CarLastMaintenance() {
+fun CarLastMaintenance(carLastMaintenance: String, onAddCarChange: (String) -> Unit) {
     //TODO(): Hacer con dummydata y luego con la API
-
-    var text by remember { mutableStateOf(TextFieldValue("")) }
 
     Box(
         modifier = Modifier
@@ -253,9 +285,9 @@ fun CarLastMaintenance() {
         contentAlignment = Alignment.Center
     ) {
         TextField(
-            value = text,
+            value = carLastMaintenance,
             onValueChange = {
-                text = it
+                onAddCarChange(it)
             },
             label = { Text(text = "Mantenimiento del vehiculo") },
             placeholder = { Text(text = "Your Placeholder/Hint") },
