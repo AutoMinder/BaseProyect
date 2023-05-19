@@ -2,11 +2,13 @@ package com.autominder.autominder.addcar.ui
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -49,7 +51,7 @@ fun HeaderText() {
         fontSize = 24.sp,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(32.dp),
+            .padding(top= 32.dp, bottom = 16.dp),
         textAlign = TextAlign.Center,
         fontWeight = FontWeight.Bold
     )
@@ -57,9 +59,8 @@ fun HeaderText() {
 
 @Composable
 fun AddCarForm() {
-    Column(modifier = Modifier.fillMaxSize()) {
-        FieldsWrapper()
-
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        item { FieldsWrapper() }
     }
 }
 
@@ -171,7 +172,7 @@ fun CarModelMenu(context: Context, carModels: Array<String>) {
 
 @Composable
 fun CarYear() {
-    //TODO(): Hacer con dummydata y luego con la API
+    //TODO():
     val carYears = arrayOf("2021", "2020", "2019", "2018", "2017")
 
     var text by remember { mutableStateOf(TextFieldValue("")) }
