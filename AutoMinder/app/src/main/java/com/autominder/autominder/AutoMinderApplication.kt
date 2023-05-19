@@ -1,6 +1,8 @@
 package com.autominder.autominder
 
 import android.app.Application
+import com.autominder.autominder.carinfo.data.CarMaintenanceRepository
+import com.autominder.autominder.carinfo.data.dummyCarMaintenanceData
 import com.autominder.autominder.myCars.data.MyCarsRepository
 import com.autominder.autominder.myCars.data.myCarsdummy
 import com.autominder.autominder.principalMenu.data.AlertsRepository
@@ -12,5 +14,9 @@ class AutoMinderApplication : Application() {
     }
     val myCarsRepository: MyCarsRepository by lazy {
         MyCarsRepository(myCarsdummy)
+    }
+
+    val CarMaintenanceRepository: CarMaintenanceRepository by lazy {
+        CarMaintenanceRepository(dummyCarMaintenanceData)
     }
 }
