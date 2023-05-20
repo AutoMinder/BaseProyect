@@ -61,21 +61,57 @@ fun AddCarForm(viewModel: AddCarViewModel) {
 @Composable
 fun FieldsWrapper(viewModel: AddCarViewModel) {
     val context = LocalContext.current
-    //TODO(): Hacer con dummydata y luego con la API
-    val carBrands = arrayOf("Toyota", "Nissan", "Hyundai", "Isuzu", "BMW")
-    val carModels = arrayOf("Yaris", "Corolla", "Hyundai", "Isuzu", "BMW")
+    //TODO(): Hacer con la API
+    val carBrandsList = viewModel.carBrandsList
+    val carModelsList = viewModel.carModelsList
 
     //viewModel values
     val profileCarName: String by viewModel.profileCarName.observeAsState(initial = "")
+    val carBrand: String by viewModel.carBrand.observeAsState(initial = "")
+    val carModel: String by viewModel.carModel.observeAsState(initial = "")
     val carYear: String by viewModel.carYear.observeAsState(initial = "")
     val carKilometers: String by viewModel.carKilometers.observeAsState("")
     val carLastOilChange: String by viewModel.carLastOilChange.observeAsState(initial = "")
     val carLastMaintenance: String by viewModel.carLastMaintenance.observeAsState(initial = "")
-    val newCar: CarModel by viewModel.newCar.observeAsState(initial = CarModel("", "", "", "", ""))
+    val newCar: CarModel by viewModel.newCar.observeAsState(
+        initial = CarModel(
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+        )
+    )
     val addCarEnable: Boolean by viewModel.addCarEnable.observeAsState(initial = false)
 
     CarName(profileCarName) {
         viewModel.onAddCarChange(
+            it,
+            carBrand,
+            carModel,
+            carYear,
+            carKilometers,
+            carLastOilChange,
+            carLastMaintenance
+        )
+    }
+    CarBrandMenu(context, carBrandsList, carBrand) {
+        viewModel.onAddCarChange(
+            profileCarName,
+            it,
+            carModel,
+            carYear,
+            carKilometers,
+            carLastOilChange,
+            carLastMaintenance
+        )
+    }
+    CarModelMenu(context, carModelsList, carModel){
+        viewModel.onAddCarChange(
+            profileCarName,
+            carBrand,
             it,
             carYear,
             carKilometers,
@@ -83,11 +119,11 @@ fun FieldsWrapper(viewModel: AddCarViewModel) {
             carLastMaintenance
         )
     }
-    CarBrandMenu(context, carBrands)
-    CarModelMenu(context, carModels)
     CarYear(carYear) {
         viewModel.onAddCarChange(
             profileCarName,
+            carBrand,
+            carModel,
             it,
             carKilometers,
             carLastOilChange,
@@ -95,13 +131,22 @@ fun FieldsWrapper(viewModel: AddCarViewModel) {
         )
     }
     CarDistance(carKilometers) {
-        viewModel.onAddCarChange(profileCarName, carYear, it, carLastOilChange, carLastMaintenance)
+        viewModel.onAddCarChange(
+            profileCarName, carBrand,
+            carModel, carYear, it, carLastOilChange, carLastMaintenance
+        )
     }
     CarLastOilChange(carLastOilChange) {
-        viewModel.onAddCarChange(profileCarName, carYear, carKilometers, it, carLastMaintenance)
+        viewModel.onAddCarChange(
+            profileCarName, carBrand,
+            carModel, carYear, carKilometers, it, carLastMaintenance
+        )
     }
     CarLastMaintenance(carLastMaintenance) {
-        viewModel.onAddCarChange(profileCarName, carYear, carKilometers, carLastOilChange, it)
+        viewModel.onAddCarChange(
+            profileCarName, carBrand,
+            carModel, carYear, carKilometers, carLastOilChange, it
+        )
     }
     SaveCar(addCarEnable) { viewModel.addCar(newCar) }
 }
@@ -126,9 +171,9 @@ fun CarName(profileCarName: String, onAddCarChange: (String) -> Unit) {
 }
 
 @Composable
-fun CarBrandMenu(context: Context, carBrands: Array<String>) {
+fun CarBrandMenu(context: Context, carBrands: MutableList<String>, carBrand:String, onAddCarChange: (String) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedText by remember { mutableStateOf(carBrands[0]) }
+    var selectedText by remember { mutableStateOf(carBrand) }
 
     Box(
         modifier = Modifier
@@ -162,6 +207,7 @@ fun CarBrandMenu(context: Context, carBrands: Array<String>) {
                             selectedText = item
                             expanded = false
                             Toast.makeText(context, item, Toast.LENGTH_SHORT).show()
+                            onAddCarChange(item)
                         }
                     )
                 }
@@ -171,9 +217,14 @@ fun CarBrandMenu(context: Context, carBrands: Array<String>) {
 }
 
 @Composable
-fun CarModelMenu(context: Context, carModels: Array<String>) {
+fun CarModelMenu(
+    context: Context,
+    carModels: MutableList<String>,
+    carModel: String,
+    onAddCarChange: (String) -> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedText by remember { mutableStateOf(carModels[0]) }
+    var selectedText by remember { mutableStateOf(carModel) }
 
     Box(
         modifier = Modifier
@@ -207,6 +258,7 @@ fun CarModelMenu(context: Context, carModels: Array<String>) {
                             selectedText = item
                             expanded = false
                             Toast.makeText(context, item, Toast.LENGTH_SHORT).show()
+                            onAddCarChange(item)
                         }
                     )
                 }
@@ -298,7 +350,7 @@ fun CarLastMaintenance(carLastMaintenance: String, onAddCarChange: (String) -> U
 }
 
 @Composable
-fun SaveCar(addCarEnable: Boolean ,addCar: () -> Unit) {
+fun SaveCar(addCarEnable: Boolean, addCar: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()

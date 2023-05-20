@@ -20,11 +20,11 @@ class AddCarViewModel(
     private val _profileCarName = MutableLiveData<String>()
     val profileCarName: LiveData<String> = _profileCarName
 
-    //TODO(): Se deben recibir las marcas del dummyData/API
+    //TODO(): Se deben recibir las marcas del API
 
     private val _carBrand = MutableLiveData<String>()
     val carBrand: LiveData<String> = _carBrand
-    //TODO(): Se deben recibir los modelos del dummyData/API
+    //TODO(): Se deben recibir los modelos del API
 
     private val _carModel = MutableLiveData<String>()
     val carModel: LiveData<String> = _carModel
@@ -47,22 +47,29 @@ class AddCarViewModel(
     private val _addCarEnable = MutableLiveData<Boolean>()
     val addCarEnable: LiveData<Boolean> = _addCarEnable
 
+    val carBrandsList = repository.getCarBrands()
+    val carModelsList = repository.getCarModels()
+
     fun onAddCarChange(
         profileCarName: String,
+        carBrand: String,
+        carModel: String,
         carYear: String,
         carKilometers: String,
         carLastOilChange: String,
         carLastMaintenance: String
     ) {
         _profileCarName.value = profileCarName
+        _carBrand.value = carBrand
+        _carModel.value = carModel
         _carYear.value = carYear
         _carKilometers.value = carKilometers
         _carLastOilChange.value = carLastOilChange
         _carLastMaintenance.value = carLastMaintenance
         _newCar.value =
-            CarModel(profileCarName, carYear, carKilometers, carLastOilChange, carLastMaintenance)
+            CarModel(profileCarName, carBrand, carModel, carYear, carKilometers, carLastOilChange, carLastMaintenance)
 
-        _addCarEnable.value = validFields(profileCarName, carYear, carKilometers, carLastOilChange, carLastMaintenance)
+        _addCarEnable.value = validFields(profileCarName, carBrand, carModel, carYear, carKilometers, carLastOilChange, carLastMaintenance)
     }
 
     fun addCar(newCar: CarModel) {
@@ -75,12 +82,14 @@ class AddCarViewModel(
 
     private fun validFields(
         profileCarName: String,
+        carBrand: String,
+        carModel: String,
         carYear: String,
         carKilometers: String,
         carLastOilChange: String,
         carLastMaintenance: String
     ): Boolean =
-        profileCarName != "" && carYear != "" && carKilometers != "" && carLastOilChange != "" && carLastMaintenance != ""
+        profileCarName != "" && carBrand !="" && carModel !="" && carYear != "" && carKilometers != "" && carLastOilChange != "" && carLastMaintenance != ""
 
     companion object {
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
