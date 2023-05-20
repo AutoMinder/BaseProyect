@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.autominder.autominder.carinfo.CarInfoInteractor
 import com.autominder.autominder.carinfo.data.CarMaintenanceData
+import com.autominder.autominder.components.LoadingScreen
 import com.autominder.autominder.myCars.data.CarDataModel
 import com.autominder.autominder.myCars.ui.MyCarsViewModel
 
@@ -66,10 +67,7 @@ fun CarInfoScreen(
         Box(modifier = Modifier.padding(it)) {
 
             if (isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .padding(16.dp)
-                )
+                LoadingScreen()
             } else {
                 CarInfoMainScreen(car, carInfo)
             }

@@ -39,6 +39,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.autominder.autominder.R
 import com.autominder.autominder.carinfo.ui.CarInfoViewModel
+import com.autominder.autominder.components.LoadingScreen
 import com.autominder.autominder.myCars.data.CarDataModel
 
 
@@ -54,6 +55,7 @@ fun MyCarsScreen(
 
 ) {
     val isLoading by viewModel.isLoading.collectAsState(false)
+
     //*
     // The Scaffold is the one in charge to add the floating button
     // and the content in { } is the one that will be displayed
@@ -66,22 +68,13 @@ fun MyCarsScreen(
                 .padding(contentPadding)
                 .background(MaterialTheme.colorScheme.surface),
         ) {
-            if (isLoading) {
-                //*
-                // This is the loading screen, it will be displayed while the data is being fetched
-                // *//
 
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .wrapContentSize(Alignment.Center)
-                        .padding(16.dp)
-                )
+
+            //Checks if is loading, if it is, it will display the loading screen, if not, it will display the main screen
+            if (isLoading) {
+                LoadingScreen()
 
             } else {
-                //*
-                // This is the main screen, it will be displayed when the data is fetched
-                // *//
-
                 MainScreenCars(viewModel, navController)
             }
         }
@@ -92,8 +85,6 @@ fun MyCarsScreen(
 //*
 //Floating button to add a new car, it will navigate to the add car screen
 // *//
-
-
 @Composable
 fun FloatingAddButtonCar(navController: NavController) {
     androidx.compose.material3.FloatingActionButton(
@@ -103,14 +94,13 @@ fun FloatingAddButtonCar(navController: NavController) {
     }
 }
 
+
 //*
 //This two are the main screen of the cars, it will display all the cars
 // It receives the view model and nav controller
 // *//
-
 @Composable
 fun MainScreenCars(viewModel: MyCarsViewModel, navController: NavController?) {
-
 
     //* This val is containing the list of the view model *//
     val myCarListState = viewModel.myCarsList.observeAsState(emptyList())
@@ -146,6 +136,7 @@ fun MyCarSection(
                 )
             }
         } else {
+
             //* Renders the card car *//
             items(myCarListState.value) { car ->
                 if (navController != null) {
