@@ -79,7 +79,7 @@ fun CarInfoScreen(
 fun CarInfoMainScreen(car: CarDataModel, carInfo: CarMaintenanceData?) {
     Card(
         modifier = Modifier.padding(16.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer)
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer),
     ) {
         LazyColumn(
             modifier = Modifier
@@ -117,7 +117,7 @@ fun CarBrand(car: CarDataModel) {
             .padding(16.dp)
             .width(280.dp)
             .height(50.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer)
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface)
 
     ) {
         Row(
@@ -131,14 +131,14 @@ fun CarBrand(car: CarDataModel) {
                 text = "Marca",
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
 
             Text(
                 text = car.brand,
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
         }
     }
@@ -151,7 +151,7 @@ fun CarModel(car: CarDataModel) {
             .padding(16.dp)
             .width(280.dp)
             .height(50.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer)
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface)
     ) {
         Row(
             modifier = Modifier
@@ -164,14 +164,14 @@ fun CarModel(car: CarDataModel) {
                 text = "Modelo",
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
 
             Text(
                 text = car.model,
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
         }
     }
@@ -184,7 +184,7 @@ fun CarYearCard(car: CarDataModel) {
             .padding(16.dp)
             .width(280.dp)
             .height(50.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer)
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface)
     ) {
         Row(
             modifier = Modifier
@@ -197,14 +197,14 @@ fun CarYearCard(car: CarDataModel) {
                 text = "Año",
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Text(
                 text = car.year,
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }
@@ -217,7 +217,7 @@ fun CarMileage(carInfo: CarMaintenanceData?) {
             .padding(16.dp)
             .width(280.dp)
             .height(50.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer)
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface)
     ) {
         Row(
             modifier = Modifier
@@ -230,14 +230,14 @@ fun CarMileage(carInfo: CarMaintenanceData?) {
                 text = "Millaje",
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Text(
                 text = carInfo?.mileage.toString(),
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }
