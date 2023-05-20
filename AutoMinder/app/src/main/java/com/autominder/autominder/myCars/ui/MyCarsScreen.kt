@@ -61,7 +61,11 @@ fun MyCarsScreen(
     Scaffold(
         floatingActionButton = { FloatingAddButtonCar(navController) },
     ) { contentPadding ->
-        Box(modifier = Modifier.padding(contentPadding)) {
+        Box(
+            modifier = Modifier
+                .padding(contentPadding)
+                .background(MaterialTheme.colorScheme.surface),
+        ) {
             MainScreenCars(viewModel, navController)
         }
     }
@@ -102,9 +106,11 @@ fun MyCarSection(
     ) {
 
     //* Lazy column to show the different cars (is like the RecyclerView)  *//
-    LazyColumn(modifier = Modifier
-        .fillMaxWidth()
-        .padding(16.dp))
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    )
 
     {
 
@@ -137,9 +143,6 @@ fun CardCar(
         factory = CarInfoViewModel.Factory
     )
 ) {
-    /*val onIdUpdated: (Int) -> Unit = { id ->
-        infoViewModel.setCarId(id)
-    }*/
 
     Card(
         modifier = Modifier
