@@ -14,6 +14,7 @@ import androidx.compose.foundation.border
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
+import androidx.compose.material.Surface
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -60,11 +61,9 @@ fun BottomNavigationBar(
         visible = bottomBarState.value,
         content = {
             BottomNavigation(
-                backgroundColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
-                modifier = Modifier.border(
-                    0.1.dp,
-                    androidx.compose.material3.MaterialTheme.colorScheme.onSurface
-                ),
+
+                backgroundColor = MaterialTheme.colorScheme.surface,
+
             )
             //*
             // items.forEach is used to display the items of the bottom bar
