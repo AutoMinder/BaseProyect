@@ -25,18 +25,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.autominder.autominder.addcar.data.CarModel
-
-@Preview(showBackground = true)
-@Composable
-fun AddCarScreenPreview() {
-
-    AddCarScreen()
-}
 
 @Composable
 fun AddCarScreen(viewModel: AddCarViewModel = viewModel(factory = AddCarViewModel.Factory)) {
@@ -80,6 +72,7 @@ fun FieldsWrapper(viewModel: AddCarViewModel) {
     val carLastOilChange: String by viewModel.carLastOilChange.observeAsState(initial = "")
     val carLastMaintenance: String by viewModel.carLastMaintenance.observeAsState(initial = "")
     val newCar: CarModel by viewModel.newCar.observeAsState(initial = CarModel("", "", "", "", ""))
+    val addCarEnable: Boolean by viewModel.addCarEnable.observeAsState(initial = false)
 
     CarName(profileCarName) {
         viewModel.onAddCarChange(
@@ -98,7 +91,7 @@ fun FieldsWrapper(viewModel: AddCarViewModel) {
             it,
             carKilometers,
             carLastOilChange,
-            carLastMaintenance,
+            carLastMaintenance
         )
     }
     CarDistance(carKilometers) {
@@ -110,7 +103,7 @@ fun FieldsWrapper(viewModel: AddCarViewModel) {
     CarLastMaintenance(carLastMaintenance) {
         viewModel.onAddCarChange(profileCarName, carYear, carKilometers, carLastOilChange, it)
     }
-    SaveCar { viewModel.addCar(newCar) }
+    SaveCar(addCarEnable) { viewModel.addCar(newCar) }
 }
 
 @Composable
@@ -127,8 +120,7 @@ fun CarName(profileCarName: String, onAddCarChange: (String) -> Unit) {
             onValueChange = {
                 onAddCarChange(it)
             },
-            label = { Text(text = "Nombre del perfil del vehiculo") },
-            placeholder = { Text(text = "Your Placeholder/Hint") },
+            label = { Text(text = "Nombre del perfil del automovil") }
         )
     }
 }
@@ -156,7 +148,7 @@ fun CarBrandMenu(context: Context, carBrands: Array<String>) {
                 readOnly = true,
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 modifier = Modifier.menuAnchor(),
-                label = { Text("Marca del vehiculo") },
+                label = { Text("Marca del automovil") },
             )
 
             ExposedDropdownMenu(
@@ -201,7 +193,7 @@ fun CarModelMenu(context: Context, carModels: Array<String>) {
                 readOnly = true,
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 modifier = Modifier.menuAnchor(),
-                label = { Text("Modelo del vehiculo") },
+                label = { Text("Modelo del automovil") },
             )
 
             ExposedDropdownMenu(
@@ -225,8 +217,6 @@ fun CarModelMenu(context: Context, carModels: Array<String>) {
 
 @Composable
 fun CarYear(carYear: String, onAddCarChange: (String) -> Unit) {
-    //TODO():
-    val carYears = arrayOf("2021", "2020", "2019", "2018", "2017")
 
     Box(
         modifier = Modifier
@@ -239,8 +229,7 @@ fun CarYear(carYear: String, onAddCarChange: (String) -> Unit) {
             onValueChange = {
                 onAddCarChange(it)
             },
-            label = { Text(text = "Año del vehiculo") },
-            placeholder = { Text(text = "Your Placeholder/Hint") },
+            label = { Text(text = "Año del automovil") }
         )
     }
 }
@@ -260,8 +249,8 @@ fun CarDistance(carKilometers: String, onAddCarChange: (String) -> Unit) {
             onValueChange = {
                 onAddCarChange(it)
             },
-            label = { Text(text = "Distancia recorrida del vehiculo") },
-            placeholder = { Text(text = "Your Placeholder/Hint") },
+            label = { Text(text = "Distancia recorrida del automovil") },
+            placeholder = { Text(text = "Ingresar en km") },
         )
     }
 }
@@ -282,7 +271,7 @@ fun CarLastOilChange(carLastOilChange: String, onAddCarChange: (String) -> Unit)
                 onAddCarChange(it)
             },
             label = { Text(text = "Ultimo cambio de aceite") },
-            placeholder = { Text(text = "Your Placeholder/Hint") },
+            placeholder = { Text(text = "dd-mm-aaaa") },
         )
     }
 }
@@ -302,21 +291,21 @@ fun CarLastMaintenance(carLastMaintenance: String, onAddCarChange: (String) -> U
             onValueChange = {
                 onAddCarChange(it)
             },
-            label = { Text(text = "Mantenimiento del vehiculo") },
-            placeholder = { Text(text = "Your Placeholder/Hint") },
+            label = { Text(text = "Ultimo mantenimiento realizado") },
+            placeholder = { Text(text = "dd-mm-aaaa") },
         )
     }
 }
 
 @Composable
-fun SaveCar(addCar: () -> Unit) {
+fun SaveCar(addCarEnable: Boolean ,addCar: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
-        Button(onClick = { addCar() }) {
+        Button(onClick = { addCar() }, enabled = addCarEnable) {
 
             Text(text = "Guardar Automovil")
         }

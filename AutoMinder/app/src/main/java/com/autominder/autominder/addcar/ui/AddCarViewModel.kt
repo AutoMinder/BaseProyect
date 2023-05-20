@@ -44,19 +44,25 @@ class AddCarViewModel(
     private val _newCar = MutableLiveData<CarModel>()
     val newCar: LiveData<CarModel> = _newCar
 
+    private val _addCarEnable = MutableLiveData<Boolean>()
+    val addCarEnable: LiveData<Boolean> = _addCarEnable
+
     fun onAddCarChange(
         profileCarName: String,
         carYear: String,
         carKilometers: String,
         carLastOilChange: String,
-        carLastMaintenance: String,
+        carLastMaintenance: String
     ) {
         _profileCarName.value = profileCarName
         _carYear.value = carYear
         _carKilometers.value = carKilometers
         _carLastOilChange.value = carLastOilChange
         _carLastMaintenance.value = carLastMaintenance
-        _newCar.value = CarModel(profileCarName, carYear, carKilometers, carLastOilChange, carLastMaintenance)
+        _newCar.value =
+            CarModel(profileCarName, carYear, carKilometers, carLastOilChange, carLastMaintenance)
+
+        _addCarEnable.value = validFields(profileCarName, carYear, carKilometers, carLastOilChange, carLastMaintenance)
     }
 
     fun addCar(newCar: CarModel) {
@@ -66,6 +72,15 @@ class AddCarViewModel(
     }
 
     private fun getCars() = repository.getCars()
+
+    private fun validFields(
+        profileCarName: String,
+        carYear: String,
+        carKilometers: String,
+        carLastOilChange: String,
+        carLastMaintenance: String
+    ): Boolean =
+        profileCarName != "" && carYear != "" && carKilometers != "" && carLastOilChange != "" && carLastMaintenance != ""
 
     companion object {
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
