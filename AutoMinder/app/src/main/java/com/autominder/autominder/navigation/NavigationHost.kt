@@ -78,7 +78,7 @@ fun NavigationHost(
 
         }
         composable("add_car") {
-            AddCarScreen(AddCarViewModel())
+            AddCarScreen()
         }
     }
 }

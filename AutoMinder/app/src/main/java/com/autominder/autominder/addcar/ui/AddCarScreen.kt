@@ -24,21 +24,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.autominder.autominder.addcar.data.CarModel
 
 @Preview(showBackground = true)
 @Composable
 fun AddCarScreenPreview() {
-    val viewModel = AddCarViewModel()
-    AddCarScreen(viewModel)
+
+    AddCarScreen()
 }
 
 @Composable
-fun AddCarScreen(viewModel: AddCarViewModel) {
+fun AddCarScreen(viewModel: AddCarViewModel = viewModel(factory = AddCarViewModel.Factory)) {
     Column(modifier = Modifier.fillMaxSize()) {
         HeaderText()
         AddCarForm(viewModel)
@@ -78,15 +79,27 @@ fun FieldsWrapper(viewModel: AddCarViewModel) {
     val carKilometers: String by viewModel.carKilometers.observeAsState("")
     val carLastOilChange: String by viewModel.carLastOilChange.observeAsState(initial = "")
     val carLastMaintenance: String by viewModel.carLastMaintenance.observeAsState(initial = "")
-
+    val newCar: CarModel by viewModel.newCar.observeAsState(initial = CarModel("", "", "", "", ""))
 
     CarName(profileCarName) {
-        viewModel.onAddCarChange(it, carYear, carKilometers, carLastOilChange, carLastMaintenance)
+        viewModel.onAddCarChange(
+            it,
+            carYear,
+            carKilometers,
+            carLastOilChange,
+            carLastMaintenance
+        )
     }
     CarBrandMenu(context, carBrands)
     CarModelMenu(context, carModels)
     CarYear(carYear) {
-        viewModel.onAddCarChange(profileCarName, it, carKilometers, carLastOilChange, carLastMaintenance)
+        viewModel.onAddCarChange(
+            profileCarName,
+            it,
+            carKilometers,
+            carLastOilChange,
+            carLastMaintenance,
+        )
     }
     CarDistance(carKilometers) {
         viewModel.onAddCarChange(profileCarName, carYear, it, carLastOilChange, carLastMaintenance)
@@ -97,7 +110,7 @@ fun FieldsWrapper(viewModel: AddCarViewModel) {
     CarLastMaintenance(carLastMaintenance) {
         viewModel.onAddCarChange(profileCarName, carYear, carKilometers, carLastOilChange, it)
     }
-    SaveCar()
+    SaveCar { viewModel.addCar(newCar) }
 }
 
 @Composable
@@ -296,14 +309,15 @@ fun CarLastMaintenance(carLastMaintenance: String, onAddCarChange: (String) -> U
 }
 
 @Composable
-fun SaveCar() {
+fun SaveCar(addCar: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
-        Button(onClick = { /*TODO*/ }) {
+        Button(onClick = { addCar() }) {
+
             Text(text = "Guardar Automovil")
         }
     }
