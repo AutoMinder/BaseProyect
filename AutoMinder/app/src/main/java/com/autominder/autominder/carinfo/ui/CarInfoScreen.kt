@@ -11,11 +11,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -23,9 +28,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.autominder.autominder.carinfo.CarInfoInteractor
 import com.autominder.autominder.carinfo.data.CarMaintenanceData
 import com.autominder.autominder.myCars.data.CarDataModel
-import com.autominder.autominder.myCars.data.myCarsdummy
 import com.autominder.autominder.myCars.ui.MyCarsViewModel
 
 //
@@ -46,9 +51,14 @@ fun CarInfoScreen(
 
 
 ) {
-    val carInfoStateList = infoViewModel.carInfoList.observeAsState(emptyList())
-    val carInfo = carInfoStateList.value.find { it.carId == car.id }
-    infoViewModel.fetchCarMaintenanceInfoByCarId(car.id)
+    val carInfoStateList by remember { infoViewModel.carInfoList }.collectAsState(emptyList())
+    val carInfo = carInfoStateList.find { it.carId == car.id }
+    val isLoading by infoViewModel.isLoading.collectAsState(false)
+    val carInfoInteractor = remember { CarInfoInteractor(infoViewModel) }
+
+    LaunchedEffect(Unit) {
+        carInfoInteractor.getCarInfoCoroutine(car)
+    }
 
     Scaffold(
         bottomBar = {
@@ -56,7 +66,15 @@ fun CarInfoScreen(
         },
     ) {
         Box(modifier = Modifier.padding(it)) {
-            CarInfoMainScreen(car, carInfo)
+
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .padding(16.dp)
+                )
+            } else {
+                CarInfoMainScreen(car, carInfo)
+            }
         }
     }
 }
@@ -227,10 +245,4 @@ fun CarMileage(carInfo: CarMaintenanceData?) {
             )
         }
     }
-}
-
-@Composable
-@Preview
-fun preview() {
-    CarBrand(car = myCarsdummy[0])
 }
