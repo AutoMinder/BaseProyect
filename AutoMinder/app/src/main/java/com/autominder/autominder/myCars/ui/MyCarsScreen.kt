@@ -20,11 +20,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
@@ -53,7 +56,7 @@ fun MyCarsScreen(
     )
 
 ) {
-
+    val isLoading by viewModel.isLoading.collectAsState(false)
     //*
     // The Scaffold is the one in charge to add the floating button
     // and the content in { } is the one that will be displayed
@@ -66,7 +69,24 @@ fun MyCarsScreen(
                 .padding(contentPadding)
                 .background(MaterialTheme.colorScheme.surface),
         ) {
-            MainScreenCars(viewModel, navController)
+            if (isLoading) {
+                //*
+                // This is the loading screen, it will be displayed while the data is being fetched
+                // *//
+
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .wrapContentSize(Alignment.Center)
+                        .padding(16.dp)
+                )
+
+            } else {
+                //*
+                // This is the main screen, it will be displayed when the data is fetched
+                // *//
+
+                MainScreenCars(viewModel, navController)
+            }
         }
     }
 }
@@ -75,6 +95,8 @@ fun MyCarsScreen(
 //*
 //Floating button to add a new car, it will navigate to the add car screen
 // *//
+
+
 @Composable
 fun FloatingAddButtonCar(navController: NavController) {
     androidx.compose.material3.FloatingActionButton(
@@ -91,6 +113,8 @@ fun FloatingAddButtonCar(navController: NavController) {
 
 @Composable
 fun MainScreenCars(viewModel: MyCarsViewModel, navController: NavController?) {
+
+
     //* This val is containing the list of the view model *//
     val myCarListState = viewModel.myCarsList.observeAsState(emptyList())
 

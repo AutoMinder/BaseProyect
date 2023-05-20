@@ -19,17 +19,18 @@ import kotlinx.coroutines.launch
 class CarInfoViewModel(
     private val repository: CarMaintenanceRepository,
 ) : ViewModel() {
-    val carInfoList = MutableStateFlow<List<CarMaintenanceData>>(emptyList())
+
+    private val _carInfoList = MutableStateFlow<List<CarMaintenanceData>>(emptyList())
+    val carInfoList: StateFlow<List<CarMaintenanceData>> = _carInfoList
     private val _isLoading = MutableStateFlow<Boolean>(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
     fun fetchCarMaintenanceInfoByCarId(carId: Int) {
-        viewModelScope.launch{
+        viewModelScope.launch {
             try {
-
                 setLoading(true)
-                delay(2000)
-                carInfoList.value = repository.getCarMaintenanceByCarId(carId)
+                delay(100)
+                _carInfoList.value = repository.getCarMaintenanceByCarId(carId)
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {

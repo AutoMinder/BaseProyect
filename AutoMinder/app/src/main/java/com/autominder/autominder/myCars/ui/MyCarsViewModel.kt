@@ -5,18 +5,27 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.createSavedStateHandle
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.autominder.autominder.AutoMinderApplication
 import com.autominder.autominder.myCars.data.CarDataModel
 import com.autominder.autominder.myCars.data.MyCarsRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
+
 
 class MyCarsViewModel(
     private val repository: MyCarsRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     val myCarsList = MutableLiveData<List<CarDataModel>>()
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading = _isLoading
+    private val _isLoading = MutableStateFlow<Boolean>(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
 
     init {
         fetchMyCars()
@@ -27,10 +36,17 @@ class MyCarsViewModel(
     }
 
     private fun fetchMyCars() {
-        setLoading(true)
-        repository.getMyCars().let { car ->
-            myCarsList.postValue(car)
-            setLoading(false)
+
+        viewModelScope.launch {
+            try {
+                setLoading(true)
+                delay(100)
+                myCarsList.value = repository.getMyCars()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } finally {
+                setLoading(false)
+            }
         }
     }
 
