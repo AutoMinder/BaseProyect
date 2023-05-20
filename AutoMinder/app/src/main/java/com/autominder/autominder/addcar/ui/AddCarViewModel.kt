@@ -1,8 +1,6 @@
 package com.autominder.autominder.addcar.ui
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -11,41 +9,51 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import com.autominder.autominder.AutoMinderApplication
 import com.autominder.autominder.addcar.data.AddCarRepository
 import com.autominder.autominder.addcar.data.CarModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 class AddCarViewModel(
     private val repository: AddCarRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _profileCarName = MutableLiveData<String>()
-    val profileCarName: LiveData<String> = _profileCarName
+    private val _profileCarName = MutableStateFlow("")
+    val profileCarName: Flow<String> = _profileCarName
 
     //TODO(): Se deben recibir las marcas del API
 
-    private val _carBrand = MutableLiveData<String>()
-    val carBrand: LiveData<String> = _carBrand
+    private val _carBrand = MutableStateFlow("")
+    val carBrand: Flow<String> = _carBrand
     //TODO(): Se deben recibir los modelos del API
 
-    private val _carModel = MutableLiveData<String>()
-    val carModel: LiveData<String> = _carModel
+    private val _carModel = MutableStateFlow("")
+    val carModel: Flow<String> = _carModel
 
-    private val _carYear = MutableLiveData<String>()
-    val carYear: LiveData<String> = _carYear
+    private val _carYear = MutableStateFlow("")
+    val carYear: Flow<String> = _carYear
 
-    private val _carKilometers = MutableLiveData<String>()
-    val carKilometers: LiveData<String> = _carKilometers
+    private val _carKilometers = MutableStateFlow("")
+    val carKilometers: Flow<String> = _carKilometers
 
-    private val _carLastOilChange = MutableLiveData<String>()
-    val carLastOilChange: LiveData<String> = _carLastOilChange
+    private val _carLastOilChange = MutableStateFlow("")
+    val carLastOilChange: Flow<String> = _carLastOilChange
 
-    private val _carLastMaintenance = MutableLiveData<String>()
-    val carLastMaintenance: LiveData<String> = _carLastMaintenance
+    private val _carLastMaintenance = MutableStateFlow("")
+    val carLastMaintenance: Flow<String> = _carLastMaintenance
 
-    private val _newCar = MutableLiveData<CarModel>()
-    val newCar: LiveData<CarModel> = _newCar
+    private val _newCar = MutableStateFlow(CarModel(
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+    ))
+    val newCar: Flow<CarModel> = _newCar
 
-    private val _addCarEnable = MutableLiveData<Boolean>()
-    val addCarEnable: LiveData<Boolean> = _addCarEnable
+    private val _addCarEnable = MutableStateFlow(false)
+    val addCarEnable: Flow<Boolean> = _addCarEnable
 
     val carBrandsList = repository.getCarBrands()
     val carModelsList = repository.getCarModels()

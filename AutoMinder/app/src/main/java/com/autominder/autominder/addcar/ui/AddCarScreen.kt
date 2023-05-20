@@ -15,8 +15,8 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -66,14 +66,14 @@ fun FieldsWrapper(viewModel: AddCarViewModel) {
     val carModelsList = viewModel.carModelsList
 
     //viewModel values
-    val profileCarName: String by viewModel.profileCarName.observeAsState(initial = "")
-    val carBrand: String by viewModel.carBrand.observeAsState(initial = "")
-    val carModel: String by viewModel.carModel.observeAsState(initial = "")
-    val carYear: String by viewModel.carYear.observeAsState(initial = "")
-    val carKilometers: String by viewModel.carKilometers.observeAsState("")
-    val carLastOilChange: String by viewModel.carLastOilChange.observeAsState(initial = "")
-    val carLastMaintenance: String by viewModel.carLastMaintenance.observeAsState(initial = "")
-    val newCar: CarModel by viewModel.newCar.observeAsState(
+    val profileCarName: String by viewModel.profileCarName.collectAsState(initial = "")
+    val carBrand: String by viewModel.carBrand.collectAsState(initial = "")
+    val carModel: String by viewModel.carModel.collectAsState(initial = "")
+    val carYear: String by viewModel.carYear.collectAsState(initial = "")
+    val carKilometers: String by viewModel.carKilometers.collectAsState("")
+    val carLastOilChange: String by viewModel.carLastOilChange.collectAsState(initial = "")
+    val carLastMaintenance: String by viewModel.carLastMaintenance.collectAsState(initial = "")
+    val newCar: CarModel by viewModel.newCar.collectAsState(
         initial = CarModel(
             "",
             "",
@@ -84,7 +84,7 @@ fun FieldsWrapper(viewModel: AddCarViewModel) {
             ""
         )
     )
-    val addCarEnable: Boolean by viewModel.addCarEnable.observeAsState(initial = false)
+    val addCarEnable: Boolean by viewModel.addCarEnable.collectAsState(initial = false)
 
     CarName(profileCarName) {
         viewModel.onAddCarChange(
