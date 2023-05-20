@@ -2,7 +2,6 @@ package com.autominder.autominder.principalMenu.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,10 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,31 +34,35 @@ fun PrincipalMenuScreen(
         factory = PrincipalMenuViewModel.Factory, //Creates the factory for the view model
     )
 ) {
+    val isLoading by viewModel.isLoading.collectAsState(false)
     Box(
         Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        PrincipalMenu(viewModel)
+        if (isLoading) {
+            LoadingScreen()
+        } else {
+            PrincipalMenu(viewModel)
+        }
+
     }
 }
 
 @Composable
 fun PrincipalMenu(viewModel: PrincipalMenuViewModel) {
     val alertListState = viewModel.alertsList.collectAsState(emptyList())
-    val isLoading by viewModel.isLoading.collectAsState(false)
+
+
+    //TODO: Add the loading screen
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        if (isLoading) {
-            LoadingScreen()
-        } else {
-            Column() {
-                AlertsSection(alertListState)
-            }
+        Column() {
+            AlertsSection(alertListState)
         }
-
     }
 }
 
