@@ -120,7 +120,7 @@ fun MyCarSection(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(24.dp)
     )
 
     {
@@ -160,10 +160,10 @@ fun CardCar(
         modifier = Modifier
             .fillMaxWidth()
 
-
             //* If clicked, it will navigate to the details of the specific car with the id*//
             .clickable {
                 navController.navigate("car_info/${car.id}")
+                infoViewModel.fetchCarMaintenanceInfoByCarId(car.id)
             },
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer),
 
@@ -180,8 +180,8 @@ fun CardCar(
                     .padding(8.dp),
                 maxLines = 1,
                 textAlign = TextAlign.Center,
-                fontSize = 26.sp,
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
             Image(
 
@@ -199,17 +199,18 @@ fun CardCar(
                     .wrapContentSize(Alignment.CenterEnd)
                     .padding(end = 32.dp)
             ) {
-                Text(text = car.model, fontSize = 22.sp)
-                Text(text = car.year, fontSize = 22.sp)
+                Text(text = car.model, color = MaterialTheme.colorScheme.onPrimaryContainer, style = MaterialTheme.typography.headlineSmall)
+                Text(text = car.year, color = MaterialTheme.colorScheme.onPrimaryContainer, style = MaterialTheme.typography.headlineSmall)
             }
             Text(
                 text = "Presiona para ver más",
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.onPrimaryContainer),
+                    .background(MaterialTheme.colorScheme.secondaryContainer),
                 textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     }

@@ -79,7 +79,7 @@ fun CarInfoScreen(
 fun CarInfoMainScreen(car: CarDataModel, carInfo: CarMaintenanceData?) {
     Card(
         modifier = Modifier.padding(16.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface),
     ) {
         LazyColumn(
             modifier = Modifier
@@ -114,16 +114,15 @@ fun CarNameHeader(car: CarDataModel) {
 fun CarBrand(car: CarDataModel) {
     Card(
         modifier = Modifier
-            .padding(16.dp)
-            .width(280.dp)
-            .height(50.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface)
+            .padding(20.dp),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer),
+        shape = MaterialTheme.shapes.small
 
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
+                .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
         )
         {
@@ -131,14 +130,14 @@ fun CarBrand(car: CarDataModel) {
                 text = "Marca",
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
+                color = MaterialTheme.colorScheme.onSecondaryContainer
             )
 
             Text(
                 text = car.brand,
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
+                color = MaterialTheme.colorScheme.onSecondaryContainer
             )
         }
     }
@@ -148,15 +147,14 @@ fun CarBrand(car: CarDataModel) {
 fun CarModel(car: CarDataModel) {
     Card(
         modifier = Modifier
-            .padding(16.dp)
-            .width(280.dp)
-            .height(50.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface)
+            .padding(20.dp),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer),
+        shape = MaterialTheme.shapes.small
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
+                .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
         )
         {
@@ -164,14 +162,14 @@ fun CarModel(car: CarDataModel) {
                 text = "Modelo",
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
+                color = MaterialTheme.colorScheme.onSecondaryContainer
             )
 
             Text(
                 text = car.model,
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
+                color = MaterialTheme.colorScheme.onSecondaryContainer
             )
         }
     }
@@ -181,15 +179,14 @@ fun CarModel(car: CarDataModel) {
 fun CarYearCard(car: CarDataModel) {
     Card(
         modifier = Modifier
-            .padding(16.dp)
-            .width(280.dp)
-            .height(50.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface)
+            .padding(20.dp),
+        shape = MaterialTheme.shapes.small,
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
+                .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
         )
         {
@@ -197,14 +194,14 @@ fun CarYearCard(car: CarDataModel) {
                 text = "Año",
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSecondaryContainer
             )
 
             Text(
                 text = car.year,
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSecondaryContainer
             )
         }
     }
@@ -214,15 +211,14 @@ fun CarYearCard(car: CarDataModel) {
 fun CarMileage(carInfo: CarMaintenanceData?) {
     Card(
         modifier = Modifier
-            .padding(16.dp)
-            .width(280.dp)
-            .height(50.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface)
+            .padding(20.dp),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer),
+        shape = MaterialTheme.shapes.small
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
+                .padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
         )
         {
@@ -230,14 +226,14 @@ fun CarMileage(carInfo: CarMaintenanceData?) {
                 text = "Millaje",
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSecondaryContainer
             )
 
             Text(
                 text = carInfo?.mileage.toString(),
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSecondaryContainer
             )
         }
     }
