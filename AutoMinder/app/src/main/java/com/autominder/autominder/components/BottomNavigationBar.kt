@@ -17,7 +17,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.autominder.autominder.navigation.Destinations
 
-@Composable
 //*
 // This composable displays the bottom navigation bar
 //
@@ -25,6 +24,7 @@ import com.autominder.autominder.navigation.Destinations
 // the items to be displayed and the state of the bottom bar (to show or hide it depending on the route)
 //
 // *//
+@Composable
 fun BottomNavigationBar(
     navHostController: NavHostController,
     items: List<Destinations>,
@@ -36,12 +36,9 @@ fun BottomNavigationBar(
     // *//
     val currentRoute = currentRoute(navHostController)
 
-
     //*
     // Using AnimatedVisibility to show or hide the bottom bar, otherwise it will be always visible
     // *//
-
-
     AnimatedVisibility(visible = bottomBarState.value, content = {
         BottomNavigation(
             backgroundColor = androidx.compose.material3.MaterialTheme.colorScheme.surface,
@@ -49,12 +46,10 @@ fun BottomNavigationBar(
                 0.1.dp,
                 androidx.compose.material3.MaterialTheme.colorScheme.onSurface
             ),
-            )
-
+        )
         //*
         // items.forEach is used to display the items of the bottom bar
         // *//
-
         {
             items.forEach { screen ->
                 BottomNavigationItem(
@@ -78,13 +73,4 @@ fun BottomNavigationBar(
             }
         }
     })
-}
-
-//**
-// This function is used to know the current route
-// *//
-@Composable
-private fun currentRoute(navHostController: NavHostController): String? {
-    val navBackStackEntry by navHostController.currentBackStackEntryAsState()
-    return navBackStackEntry?.destination?.route
 }
