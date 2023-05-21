@@ -1,40 +1,39 @@
 package com.autominder.autominder.carinfo.ui
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.autominder.autominder.AutoMinderApplication
 import com.autominder.autominder.carinfo.data.CarMaintenanceData
 import com.autominder.autominder.carinfo.data.CarMaintenanceRepository
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 class CarInfoViewModel(
     private val repository: CarMaintenanceRepository,
 ) : ViewModel() {
-    val carInfoList = MutableLiveData<List<CarMaintenanceData>>()
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading = _isLoading
-    private val _millage = MutableLiveData<Int>()
-    val millage: LiveData<Int> = _millage
-    private val _date = MutableLiveData<String>()
-    val date: LiveData<String> = _date
-    private val _id = MutableLiveData<Int>()
-    val carId: LiveData<Int> = _id
 
-
-    fun setCarId(id: Int) {
-        _id.value = id
-    }
-
+    private val _carInfoList = MutableStateFlow<List<CarMaintenanceData>>(emptyList())
+    val carInfoList: StateFlow<List<CarMaintenanceData>> = _carInfoList
+    private val _isLoading = MutableStateFlow<Boolean>(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
 
     fun fetchCarMaintenanceInfoByCarId(carId: Int) {
-        setLoading(true)
-        repository.getCarMaintenanceByCarId(carId).let { car ->
-            carInfoList.postValue(car)
-            setLoading(false)
+        viewModelScope.launch {
+            try {
+                setLoading(true)
+                delay(100)
+                _carInfoList.value = repository.getCarMaintenanceByCarId(carId)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } finally {
+                setLoading(false)
+            }
         }
     }
 

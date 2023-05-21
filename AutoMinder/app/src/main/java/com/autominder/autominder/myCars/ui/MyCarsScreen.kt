@@ -20,25 +20,26 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.autominder.autominder.R
 import com.autominder.autominder.carinfo.ui.CarInfoViewModel
+import com.autominder.autominder.components.LoadingScreen
 import com.autominder.autominder.myCars.data.CarDataModel
 
 
@@ -53,6 +54,7 @@ fun MyCarsScreen(
     )
 
 ) {
+    val isLoading by viewModel.isLoading.collectAsState(false)
 
     //*
     // The Scaffold is the one in charge to add the floating button
@@ -61,8 +63,20 @@ fun MyCarsScreen(
     Scaffold(
         floatingActionButton = { FloatingAddButtonCar(navController) },
     ) { contentPadding ->
-        Box(modifier = Modifier.padding(contentPadding)) {
-            MainScreenCars(viewModel, navController)
+        Box(
+            modifier = Modifier
+                .padding(contentPadding)
+                .background(MaterialTheme.colorScheme.surface),
+        ) {
+
+
+            //Checks if is loading, if it is, it will display the loading screen, if not, it will display the main screen
+            if (isLoading) {
+                LoadingScreen()
+
+            } else {
+                MainScreenCars(viewModel, navController)
+            }
         }
     }
 }
@@ -80,13 +94,14 @@ fun FloatingAddButtonCar(navController: NavController) {
     }
 }
 
+
 //*
 //This two are the main screen of the cars, it will display all the cars
 // It receives the view model and nav controller
 // *//
-
 @Composable
 fun MainScreenCars(viewModel: MyCarsViewModel, navController: NavController?) {
+
     //* This val is containing the list of the view model *//
     val myCarListState = viewModel.myCarsList.observeAsState(emptyList())
 
@@ -102,7 +117,13 @@ fun MyCarSection(
     ) {
 
     //* Lazy column to show the different cars (is like the RecyclerView)  *//
-    LazyColumn(modifier = Modifier.fillMaxWidth()) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    )
+
+    {
 
 
         //* Check if the list of cars is empty *//
@@ -115,6 +136,7 @@ fun MyCarSection(
                 )
             }
         } else {
+
             //* Renders the card car *//
             items(myCarListState.value) { car ->
                 if (navController != null) {
@@ -133,9 +155,6 @@ fun CardCar(
         factory = CarInfoViewModel.Factory
     )
 ) {
-    /*val onIdUpdated: (Int) -> Unit = { id ->
-        infoViewModel.setCarId(id)
-    }*/
 
     Card(
         modifier = Modifier
@@ -145,16 +164,13 @@ fun CardCar(
             //* If clicked, it will navigate to the details of the specific car with the id*//
             .clickable {
                 navController.navigate("car_info/${car.id}")
-                //onIdUpdated(car.id)
-            }
-            .padding(22.dp),
+            },
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer),
 
         ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-
                 .height(200.dp)
         ) {
             Text(

@@ -11,21 +11,25 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.autominder.autominder.carinfo.CarInfoInteractor
 import com.autominder.autominder.carinfo.data.CarMaintenanceData
+import com.autominder.autominder.components.LoadingScreen
 import com.autominder.autominder.myCars.data.CarDataModel
-import com.autominder.autominder.myCars.data.myCarsdummy
 import com.autominder.autominder.myCars.ui.MyCarsViewModel
 
 //
@@ -43,18 +47,30 @@ fun CarInfoScreen(
     infoViewModel: CarInfoViewModel = viewModel(
         factory = CarInfoViewModel.Factory,
     )
+
+
 ) {
-    val carInfoStateList = infoViewModel.carInfoList.observeAsState(emptyList())
-    val carInfo = carInfoStateList.value.find { it.carId == car.id }
-    infoViewModel.fetchCarMaintenanceInfoByCarId(car.id)
+    val carInfoStateList by remember { infoViewModel.carInfoList }.collectAsState(emptyList())
+    val carInfo = carInfoStateList.find { it.carId == car.id }
+    val isLoading by infoViewModel.isLoading.collectAsState(false)
+    val carInfoInteractor = remember { CarInfoInteractor(infoViewModel) }
+
+    LaunchedEffect(Unit) {
+        carInfoInteractor.getCarInfoCoroutine(car)
+    }
 
     Scaffold(
         bottomBar = {
             //TODO: Call the BottomNavigationForCarInfo
-        }
+        },
     ) {
         Box(modifier = Modifier.padding(it)) {
-            CarInfoMainScreen(car, carInfo)
+
+            if (isLoading) {
+                LoadingScreen()
+            } else {
+                CarInfoMainScreen(car, carInfo)
+            }
         }
     }
 }
@@ -63,7 +79,7 @@ fun CarInfoScreen(
 fun CarInfoMainScreen(car: CarDataModel, carInfo: CarMaintenanceData?) {
     Card(
         modifier = Modifier.padding(16.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer)
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer),
     ) {
         LazyColumn(
             modifier = Modifier
@@ -71,6 +87,7 @@ fun CarInfoMainScreen(car: CarDataModel, carInfo: CarMaintenanceData?) {
                 .fillMaxSize()
         ) {
             item {
+
                 //Calling all the cards of individual information
                 CarNameHeader(car)
                 CarBrand(car)
@@ -100,7 +117,7 @@ fun CarBrand(car: CarDataModel) {
             .padding(16.dp)
             .width(280.dp)
             .height(50.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer)
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface)
 
     ) {
         Row(
@@ -114,14 +131,14 @@ fun CarBrand(car: CarDataModel) {
                 text = "Marca",
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
 
             Text(
                 text = car.brand,
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
         }
     }
@@ -134,7 +151,7 @@ fun CarModel(car: CarDataModel) {
             .padding(16.dp)
             .width(280.dp)
             .height(50.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer)
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface)
     ) {
         Row(
             modifier = Modifier
@@ -147,14 +164,14 @@ fun CarModel(car: CarDataModel) {
                 text = "Modelo",
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
 
             Text(
                 text = car.model,
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
         }
     }
@@ -167,7 +184,7 @@ fun CarYearCard(car: CarDataModel) {
             .padding(16.dp)
             .width(280.dp)
             .height(50.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer)
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface)
     ) {
         Row(
             modifier = Modifier
@@ -180,14 +197,14 @@ fun CarYearCard(car: CarDataModel) {
                 text = "Año",
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Text(
                 text = car.year,
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }
@@ -200,7 +217,7 @@ fun CarMileage(carInfo: CarMaintenanceData?) {
             .padding(16.dp)
             .width(280.dp)
             .height(50.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer)
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface)
     ) {
         Row(
             modifier = Modifier
@@ -213,21 +230,15 @@ fun CarMileage(carInfo: CarMaintenanceData?) {
                 text = "Millaje",
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Text(
                 text = carInfo?.mileage.toString(),
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }
-}
-
-@Composable
-@Preview
-fun preview() {
-    CarBrand(car = myCarsdummy[0])
 }
