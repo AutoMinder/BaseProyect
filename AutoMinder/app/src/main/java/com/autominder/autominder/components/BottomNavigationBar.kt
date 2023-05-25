@@ -52,7 +52,6 @@ fun BottomNavigationBar(
     // *//
 
     val currentRoute = currentRoute(navHostController)
-    val density = LocalDensity.current
 
     //*
     // Using AnimatedVisibility to show or hide the bottom bar, otherwise it will be always visible
@@ -63,6 +62,7 @@ fun BottomNavigationBar(
             BottomNavigation(
 
                 backgroundColor = MaterialTheme.colorScheme.surface,
+                elevation = 8.dp,
 
             )
             //*

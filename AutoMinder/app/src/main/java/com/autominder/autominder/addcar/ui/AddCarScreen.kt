@@ -8,12 +8,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -28,13 +28,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.autominder.autominder.addcar.data.CarModel
 
 @Composable
-fun AddCarScreen(viewModel: AddCarViewModel = viewModel(factory = AddCarViewModel.Factory)) {
+fun AddCarScreen(viewModel: AddCarViewModel = viewModel(factory = AddCarViewModel.Factory), navController: NavController) {
     Column(modifier = Modifier.fillMaxSize()) {
         HeaderText()
-        AddCarForm(viewModel)
+        AddCarForm(viewModel, navController)
     }
 }
 
@@ -52,18 +53,18 @@ fun HeaderText() {
 }
 
 @Composable
-fun AddCarForm(viewModel: AddCarViewModel) {
+fun AddCarForm(viewModel: AddCarViewModel, navController: NavController) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
-        item { FieldsWrapper(viewModel) }
+        item { FieldsWrapper(viewModel, navController) }
     }
 }
 
 @Composable
-fun FieldsWrapper(viewModel: AddCarViewModel) {
+fun FieldsWrapper(viewModel: AddCarViewModel, navController: NavController) {
     val context = LocalContext.current
     //TODO(): Hacer con la API
-    val carBrandsList = viewModel.carBrandsList
-    val carModelsList = viewModel.carModelsList
+    val carBrandList by remember { viewModel.carBrandsList }.collectAsState()
+    val carModelList by remember { viewModel.carModelsList }.collectAsState()
 
     //viewModel values
     val profileCarName: String by viewModel.profileCarName.collectAsState(initial = "")
@@ -97,7 +98,7 @@ fun FieldsWrapper(viewModel: AddCarViewModel) {
             carLastMaintenance
         )
     }
-    CarBrandMenu(context, carBrandsList, carBrand) {
+    CarBrandMenu(context, carBrandList, carBrand) {
         viewModel.onAddCarChange(
             profileCarName,
             it,
@@ -108,7 +109,7 @@ fun FieldsWrapper(viewModel: AddCarViewModel) {
             carLastMaintenance
         )
     }
-    CarModelMenu(context, carModelsList, carModel){
+    CarModelMenu(context, carModelList, carModel) {
         viewModel.onAddCarChange(
             profileCarName,
             carBrand,
@@ -148,7 +149,7 @@ fun FieldsWrapper(viewModel: AddCarViewModel) {
             carModel, carYear, carKilometers, carLastOilChange, it
         )
     }
-    SaveCar(addCarEnable) { viewModel.addCar(newCar) }
+    SaveCar(addCarEnable, navController) { viewModel.addCar(newCar) }
 }
 
 @Composable
@@ -160,7 +161,7 @@ fun CarName(profileCarName: String, onAddCarChange: (String) -> Unit) {
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
-        TextField(
+        OutlinedTextField(
             value = profileCarName,
             onValueChange = {
                 onAddCarChange(it)
@@ -171,7 +172,12 @@ fun CarName(profileCarName: String, onAddCarChange: (String) -> Unit) {
 }
 
 @Composable
-fun CarBrandMenu(context: Context, carBrands: MutableList<String>, carBrand:String, onAddCarChange: (String) -> Unit) {
+fun CarBrandMenu(
+    context: Context,
+    carBrands: List<String>,
+    carBrand: String,
+    onAddCarChange: (String) -> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf(carBrand) }
 
@@ -187,7 +193,7 @@ fun CarBrandMenu(context: Context, carBrands: MutableList<String>, carBrand:Stri
                 expanded = !expanded
             }
         ) {
-            TextField(
+            OutlinedTextField(
                 value = selectedText,
                 onValueChange = {},
                 readOnly = true,
@@ -219,7 +225,7 @@ fun CarBrandMenu(context: Context, carBrands: MutableList<String>, carBrand:Stri
 @Composable
 fun CarModelMenu(
     context: Context,
-    carModels: MutableList<String>,
+    carModels: List<String>,
     carModel: String,
     onAddCarChange: (String) -> Unit
 ) {
@@ -238,7 +244,7 @@ fun CarModelMenu(
                 expanded = !expanded
             }
         ) {
-            TextField(
+            OutlinedTextField(
                 value = selectedText,
                 onValueChange = {},
                 readOnly = true,
@@ -276,7 +282,7 @@ fun CarYear(carYear: String, onAddCarChange: (String) -> Unit) {
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
-        TextField(
+        OutlinedTextField(
             value = carYear,
             onValueChange = {
                 onAddCarChange(it)
@@ -296,7 +302,7 @@ fun CarDistance(carKilometers: String, onAddCarChange: (String) -> Unit) {
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
-        TextField(
+        OutlinedTextField(
             value = carKilometers,
             onValueChange = {
                 onAddCarChange(it)
@@ -317,7 +323,7 @@ fun CarLastOilChange(carLastOilChange: String, onAddCarChange: (String) -> Unit)
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
-        TextField(
+        OutlinedTextField(
             value = carLastOilChange,
             onValueChange = {
                 onAddCarChange(it)
@@ -338,7 +344,7 @@ fun CarLastMaintenance(carLastMaintenance: String, onAddCarChange: (String) -> U
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
-        TextField(
+        OutlinedTextField(
             value = carLastMaintenance,
             onValueChange = {
                 onAddCarChange(it)
@@ -350,14 +356,17 @@ fun CarLastMaintenance(carLastMaintenance: String, onAddCarChange: (String) -> U
 }
 
 @Composable
-fun SaveCar(addCarEnable: Boolean, addCar: () -> Unit) {
+fun SaveCar(addCarEnable: Boolean, navController: NavController, addCar: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
-        Button(onClick = { addCar() }, enabled = addCarEnable) {
+        Button(onClick = {
+            addCar()
+            navController.navigateUp()
+        }, enabled = addCarEnable) {
 
             Text(text = "Guardar Automovil")
         }

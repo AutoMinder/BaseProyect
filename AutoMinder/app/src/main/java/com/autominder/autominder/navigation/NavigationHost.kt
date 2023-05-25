@@ -41,7 +41,10 @@ fun NavigationHost(
     startDestination: String = "principal_menu",
     viewModel: MyCarsViewModel = viewModel(
         factory = MyCarsViewModel.Factory
-    )
+    ),
+    addCarViewModel: AddCarViewModel = viewModel(
+        factory = AddCarViewModel.Factory
+    ),
 ) {
 
     NavHost(
@@ -89,7 +92,7 @@ fun NavigationHost(
 
         }
         composable("add_car") {
-            AddCarScreen()
+            AddCarScreen(viewModel = addCarViewModel, navController = navController)
         }
     }
 }
