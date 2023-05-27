@@ -2,6 +2,7 @@ package com.autominder.autominder.addcar.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.widget.DatePicker
 import android.widget.Toast
 import androidx.compose.foundation.clickable
@@ -351,26 +352,10 @@ fun CarDistance(carKilometers: String, onAddCarChange: (String) -> Unit) {
 fun CarLastOilChange(carLastOilChange: String, onAddCarChange: (String) -> Unit) {
     //TODO(): Hacer con dummydata y luego con la API
     val openDialog = remember { mutableStateOf(false) }
-    val snackState = remember { SnackbarHostState() }
-    val snackScope = rememberCoroutineScope()
-    val datePicked = remember { mutableStateOf("") }
-
-    val year: Int
-    val month: Int
-    val day: Int
-
-    val calendar = Calendar.getInstance()
-    year = calendar.get(Calendar.YEAR)
-    month = calendar.get(Calendar.MONTH)
-    day = calendar.get(Calendar.DAY_OF_MONTH)
-
     val date = remember { mutableStateOf("") }
-    val dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = System.currentTimeMillis())
 
-    val datePickerState = rememberDatePickerState()
-    SnackbarHost(hostState = snackState, Modifier)
     if (openDialog.value) {
-
         DatePickerDialog(
             onDismissRequest = {
                 openDialog.value = false
@@ -380,10 +365,12 @@ fun CarLastOilChange(carLastOilChange: String, onAddCarChange: (String) -> Unit)
                 TextButton(
                     onClick = {
                         openDialog.value = false
+                        date.value = SimpleDateFormat("dd/MM/yyyy").format(datePickerState.selectedDateMillis).toString()
 
                     },
                 ) {
                     Text("OK")
+
                 }
             },
             dismissButton = {
@@ -397,9 +384,8 @@ fun CarLastOilChange(carLastOilChange: String, onAddCarChange: (String) -> Unit)
             }
         ) {
             DatePicker(
-                state = datePickerState,)
-            val pickedDate = datePickerState.selectedDateMillis
-
+                state = datePickerState,
+                )
         }
 
     }
@@ -416,6 +402,7 @@ fun CarLastOilChange(carLastOilChange: String, onAddCarChange: (String) -> Unit)
             onValueChange = {
                 onAddCarChange(it)
             },
+
             label = { Text(text = "Ultimo cambio de aceite") },
             modifier = Modifier
                 .pointerInput(Unit) {}
@@ -441,21 +428,76 @@ fun CarLastOilChange(carLastOilChange: String, onAddCarChange: (String) -> Unit)
 fun CarLastMaintenance(carLastMaintenance: String, onAddCarChange: (String) -> Unit) {
     //TODO(): Hacer con dummydata y luego con la API
 
+    val openDialog = remember { mutableStateOf(false) }
+    val date = remember { mutableStateOf("") }
+    val datePickerState = rememberDatePickerState(initialSelectedDateMillis = System.currentTimeMillis())
+
+    if (openDialog.value) {
+        DatePickerDialog(
+            onDismissRequest = {
+                openDialog.value = false
+
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        openDialog.value = false
+                        date.value = SimpleDateFormat("dd/MM/yyyy").format(datePickerState.selectedDateMillis).toString()
+
+                    },
+                ) {
+                    Text("OK")
+
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        openDialog.value = false
+                    }
+                ) {
+                    Text("Cancel")
+                }
+            }
+        ) {
+            DatePicker(
+                state = datePickerState,
+            )
+        }
+
+    }
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        contentAlignment = Alignment.Center
-    ) {
+            .padding(16.dp)
+            .clickable { openDialog.value = true },
+        contentAlignment = Alignment.Center,
+
+        ) {
         OutlinedTextField(
-            value = carLastMaintenance,
+            value = date.value,
             onValueChange = {
                 onAddCarChange(it)
             },
-            label = { Text(text = "Ultimo mantenimiento realizado") },
-            placeholder = { Text(text = "dd-mm-aaaa") },
 
-            )
+            label = { Text(text = "Ultimo mantenimiendo") },
+            modifier = Modifier
+                .pointerInput(Unit) {}
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) { openDialog.value = true },
+            readOnly = true,
+            enabled = false,
+            trailingIcon = {
+                Icon(
+                    painter = painterResource(id = com.google.android.material.R.drawable.material_ic_calendar_black_24dp),
+                    contentDescription = ""
+                )
+            }
+        )
+
+
     }
 }
 
