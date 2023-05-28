@@ -5,13 +5,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -26,10 +23,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.autominder.autominder.carinfo.CarInfoInteractor
-import com.autominder.autominder.carinfo.data.CarMaintenanceData
 import com.autominder.autominder.components.LoadingScreen
-import com.autominder.autominder.myCars.data.CarDataModel
+import com.autominder.autominder.models.CarModel
 import com.autominder.autominder.myCars.ui.MyCarsViewModel
 
 //
@@ -40,7 +35,7 @@ import com.autominder.autominder.myCars.ui.MyCarsViewModel
 //
 @Composable
 fun CarInfoScreen(
-    car: CarDataModel,
+    car: CarModel,
     viewModel: MyCarsViewModel = viewModel(
         factory = MyCarsViewModel.Factory,
     ),
@@ -50,14 +45,14 @@ fun CarInfoScreen(
 
 
 ) {
-    val carInfoStateList by remember { infoViewModel.carInfoList }.collectAsState(emptyList())
-    val carInfo = carInfoStateList.find { it.carId == car.id }
-    val isLoading by infoViewModel.isLoading.collectAsState(false)
-    val carInfoInteractor = remember { CarInfoInteractor(infoViewModel) }
+    val carInfoStateList by remember { infoViewModel.carInfoList }.collectAsState()
 
-    LaunchedEffect(Unit) {
-        carInfoInteractor.getCarInfoCoroutine(car)
+    val isLoading by infoViewModel.isLoading.collectAsState(false)
+
+    LaunchedEffect(key1 = car.id) {
+        infoViewModel.fetchCarMaintenanceInfoByCarId(car.id)
     }
+
 
     Scaffold(
         bottomBar = {
@@ -69,14 +64,14 @@ fun CarInfoScreen(
             if (isLoading) {
                 LoadingScreen()
             } else {
-                CarInfoMainScreen(car, carInfo)
+                CarInfoMainScreen(car)
             }
         }
     }
 }
 
 @Composable
-fun CarInfoMainScreen(car: CarDataModel, carInfo: CarMaintenanceData?) {
+fun CarInfoMainScreen(car: CarModel ){
     Card(
         modifier = Modifier.padding(16.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface),
@@ -93,14 +88,14 @@ fun CarInfoMainScreen(car: CarDataModel, carInfo: CarMaintenanceData?) {
                 CarBrand(car)
                 CarModel(car)
                 CarYearCard(car)
-                CarMileage(carInfo)
+                CarMileage(car)
             }
         }
     }
 }
 
 @Composable
-fun CarNameHeader(car: CarDataModel) {
+fun CarNameHeader(car: CarModel) {
     Text(
         text = car.name,
         modifier = Modifier.fillMaxWidth(),
@@ -111,7 +106,7 @@ fun CarNameHeader(car: CarDataModel) {
 }
 
 @Composable
-fun CarBrand(car: CarDataModel) {
+fun CarBrand(car: CarModel) {
     Card(
         modifier = Modifier
             .padding(20.dp),
@@ -144,7 +139,7 @@ fun CarBrand(car: CarDataModel) {
 }
 
 @Composable
-fun CarModel(car: CarDataModel) {
+fun CarModel(car: CarModel) {
     Card(
         modifier = Modifier
             .padding(20.dp),
@@ -176,7 +171,7 @@ fun CarModel(car: CarDataModel) {
 }
 
 @Composable
-fun CarYearCard(car: CarDataModel) {
+fun CarYearCard(car: CarModel) {
     Card(
         modifier = Modifier
             .padding(20.dp),
@@ -198,7 +193,7 @@ fun CarYearCard(car: CarDataModel) {
             )
 
             Text(
-                text = car.year,
+                text = car.year.toString(),
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
                 color = MaterialTheme.colorScheme.onSecondaryContainer
@@ -208,7 +203,7 @@ fun CarYearCard(car: CarDataModel) {
 }
 
 @Composable
-fun CarMileage(carInfo: CarMaintenanceData?) {
+fun CarMileage(carInfo: CarModel) {
     Card(
         modifier = Modifier
             .padding(20.dp),
@@ -223,14 +218,14 @@ fun CarMileage(carInfo: CarMaintenanceData?) {
         )
         {
             Text(
-                text = "Millaje",
+                text = "Kilometraje",
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
 
             Text(
-                text = carInfo?.mileage.toString(),
+                text = carInfo.kilometers.toString(),
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
                 color = MaterialTheme.colorScheme.onSecondaryContainer

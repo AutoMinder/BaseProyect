@@ -77,11 +77,11 @@ fun NavigationHost(
         composable("car_info/{carId}",
             arguments = listOf(
                 navArgument("carId") {
-                    type = NavType.IntType
+                    type = NavType.StringType
                 }
             )
         ) {
-            val carId = it.arguments?.getInt("carId")
+            val carId = it.arguments?.getString("carId")
             if (carId != null) {
                 val car = viewModel.fetchCarById(carId)
                 if (car != null) {

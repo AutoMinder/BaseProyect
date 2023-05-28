@@ -8,6 +8,7 @@ import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.autominder.autominder.AutoMinderApplication
+import com.autominder.autominder.models.CarModel
 import com.autominder.autominder.myCars.data.CarDataModel
 import com.autominder.autominder.myCars.data.MyCarsRepository
 import kotlinx.coroutines.delay
@@ -20,7 +21,7 @@ class MyCarsViewModel(
     private val repository: MyCarsRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    val myCarsList = MutableLiveData<List<CarDataModel>>()
+    val myCarsList = MutableLiveData<List<CarModel>>()
     private val _isLoading = MutableStateFlow<Boolean>(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
@@ -28,7 +29,7 @@ class MyCarsViewModel(
         fetchMyCars()
     }
 
-    fun fetchCarById(id: Int): CarDataModel? {
+    fun fetchCarById(id: String): CarModel? {
         return repository.getCarById(id)
     }
 
