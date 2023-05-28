@@ -45,14 +45,10 @@ fun CarInfoScreen(
 
 
 ) {
-    val carInfoStateList by remember { infoViewModel.carInfoList }.collectAsState()
-
     val isLoading by infoViewModel.isLoading.collectAsState(false)
-
     LaunchedEffect(key1 = car.id) {
         infoViewModel.fetchCarMaintenanceInfoByCarId(car.id)
     }
-
 
     Scaffold(
         bottomBar = {
@@ -71,7 +67,7 @@ fun CarInfoScreen(
 }
 
 @Composable
-fun CarInfoMainScreen(car: CarModel ){
+fun CarInfoMainScreen(car: CarModel) {
     Card(
         modifier = Modifier.padding(16.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface),
