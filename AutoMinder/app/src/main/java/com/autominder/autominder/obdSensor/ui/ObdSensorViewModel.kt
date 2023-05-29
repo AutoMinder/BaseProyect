@@ -1,37 +1,38 @@
 package com.autominder.autominder.obdSensor.ui
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
-class ObdSensorViewModel(private val applicationContext: Context) : ViewModel() {
+class ObdSensorViewModel() : ViewModel() {
+    private val _bluetoothEnabled = MutableStateFlow(false)
+    val bluetoothEnabled: StateFlow<Boolean> = _bluetoothEnabled
 
-    private val bluetoothAdapter: BluetoothAdapter? by lazy {
+
+    fun verifyBluetoothEnabled(context: Context) {
         val bluetoothManager =
-            applicationContext.getSystemService(Application.BLUETOOTH_SERVICE) as BluetoothManager
-        bluetoothManager.adapter
+            context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager?
+        val bluetoothAdapter = bluetoothManager?.adapter
+        _bluetoothEnabled.value = bluetoothAdapter?.isEnabled ?: false
     }
 
-    fun connectToDevice() {
-        if (bluetoothAdapter == null) {
 
+    companion object {
+        val Factory = viewModelFactory {
+            initializer {
+                val app = this[APPLICATION_KEY] as Application
+                ObdSensorViewModel()
+            }
         }
-        if (bluetoothAdapter?.isEnabled == true) {
-            // Bluetooth is not enabled, request the user to enable it
-            // You can use LiveData or StateFlow to observe the Bluetooth status and notify the UI
-            // e.g., _bluetoothEnabled.value = false
-            return
-        }
-
-        // Bluetooth is enabled, initiate device discovery
-        // You can use LiveData or StateFlow to observe the discovery process and notify the UI
-        // e.g., _isDiscovering.value = true
-
-        val discoveryIntent = Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE)
-        // Start an activity for result to handle the user's response
-        // e.g., startActivityForResult(discoveryIntent, REQUEST_DISCOVERABLE)
     }
 }

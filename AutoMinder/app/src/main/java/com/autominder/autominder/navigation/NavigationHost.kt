@@ -1,17 +1,7 @@
 package com.autominder.autominder.navigation
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.currentComposer
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -29,6 +19,7 @@ import com.autominder.autominder.login.ui.LoginViewModel
 import com.autominder.autominder.myCars.ui.MyCarsScreen
 import com.autominder.autominder.myCars.ui.MyCarsViewModel
 import com.autominder.autominder.obdSensor.ui.ObdSensorConnectScreen
+import com.autominder.autominder.obdSensor.ui.ObdSensorViewModel
 import com.autominder.autominder.principalMenu.ui.PrincipalMenuScreen
 import com.autominder.autominder.register.RegisterScreen
 import com.autominder.autominder.userInfo.UserInfoScreen
@@ -46,7 +37,9 @@ fun NavigationHost(
     addCarViewModel: AddCarViewModel = viewModel(
         factory = AddCarViewModel.Factory
     ),
-
+    obdSensorViewModel: ObdSensorViewModel = viewModel(
+        factory = ObdSensorViewModel.Factory
+    )
 ) {
 
     NavHost(
@@ -87,7 +80,7 @@ fun NavigationHost(
             if (carId != null) {
                 val car = viewModel.fetchCarById(carId)
                 if (car != null) {
-                    CarInfoScreen(car)
+                    CarInfoScreen(car, navController = navController)
                 }
             }
 
@@ -97,7 +90,7 @@ fun NavigationHost(
             AddCarScreen(viewModel = addCarViewModel, navController = navController)
         }
         composable("obd_sensor") {
-            ObdSensorConnectScreen()
+            ObdSensorConnectScreen(obdSensorViewModel, navController)
         }
     }
 }
