@@ -28,6 +28,7 @@ import com.autominder.autominder.login.ui.LoginScreen
 import com.autominder.autominder.login.ui.LoginViewModel
 import com.autominder.autominder.myCars.ui.MyCarsScreen
 import com.autominder.autominder.myCars.ui.MyCarsViewModel
+import com.autominder.autominder.obdSensor.ui.ObdSensorConnectScreen
 import com.autominder.autominder.principalMenu.ui.PrincipalMenuScreen
 import com.autominder.autominder.register.RegisterScreen
 import com.autominder.autominder.userInfo.UserInfoScreen
@@ -45,6 +46,7 @@ fun NavigationHost(
     addCarViewModel: AddCarViewModel = viewModel(
         factory = AddCarViewModel.Factory
     ),
+
 ) {
 
     NavHost(
@@ -93,6 +95,9 @@ fun NavigationHost(
         }
         composable("add_car") {
             AddCarScreen(viewModel = addCarViewModel, navController = navController)
+        }
+        composable("obd_sensor") {
+            ObdSensorConnectScreen()
         }
     }
 }
