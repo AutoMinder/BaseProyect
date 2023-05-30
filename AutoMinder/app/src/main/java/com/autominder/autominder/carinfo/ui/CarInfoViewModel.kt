@@ -7,8 +7,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.autominder.autominder.AutoMinderApplication
-import com.autominder.autominder.carinfo.data.CarMaintenanceData
-import com.autominder.autominder.carinfo.data.CarMaintenanceRepository
 import com.autominder.autominder.models.CarModel
 import com.autominder.autominder.myCars.data.MyCarsRepository
 import kotlinx.coroutines.delay
@@ -20,6 +18,7 @@ import java.util.Date
 class CarInfoViewModel(
     private val repository: MyCarsRepository,
 ) : ViewModel() {
+
 
     private val _carInfoList = MutableStateFlow<CarModel>(
         CarModel(

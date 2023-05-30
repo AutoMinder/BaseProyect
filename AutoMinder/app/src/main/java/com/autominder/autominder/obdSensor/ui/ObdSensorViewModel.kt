@@ -19,6 +19,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class ObdSensorViewModel() : ViewModel() {
+
+
+
     private val _bluetoothEnabled = MutableStateFlow(false)
     val bluetoothEnabled: StateFlow<Boolean> = _bluetoothEnabled
 
