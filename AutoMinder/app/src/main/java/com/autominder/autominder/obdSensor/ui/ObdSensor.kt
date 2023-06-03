@@ -2,11 +2,13 @@ package com.autominder.autominder.obdSensor.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
+import android.bluetooth.BluetoothProfile
+import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanFilter
+import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -20,12 +22,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat.registerReceiver
 import androidx.navigation.NavHostController
 
 
@@ -37,6 +36,7 @@ fun ObdSensorConnectScreen(
 ) {
 
     val context = LocalContext.current
+
     val bluetoothManager = remember {
         context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager?
     }
@@ -44,36 +44,20 @@ fun ObdSensorConnectScreen(
     val bluetoothAdapter: BluetoothAdapter? = remember {
         bluetoothManager!!.adapter
     }
-    val permiso = if (VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        hasPermissions(
-            context,
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.BLUETOOTH,
-            Manifest.permission.BLUETOOTH_ADMIN,
-            Manifest.permission.BLUETOOTH_CONNECT,
-            Manifest.permission.BLUETOOTH_SCAN
-        )
-    } else {
-        TODO("VERSION.SDK_INT < S")
+
+    val bluetoothScanner by lazy {
+        bluetoothAdapter?.bluetoothLeScanner ?: error("Bluetooth is not enabled")
     }
 
-    if (permiso) {
-        bluetoothManager!!.adapter?.startDiscovery()
-        bluetoothAdapter?.bondedDevices?.forEach {
-            Log.d("AQUI", "${it.name} ${it.address} ${it.type}")
-        }
 
-
+    bluetoothAdapter?.bondedDevices?.forEach {
+        Log.d("AQUI", "${it.name} ${it.address} ${it.type}")
     }
 
-    /* bluetoothAdapter?.bondedDevices?.forEach {
-         Log.d("AQUI", "${it.name} ${it.address} ${it.type}")
-     }*/
-
-    //bluetoothManager!!.adapter?.startDiscovery()
-
-    //Permission check
+    val permiso = ActivityCompat.checkSelfPermission(
+        context,
+        Manifest.permission.BLUETOOTH_SCAN
+    ) == PackageManager.PERMISSION_GRANTED
 
     LazyColumn() {
         item {
@@ -81,12 +65,28 @@ fun ObdSensorConnectScreen(
                 if (bluetoothAdapter?.isEnabled == true) {
                     val reciever = onBluetoothEnable(context)
                     if (permiso) {
-                        bluetoothManager!!.adapter?.startDiscovery()
-                        bluetoothAdapter.bondedDevices?.forEach {
-                            Log.d("AQUI", "${it.name} ${it.address} ${it.type}")
+                        bluetoothAdapter.startDiscovery()
+                        bluetoothScanner.startScan(
+                            listOf(
+                                ScanFilter.Builder().build()
+                            ),
+                            ScanSettings.Builder().build(),
+                            object : ScanCallback() {
+                                override fun onScanResult(
+                                    callbackType: Int,
+                                    result: ScanResult
+                                ) {
+                                    super.onScanResult(callbackType, result)
+                                    Log.d("AQUI", "${result.device.name} ${result.device.address}")
+                                }
+
+                            })
+
+                        val connectedDevices = bluetoothAdapter.bondedDevices
+                        val isConnected = connectedDevices.any { it.name == "OBDII" }
+                        if (isDeviceConnectedByName(context, "OBDII", bluetoothAdapter, bluetoothManager)) {
+                            navController.navigate("obd_reader")
                         }
-
-
                     }
                     val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
                     context.registerReceiver(reciever, filter)
@@ -99,16 +99,6 @@ fun ObdSensorConnectScreen(
 
     }
 }
-
-
-@Composable
-fun rememberBluetoothManager(context: Context): BluetoothManager {
-    val service = remember(context) {
-        context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-    }
-    return service
-}
-
 
 fun onBluetoothEnable(context: Context): BroadcastReceiver {
     return object : BroadcastReceiver() {
@@ -124,10 +114,10 @@ fun onBluetoothEnable(context: Context): BroadcastReceiver {
                         )
                     } else {
                         intent.getParcelableExtra(
-                            BluetoothDevice.EXTRA_DEVICEL
+                            BluetoothDevice.EXTRA_DEVICE
                         )
                     }
-                device?.let { Log.d("AQUI", "${device.name} HOLA HOLA ", ) }
+                device?.let { Log.d("AQUI", "${device.name} HOLA HOLA ") }
 
             }
 
@@ -135,6 +125,21 @@ fun onBluetoothEnable(context: Context): BroadcastReceiver {
     }
 }
 
-fun hasPermissions(context: Context, vararg permissions: String): Boolean = permissions.all {
-    ActivityCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
+
+@SuppressLint("MissingPermission")
+fun isDeviceConnectedByName(
+    context: Context,
+    deviceName: String,
+    bluetoothAdapter: BluetoothAdapter,
+    bluetoothManager: BluetoothManager?
+): Boolean {
+
+    val bluetootProfile = bluetoothManager?.getConnectedDevices(BluetoothProfile.GATT)
+
+    for (device in bluetootProfile!!) {
+        if (device.name == deviceName) {
+            return true
+        }
+    }
+    return false
 }
