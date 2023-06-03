@@ -7,28 +7,47 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.autominder.autominder.AutoMinderApplication
-import com.autominder.autominder.carinfo.data.CarMaintenanceData
-import com.autominder.autominder.carinfo.data.CarMaintenanceRepository
+import com.autominder.autominder.models.CarModel
+import com.autominder.autominder.myCars.data.MyCarsRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.util.Date
 
 class CarInfoViewModel(
-    private val repository: CarMaintenanceRepository,
+    private val repository: MyCarsRepository,
 ) : ViewModel() {
 
-    private val _carInfoList = MutableStateFlow<List<CarMaintenanceData>>(emptyList())
-    val carInfoList: StateFlow<List<CarMaintenanceData>> = _carInfoList
+
+    private val _carInfoList = MutableStateFlow<CarModel>(
+        CarModel(
+            name = "",
+            brand = "",
+            year = 0,
+            id = "",
+            kilometers = 0,
+            lastOilChange = Date(),
+            nextMaintenances = Date(),
+            kilometersDate = Date(),
+            errorModel = null,
+            hidden = false,
+            lastCoolantDate = null,
+            lastMayorTuning = null,
+            lastMinorTuning = null,
+            model = ""
+        )
+    )
+    val carInfoList: StateFlow<CarModel> = _carInfoList
     private val _isLoading = MutableStateFlow<Boolean>(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
-    fun fetchCarMaintenanceInfoByCarId(carId: Int) {
+    fun fetchCarMaintenanceInfoByCarId(carId: String) {
         viewModelScope.launch {
             try {
                 setLoading(true)
                 delay(100)
-                _carInfoList.value = repository.getCarMaintenanceByCarId(carId)
+                _carInfoList.value = repository.getCarById(carId)!!
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {
@@ -45,7 +64,7 @@ class CarInfoViewModel(
         val Factory = viewModelFactory {
             initializer {
                 val app = this[APPLICATION_KEY] as AutoMinderApplication
-                CarInfoViewModel(app.CarMaintenanceRepository)
+                CarInfoViewModel(app.myCarsRepository)
             }
         }
     }

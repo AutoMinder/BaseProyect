@@ -1,7 +1,9 @@
 package com.autominder.autominder.myCars.data
 
-class MyCarsRepository(private val myCarsDummy: List<CarDataModel>) {
-    fun getMyCars () = myCarsDummy
+import com.autominder.autominder.models.CarModel
 
-    fun getCarById(id: Int) = myCarsDummy.find { it.id == id }
+class MyCarsRepository(private val myCarsDummy: List<CarModel>) {
+    fun getMyCars() = myCarsDummy
+
+    fun getCarById(id: String) = myCarsDummy.find { it.id == id }
 }

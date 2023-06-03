@@ -28,7 +28,7 @@ class AutoMinderApplication : Application() {
 
     }
     val CarMaintenanceRepository: CarMaintenanceRepository by lazy {
-        CarMaintenanceRepository(dummyCarMaintenanceData)
+        CarMaintenanceRepository(myCarsdummy)
 
     }
 }
