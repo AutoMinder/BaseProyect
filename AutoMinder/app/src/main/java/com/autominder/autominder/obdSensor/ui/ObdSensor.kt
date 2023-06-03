@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavHostController
+import androidx.navigation.navArgument
 import com.autominder.autominder.obdSensor.logic.BluetoothConnections
 import java.lang.reflect.Method
 
@@ -100,20 +101,20 @@ fun ObdSensorConnectScreen(
 
                             })
 
-
-                        if (
-                            BluetoothConnections(
-                                bluetoothAdapter,
-                                bluetoothManager
-                            ).isDeviceConnectedByName(
-                                context,
-                                "OBDII",
-                                bluetoothAdapter,
-                                bluetoothManager
-                            )
-                        ) {
+                        var deviceObd: BluetoothDevice = BluetoothConnections(
+                            bluetoothAdapter,
+                            bluetoothManager
+                        ).isDeviceConnectedByName(
+                            context,
+                            "OBDII",
+                            bluetoothAdapter,
+                            bluetoothManager
+                        )!!
+                        if (deviceObd.name == "OBDII" || deviceObd.name == "G435 Bluetooth Gaming Headset") {
+                            obdSensorViewModel.bluetoothDevice = deviceObd
                             navController.navigate("obd_reader")
                         }
+
                     }
 
 

@@ -27,7 +27,7 @@ class BluetoothConnections(
         deviceName: String,
         bluetoothAdapter: BluetoothAdapter,
         bluetoothManager: BluetoothManager?
-    ): Boolean {
+    ): BluetoothDevice? {
 
         val pairedDevices = bluetoothAdapter.bondedDevices
 
@@ -35,11 +35,11 @@ class BluetoothConnections(
         for (device in pairedDevices) {
             if (device.name == "G435 Bluetooth Gaming Headset" || device.name == deviceName) {
                 if (isConnected((device))) {
-                    return true
+                    return device
                 }
             }
 
         }
-        return false
+        return null
     }
 }

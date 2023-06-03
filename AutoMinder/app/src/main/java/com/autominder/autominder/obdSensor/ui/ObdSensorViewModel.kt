@@ -7,6 +7,7 @@ import android.app.Application
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
+import android.companion.BluetoothLeDeviceFilter
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -33,6 +34,7 @@ class ObdSensorViewModel() : ViewModel() {
 
     private val _discoveredDevices = MutableStateFlow(emptyList<BluetoothDevice>())
     val discoveredDevices: StateFlow<List<BluetoothDevice>> = _discoveredDevices
+    var bluetoothDevice: BluetoothDevice? = null
 
 
     fun verifyBluetoothEnabled(context: Context) {

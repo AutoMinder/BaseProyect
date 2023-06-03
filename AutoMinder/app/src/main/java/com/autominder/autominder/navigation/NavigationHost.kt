@@ -94,7 +94,8 @@ fun NavigationHost(
             ObdSensorConnectScreen(obdSensorViewModel, navController)
         }
         composable("obd_reader") {
-            ObdReader(obdSensorViewModel = obdSensorViewModel)
+            ObdReader(obdSensorViewModel = obdSensorViewModel, bluetoothDevice = obdSensorViewModel.bluetoothDevice!!)
+
         }
     }
 }
