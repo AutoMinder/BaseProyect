@@ -26,6 +26,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavHostController
+import com.autominder.autominder.obdSensor.logic.BluetoothConnections
+import java.lang.reflect.Method
 
 
 @SuppressLint("MissingPermission")
@@ -50,14 +52,12 @@ fun ObdSensorConnectScreen(
     }
 
 
-    bluetoothAdapter?.bondedDevices?.forEach {
-        Log.d("AQUI", "${it.name} ${it.address} ${it.type}")
-    }
-
     val permiso = ActivityCompat.checkSelfPermission(
         context,
         Manifest.permission.BLUETOOTH_SCAN
     ) == PackageManager.PERMISSION_GRANTED
+
+
 
     LazyColumn() {
         item {
@@ -65,6 +65,24 @@ fun ObdSensorConnectScreen(
                 if (bluetoothAdapter?.isEnabled == true) {
                     val reciever = onBluetoothEnable(context)
                     if (permiso) {
+
+                        val scanCallback = object : ScanCallback() {
+                            override fun onScanResult(callbackType: Int, result: ScanResult) {
+                                super.onScanResult(callbackType, result)
+
+                                Log.d("AQUI", "${result.device.name} ${result.device.address}")
+                            }
+                        }
+
+                        val filter = ScanFilter.Builder().setDeviceName("OBD").build()
+                        val scanSettings = ScanSettings.Builder()
+                            .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build()
+                        bluetoothScanner.startScan(
+                            mutableListOf(filter),
+                            scanSettings,
+                            scanCallback
+                        )
+
                         bluetoothAdapter.startDiscovery()
                         bluetoothScanner.startScan(
                             listOf(
@@ -82,12 +100,23 @@ fun ObdSensorConnectScreen(
 
                             })
 
-                        val connectedDevices = bluetoothAdapter.bondedDevices
-                        val isConnected = connectedDevices.any { it.name == "OBDII" }
-                        if (isDeviceConnectedByName(context, "OBDII", bluetoothAdapter, bluetoothManager)) {
+
+                        if (
+                            BluetoothConnections(
+                                bluetoothAdapter,
+                                bluetoothManager
+                            ).isDeviceConnectedByName(
+                                context,
+                                "OBDII",
+                                bluetoothAdapter,
+                                bluetoothManager
+                            )
+                        ) {
                             navController.navigate("obd_reader")
                         }
                     }
+
+
                     val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
                     context.registerReceiver(reciever, filter)
                 }
@@ -123,23 +152,4 @@ fun onBluetoothEnable(context: Context): BroadcastReceiver {
 
         }
     }
-}
-
-
-@SuppressLint("MissingPermission")
-fun isDeviceConnectedByName(
-    context: Context,
-    deviceName: String,
-    bluetoothAdapter: BluetoothAdapter,
-    bluetoothManager: BluetoothManager?
-): Boolean {
-
-    val bluetootProfile = bluetoothManager?.getConnectedDevices(BluetoothProfile.GATT)
-
-    for (device in bluetootProfile!!) {
-        if (device.name == deviceName) {
-            return true
-        }
-    }
-    return false
 }
