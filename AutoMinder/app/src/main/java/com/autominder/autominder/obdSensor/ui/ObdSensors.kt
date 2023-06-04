@@ -2,6 +2,9 @@ package com.autominder.autominder.obdSensor.ui
 
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothGattCallback
+import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothSocket
 import android.content.Context
 import android.icu.util.Output
@@ -14,6 +17,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
+import com.github.eltonvs.obd.command.control.VINCommand
 import com.github.eltonvs.obd.command.engine.RPMCommand
 import com.github.eltonvs.obd.connection.ObdDeviceConnection
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,32 +34,48 @@ fun ObdReader(
     bluetoothDevice: MutableState<BluetoothDevice?>
 ) {
     val responseText = MutableStateFlow<String>("Aqui debería ir la respuesta")
-    val coroutineScope = rememberCoroutineScope()
     val dispositivo: BluetoothDevice? = bluetoothDevice.value
-    var obdDevice: ObdDeviceConnection? = null
-
-
     val uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
-    val bluetoothSocket: BluetoothSocket = dispositivo!!.createRfcommSocketToServiceRecord(uuid)
+    val coroutineScope = rememberCoroutineScope()
 
-    try {
-        bluetoothSocket.connect()
-        // Connection successful
-        // Proceed with reading and writing data
-        val inputStream: InputStream = bluetoothSocket.inputStream
-        val outputStream: OutputStream = bluetoothSocket.outputStream
-        val _obdDevice = ObdDeviceConnection(inputStream, outputStream)
-        obdDevice = _obdDevice
-        // Perform OBD-II communication using the input and output streams
-        Log.d("OBD", "Connected")
+    Text(text = bluetoothDevice.value?.name ?: "No hay dispositivo seleccionado")
+
+    Button(onClick = {
+
+        val bluetoothSocket: BluetoothSocket = try {
+            dispositivo?.createRfcommSocketToServiceRecord(uuid)
+        } catch (e: IOException) {
+            Log.e("OBD", "Socket's create() method failed", e)
+            throw e
+        }!!
+
+        try {
+            bluetoothSocket.connect()
+        } catch (connectException: IOException) {
+            Log.e("OBD", "Could not connect the client socket", connectException)
+            try {
+                bluetoothSocket.close()
+            } catch (closeException: IOException) {
+                Log.e("OBD", "Could not close the client socket", closeException)
+            }
+        }
+        Log.d("OBD", bluetoothSocket.inputStream.toString())
+        Log.d("OBD", bluetoothSocket.outputStream.toString())
 
 
 
-    } catch (e: IOException) {
-        // Connection failed
-        e.printStackTrace()
-    } finally {
-        // Close the Bluetooth socket when done
-        bluetoothSocket.close()
+
+        coroutineScope.launch {
+
+            val obdDeviceConnection = ObdDeviceConnection(bluetoothSocket.inputStream, bluetoothSocket.outputStream)
+            val response = obdDeviceConnection.run(VINCommand(), useCache = true)
+            Log.d("OBD", obdDeviceConnection.toString())
+            Log.d("OBD", response.formattedValue)
+        }
+
+
+    }) {
+        Text(text = "Conectar")
     }
+
 }
