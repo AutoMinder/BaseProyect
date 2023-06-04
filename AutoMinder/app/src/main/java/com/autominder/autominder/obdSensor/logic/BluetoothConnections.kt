@@ -33,7 +33,7 @@ class BluetoothConnections(
 
 
         for (device in pairedDevices) {
-            if (device.name == "G435 Bluetooth Gaming Headset" || device.name == deviceName) {
+            if (device.name == "G435 Bluetooth Gaming Headset" || device.name == deviceName || device.name == "OBDII" || deviceName.contains("OBD")) {
                 if (isConnected((device))) {
                     return device
                 }

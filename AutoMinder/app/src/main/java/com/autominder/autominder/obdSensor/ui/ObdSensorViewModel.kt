@@ -14,6 +14,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
@@ -34,7 +36,8 @@ class ObdSensorViewModel() : ViewModel() {
 
     private val _discoveredDevices = MutableStateFlow(emptyList<BluetoothDevice>())
     val discoveredDevices: StateFlow<List<BluetoothDevice>> = _discoveredDevices
-    var bluetoothDevice: BluetoothDevice? = null
+    val bluetoothDevice: MutableState<BluetoothDevice?> = mutableStateOf(null)
+
 
 
     fun verifyBluetoothEnabled(context: Context) {

@@ -101,7 +101,7 @@ fun ObdSensorConnectScreen(
 
                             })
 
-                        var deviceObd: BluetoothDevice = BluetoothConnections(
+                        val deviceObd: BluetoothDevice = BluetoothConnections(
                             bluetoothAdapter,
                             bluetoothManager
                         ).isDeviceConnectedByName(
@@ -111,7 +111,8 @@ fun ObdSensorConnectScreen(
                             bluetoothManager
                         )!!
                         if (deviceObd.name == "OBDII" || deviceObd.name == "G435 Bluetooth Gaming Headset") {
-                            obdSensorViewModel.bluetoothDevice = deviceObd
+                            obdSensorViewModel.bluetoothDevice.value = deviceObd
+
                             navController.navigate("obd_reader")
                         }
 

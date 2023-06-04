@@ -3,6 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 
+
+
 android {
     namespace 'com.autominder.autominder'
     compileSdk 33
@@ -19,6 +21,7 @@ android {
             useSupportLibrary true
         }
     }
+
 
     buildTypes {
         release {
@@ -49,6 +52,7 @@ android {
         }
     }
 }
+
 
 dependencies {
 
@@ -83,7 +87,8 @@ dependencies {
     //coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
-    //android.bluetooth
+    //obd
+    implementation 'com.github.eltonvs:kotlin-obd-api:1.1.2'
 
 
 
