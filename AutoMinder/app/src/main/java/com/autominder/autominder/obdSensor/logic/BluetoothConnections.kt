@@ -9,8 +9,18 @@ import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothProfile
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.platform.LocalContext
+import com.github.eltonvs.obd.command.control.VINCommand
+import com.github.eltonvs.obd.command.engine.RPMCommand
+import com.github.eltonvs.obd.connection.ObdDeviceConnection
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 import java.lang.reflect.Method
 import java.util.logging.Handler
@@ -65,6 +75,8 @@ class BluetoothConnections(
     var scanning = false
     private val handler = android.os.Handler()
 
+    private var validator: Boolean = false
+
     //gatt callback pls
     private val gattCallback: BluetoothGattCallback = object : BluetoothGattCallback() {
         @SuppressLint("MissingPermission")
@@ -75,6 +87,12 @@ class BluetoothConnections(
                 if (newState == BluetoothProfile.STATE_CONNECTED) {
                     Log.w("escaneando", "Successfully connected to $deviceAddress")
                     // TODO: Store a reference to BluetoothGatt
+                    val obdDevice = gatt.device
+                    //get InputOutputStream
+                    val gattService = gatt.services
+                    validator = true
+                    sipudo()
+
                 } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                     Log.w("escaneando", "Successfully disconnected from $deviceAddress")
                     gatt.close()
@@ -93,6 +111,8 @@ class BluetoothConnections(
             super.onServicesDiscovered(gatt, status)
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 Log.d("escaneando", "SUCCESSSSS")
+
+
             }
         }
 
@@ -123,6 +143,32 @@ class BluetoothConnections(
     }
 
     private val SCAN_PERIOD: Long = 100000
+
+    @OptIn(DelicateCoroutinesApi::class)
+    @SuppressLint("MissingPermission")
+    fun sipudo() {
+        val device = leDeviceListAdapter.find { it.name == "OBDII" }
+        Log.d("escaneando", "DISPOSITIVO SIENDO LEIDO: ${device!!.name}")
+        val bluetoothSocket =
+            device.createInsecureRfcommSocketToServiceRecord(device.uuids[2].uuid)
+        val inputStream = bluetoothSocket.inputStream
+        val outputStream = bluetoothSocket.outputStream
+        val obdDeviceConnection = ObdDeviceConnection(inputStream, outputStream)
+        //TODO DECIRLE A NESTOR
+        GlobalScope.launch {
+            try {
+                val response = obdDeviceConnection.run(VINCommand())
+                Log.d("escaneando", "LA RESPUESTA DEL OBD:::: $response")
+
+                // Process the response or update UI as needed
+                val rpm = obdDeviceConnection.run(RPMCommand())
+                Log.d("escaneando", "LA RESPUESTA DEL OBD:::: $rpm")
+            } catch (e: Exception) {
+                Log.e("escaneando", "Error in coroutine: ${e.message}")
+            }
+
+        }
+    }
 
     @SuppressLint("MissingPermission")
     fun scanLeDevice() {
