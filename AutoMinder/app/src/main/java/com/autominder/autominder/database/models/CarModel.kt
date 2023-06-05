@@ -1,4 +1,4 @@
-package com.autominder.autominder.data.models
+package com.autominder.autominder.database.models
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import java.util.Date
 
 @Entity(tableName = "car_table")
-data class carModel(
+data class CarModel(
     @PrimaryKey(autoGenerate = true) val carId: Long,
     @ColumnInfo(name = "vin") val vin : String,
     @ColumnInfo(name = "car_name") val car_name : String,
