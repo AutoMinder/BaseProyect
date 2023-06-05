@@ -1,5 +1,6 @@
 package com.autominder.autominder.addcar.data
 
+/*
 data class CarModel(
     //TODO(): Temporally model, possibly will change
     val profileName: String,
@@ -10,3 +11,4 @@ data class CarModel(
     val carLastOilChange: String,
     val carLastMaintenance: String
 )
+*/
