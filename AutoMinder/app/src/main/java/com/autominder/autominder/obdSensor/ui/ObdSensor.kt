@@ -20,14 +20,22 @@ import android.os.Build.VERSION
 import android.util.Log
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.navArgument
 import com.autominder.autominder.obdSensor.logic.BluetoothConnections
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import java.lang.reflect.Method
 
 
@@ -52,20 +60,25 @@ fun ObdSensorConnectScreen(
         bluetoothAdapter?.bluetoothLeScanner ?: error("Bluetooth is not enabled")
     }
 
-
     val permiso = ActivityCompat.checkSelfPermission(
         context,
         Manifest.permission.BLUETOOTH_SCAN
     ) == PackageManager.PERMISSION_GRANTED
 
-
-
+    val scanning = remember { mutableStateOf(false) }
+    val bluetoothConnections = BluetoothConnections(bluetoothAdapter!!, bluetoothManager, context)
+    val coroutineScope = rememberCoroutineScope()
     LazyColumn() {
         item {
             Button(onClick = {
                 if (bluetoothAdapter?.isEnabled == true) {
                     val reciever = onBluetoothEnable(context)
-                    if (permiso) {
+                    val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
+                    BluetoothConnections(bluetoothAdapter, bluetoothManager, context).scanLeDevice()
+                    context.registerReceiver(reciever, filter)
+
+
+                    /*if (permiso) {
 
                         val scanCallback = object : ScanCallback() {
                             override fun onScanResult(callbackType: Int, result: ScanResult) {
@@ -116,17 +129,19 @@ fun ObdSensorConnectScreen(
                             navController.navigate("obd_reader")
                         }
 
-                    }
+                    }*/
 
 
-                    val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
-                    context.registerReceiver(reciever, filter)
+                    //val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
+
                 }
 
             }) {
                 Text(text = "Enable Bluetooth")
             }
         }
+
+
 
     }
 }
