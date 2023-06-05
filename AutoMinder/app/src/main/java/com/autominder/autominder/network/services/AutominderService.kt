@@ -1,4 +1,4 @@
-package com.autominder.autominder.services
+package com.autominder.autominder.network.services
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
