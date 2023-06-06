@@ -11,22 +11,21 @@ import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothProfile
 import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import com.autominder.autominder.obdSensor.ui.ObdSensorViewModel
 import com.github.eltonvs.obd.command.control.VINCommand
 import com.github.eltonvs.obd.command.engine.RPMCommand
 import com.github.eltonvs.obd.connection.ObdDeviceConnection
+import com.github.pires.obd.commands.protocol.EchoOffCommand
+import com.github.pires.obd.commands.protocol.LineFeedOffCommand
+import com.github.pires.obd.commands.protocol.TimeoutCommand
+import com.github.pires.obd.commands.temperature.AmbientAirTemperatureCommand
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
 import java.lang.reflect.Method
 import java.util.UUID
+
 
 class BluetoothConnections(
     bluetoothAdapter: BluetoothAdapter,
@@ -114,7 +113,6 @@ class BluetoothConnections(
                     val gattService = gatt.services
                     gatt.discoverServices()
                     validator = true
-                    //sipudo()
 
                 } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                     Log.w("bluele", "Successfully disconnected from $deviceAddress")
@@ -145,11 +143,17 @@ class BluetoothConnections(
                                     characteristic.uuid
                                 )
                             )
+                            gatt.writeCharacteristic(
+                                characteristic.service.getCharacteristic(
+                                    characteristic.uuid
+                                )
+                            )
                         }
 
 
                     }
                 }
+                sipudo()
             } else {
                 Log.d("bluele", "No services found")
             }
@@ -173,18 +177,6 @@ class BluetoothConnections(
                 )
                 gatt.printGattTable()
 
-                val socket = gatt.device.createRfcommSocketToServiceRecord(characteristic.uuid)
-
-                socket.connect()
-
-                val obdConnection = ObdDeviceConnection(socket.inputStream, socket.outputStream)
-                GlobalScope.launch {
-                    while (true) {
-                        obdConnection.run(RPMCommand())
-                        obdConnection.run(VINCommand())
-                        Log.d("bluele", "RPM: ${obdConnection.run(RPMCommand()).formattedValue}")
-                    }
-                }
 
             }
         }
@@ -219,9 +211,15 @@ class BluetoothConnections(
                     if (device.name == "OBDII") {
                         Log.d("bluele", "conectando")
 
-                        //val gatt = device.connectGatt(context, true, gattCallback)
+                        val gatt = device.connectGatt(context, true, gattCallback)
                         //gatt.connect()
-                        device.connectGatt(context, true, gattCallback)
+                        gatt.discoverServices()
+
+                        //val socket = gatt.device.createRfcommSocketToServiceRecord(UUID.fromString("00002a00-0000-1000-8000-00805f9b34fb"))
+                        //socket.connect()
+                        //val obdDeviceConnection = ObdDeviceConnection(socket.inputStream, socket.outputStream)
+                        //Log.d("bluele", "conectado AL SOCKET")
+                        //device.connectGatt(context, true, gattCallback)
 
                     }
 
@@ -241,7 +239,31 @@ class BluetoothConnections(
         val uuid = UUID.fromString("00002a00-0000-1000-8000-00805f9b34fb")
         val bluetoothSocket =
             device.createInsecureRfcommSocketToServiceRecord(uuid)
+        bluetoothSocket.connect()
 
+        if (bluetoothSocket.isConnected) {
+            Log.d("bluele", "ESTA CONECTADO")
+            val obdDeviceConnection =
+                ObdDeviceConnection(bluetoothSocket.inputStream, bluetoothSocket.outputStream)
+            EchoOffCommand().run(bluetoothSocket.inputStream, bluetoothSocket.outputStream)
+            LineFeedOffCommand().run(bluetoothSocket.inputStream, bluetoothSocket.outputStream)
+            TimeoutCommand(62).run(bluetoothSocket.inputStream, bluetoothSocket.outputStream)
+            Log.d(
+                "bluele",
+                "COMANDOS ENVIADOS: ${EchoOffCommand().formattedResult} ${LineFeedOffCommand().formattedResult} ${
+                    TimeoutCommand(62).formattedResult
+                }"
+            )
+            Log.d("bluele", "OBD: $obdDeviceConnection")
+            GlobalScope.launch {
+                try {
+                    val response = obdDeviceConnection.run(VINCommand())
+                    Log.d("bluele", "LA RESPUESTA DEL OBD:::: $response")
+                } catch (e: Exception) {
+                    Log.e("bluele", "Error in coroutine: ${e.message}")
+                }
+            }
+        }
 
 
         bluetoothSocket.use { socket ->
@@ -264,7 +286,6 @@ class BluetoothConnections(
 
             }
         }
-        //bluetoothSocket.connect()
 
 
         /*if (inputStream != null && outputStream != null) {

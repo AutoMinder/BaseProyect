@@ -89,6 +89,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
     //obd
     implementation 'com.github.eltonvs:kotlin-obd-api:1.1.2'
+    implementation 'com.github.pires:obd-java-api:1.0'
 
 
 
