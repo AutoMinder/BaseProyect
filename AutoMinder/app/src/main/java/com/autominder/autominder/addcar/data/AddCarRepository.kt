@@ -1,5 +1,7 @@
 package com.autominder.autominder.addcar.data
 
+import com.autominder.autominder.models.CarModel
+
 class AddCarRepository(
     //TODO()
     private val cars: MutableList<CarModel>,
