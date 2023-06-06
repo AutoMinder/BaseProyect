@@ -42,8 +42,7 @@ class BluetoothConnections(
     private val SCAN_PERIOD: Long = 100000
 
 
-
-//****//
+    //*****************************************************************//
     private fun BluetoothGatt.printGattTable() {
         if (services.isEmpty()) {
             Log.i(
@@ -64,6 +63,10 @@ class BluetoothConnections(
         }
     }
 
+    //**********************************************
+    // gattCallback, used to get the services and characteristics of the bluetooth device
+    // also to check if the device is successfully connected to the phone.
+    // *********************************************//
     private val gattCallback: BluetoothGattCallback = object : BluetoothGattCallback() {
         @SuppressLint("MissingPermission")
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
@@ -161,7 +164,10 @@ class BluetoothConnections(
         }
     }
 
-
+    //**********************************************
+    // LeScanCallback, used to scan for bluetooth devices le, called in the startLeDevices
+    // If a device named OBD2 is found, the connection is established
+    // *********************************************//
     private val leScanCallback = object : android.bluetooth.le.ScanCallback() {
         @SuppressLint("MissingPermission")
         override fun onScanResult(callbackType: Int, result: android.bluetooth.le.ScanResult?) {
@@ -191,22 +197,22 @@ class BluetoothConnections(
         }
     }
 
-
+    //**********************************************
+    // trash funtion just to try the connection
+    // *********************************************//
     @OptIn(DelicateCoroutinesApi::class)
     @SuppressLint("MissingPermission")
     fun sipudo() {
         val device = leDeviceListAdapter.find { it.name == "OBDII" }
-
         Log.d("bluele", "DISPOSITIVO SIENDO LEIDO: ${device!!.name}")
+
         val uuid = UUID.fromString("00002a00-0000-1000-8000-00805f9b34fb")
-        val bluetoothSocket =
-            device.createInsecureRfcommSocketToServiceRecord(uuid)
+        val bluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(uuid)
         bluetoothSocket.connect()
 
         if (bluetoothSocket.isConnected) {
             Log.d("bluele", "ESTA CONECTADO")
-            val obdDeviceConnection =
-                ObdDeviceConnection(bluetoothSocket.inputStream, bluetoothSocket.outputStream)
+            val obdDeviceConnection = ObdDeviceConnection(bluetoothSocket.inputStream, bluetoothSocket.outputStream)
             EchoOffCommand().run(bluetoothSocket.inputStream, bluetoothSocket.outputStream)
             LineFeedOffCommand().run(bluetoothSocket.inputStream, bluetoothSocket.outputStream)
             TimeoutCommand(62).run(bluetoothSocket.inputStream, bluetoothSocket.outputStream)
@@ -226,39 +232,17 @@ class BluetoothConnections(
                 }
             }
         }
-
-
-        bluetoothSocket.use { socket ->
-            socket.connect()
-            val inputStream = socket.inputStream
-            val outputStream = socket.outputStream
-            val obdDeviceConnection = ObdDeviceConnection(inputStream, outputStream)
-            GlobalScope.launch {
-                try {
-                    Log.d("bluele", "ENTRANDO AL TRY")
-                    val response = obdDeviceConnection.run(VINCommand())
-                    Log.d("bluele", "LA RESPUESTA DEL OBD:::: $response")
-
-                    // Process the response or update UI as needed
-                    val rpm = obdDeviceConnection.run(RPMCommand())
-                    Log.d("bluele", "LA RESPUESTA DEL OBD:::: $rpm")
-                } catch (e: Exception) {
-                    Log.e("bluele", "Error in coroutine: ${e.message}")
-                }
-
-            }
-        }
-
     }
 
+
+    //**********************************************
+    // Scanning function, find bluetooth le devices
+    // *********************************************//
     @SuppressLint("MissingPermission")
     fun scanLeDevice() {
         if (!scanning) {
-
             bluetoothLeScanner.startScan(leScanCallback)
             Log.d("bluele", "escaneando")
-
-
             handler.postDelayed({
                 scanning = false
                 viewModel.setIsLoading(false)
