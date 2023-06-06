@@ -1,6 +1,8 @@
 package com.autominder.autominder
 
 import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
 
 import com.autominder.autominder.addcar.data.AddCarRepository
 import com.autominder.autominder.addcar.data.carsDummy
@@ -16,6 +18,7 @@ import com.autominder.autominder.database.repository.OwnerRepository
 
 import com.autominder.autominder.myCars.data.MyCarsRepository
 import com.autominder.autominder.myCars.data.myCarsdummy
+import com.autominder.autominder.network.retrofit.RetrofitInstance
 import com.autominder.autominder.principalMenu.data.AlertsRepository
 import com.autominder.autominder.principalMenu.data.dummyAlerts
 
@@ -52,5 +55,10 @@ class AutoMinderApplication : Application() {
     val ownerAndCarRepository: OwnerAndCarRepository by lazy{
         OwnerAndCarRepository(database.ownerAndCarDao())
     }
+
+
+
+
+
 
 }
