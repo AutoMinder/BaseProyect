@@ -4,6 +4,7 @@ import java.util.Date
 
 data class CarModel(
     val id: String,
+    val vin: String?,
     val name: String,
     val brand: String,
     val model: String,

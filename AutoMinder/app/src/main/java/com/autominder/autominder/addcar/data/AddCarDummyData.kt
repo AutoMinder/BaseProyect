@@ -6,7 +6,7 @@ import java.util.Date
 private val defaultDate = Date(1/1/2021)
 
 val car1 =
-    CarModel("Carro de Juan", "Toyota", "Corolla", "2015", 2019, 70000, defaultDate, defaultDate, defaultDate, defaultDate, defaultDate, defaultDate, defaultDate, false, mutableListOf("sdasdasd", "asdasdasd"))
+    CarModel("1","1","Carro de Juan", "Toyota", "Corolla",2019, 70000, defaultDate, defaultDate, defaultDate, defaultDate, defaultDate, defaultDate, defaultDate, false, mutableListOf("sdasdasd", "asdasdasd"))
 
 val carsDummy = mutableListOf(car1)
 

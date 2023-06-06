@@ -22,9 +22,12 @@ class AddCarViewModel(
 ) : ViewModel() {
 
 
-
+    //TODO() : Autogenerar id
     private val _carId = MutableStateFlow("")
     val carId: StateFlow<String> = _carId
+
+    private val _carVin = MutableStateFlow("")
+    val carVin: StateFlow<String> = _carVin
 
     private val _profileCarName = MutableStateFlow("")
     val profileCarName: StateFlow<String> = _profileCarName
@@ -41,35 +44,17 @@ class AddCarViewModel(
     private val _carKilometers = MutableStateFlow(0)
     val carKilometers: StateFlow<Int> = _carKilometers
 
-    private val _carKilometersDate = MutableStateFlow(Date(1/1/2021))
-    val carKilometersDate: StateFlow<Date> = _carKilometersDate
+    private val _carLastMaintenance = MutableStateFlow("")
+    val carLastMaintenance: StateFlow<String> = _carLastMaintenance
 
-    private val _carLastMaintenance = MutableStateFlow(Date(1/1/2021))
-    val carLastMaintenance: StateFlow<Date> = _carLastMaintenance
+    private val _carNextMaintenance = MutableStateFlow("")
+    val carNextMaintenance: StateFlow<String> = _carNextMaintenance
 
-    private val _carNextMaintenance = MutableStateFlow(Date(1/1/2021))
-    val carNextMaintenance: StateFlow<Date> = _carNextMaintenance
+    private val _carLastOilChange = MutableStateFlow("")
+    val carLastOilChange: StateFlow<String> = _carLastOilChange
 
-    private val _carLastOilChange = MutableStateFlow(Date(1/1/2021))
-    val carLastOilChange: StateFlow<Date> = _carLastOilChange
-
-    private val _carLastCoolantDate = MutableStateFlow(Date(1/1/2021))
-    val carLastCoolantDate: StateFlow<Date> = _carLastCoolantDate
-
-    private val _carLastMayorTuning = MutableStateFlow(Date(1/1/2021))
-    val carLastMayorTuning: StateFlow<Date> = _carLastMayorTuning
-
-    private val _carLastMinorTuning = MutableStateFlow(Date(1/1/2021))
-    val carLastMinorTuning: StateFlow<Date> = _carLastMinorTuning
-
-    private val _carHidden = MutableStateFlow(false)
-    val carHidden: StateFlow<Boolean> = _carHidden
-
-    private val _carErrorModel = MutableStateFlow(mutableListOf<String>())
-    val carErrorModel: StateFlow<MutableList<String>> = _carErrorModel
-
-    private val dateFormat = SimpleDateFormat("dd/MM/yyyy")
-    private val defaultDate = dateFormat.parse("01/01/2021") as Date //????
+    private val _carLastCoolantDate = MutableStateFlow("")
+    val carLastCoolantDate: StateFlow<String> = _carLastCoolantDate
 
     private val _newCar = MutableStateFlow(
         CarModel(
@@ -77,15 +62,16 @@ class AddCarViewModel(
             "",
             "",
             "",
+            "",
             0,
             0,
-            defaultDate,
-            defaultDate,
-            defaultDate,
-            defaultDate,
-            defaultDate,
-            defaultDate,
-            defaultDate,
+            Date(),
+            Date(),
+            Date(),
+            Date(),
+            Date(),
+            Date(),
+            Date(),
             false,
             mutableListOf()
         )
@@ -142,22 +128,21 @@ class AddCarViewModel(
     }
 
     fun onAddCarChange(
-        carId:String,
         profileCarName: String,
         carBrand: String,
         carModel: String,
         carYear: Int,
         carKilometers: Int,
-        carKilometersDate: Date,
-        carLastMaintenance: Date,
-        carNextMaintenance: Date,
-        carLastOilChange: Date,
-        carLastCoolantDate: Date,
-        carLastMayorTuning: Date,
-        carLastMinorTuning: Date,
-        carHidden: Boolean,
-        carErrorModel: MutableList<String>
+        carLastMaintenance: String,
+        carLastOilChange: String,
+        carLastCoolantDate: String
     ) {
+
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy")
+        val dato = "21/01/2021"
+        val dato2 = dateFormat.parse(dato)
+
+        //TODO(): Añadir parseo de fechas
         _profileCarName.value = profileCarName
         _carBrand.value = carBrand
         _carModel.value = carModel
@@ -167,22 +152,22 @@ class AddCarViewModel(
         _carLastMaintenance.value = carLastMaintenance
         _newCar.value =
             CarModel(
-                carId,
+                "0",
+                "",
                 profileCarName,
                 carBrand,
                 carModel,
                 carYear,
                 carKilometers,
-                carKilometersDate,
-                carLastMaintenance,
-                carNextMaintenance,
-                carLastOilChange,
-                carLastCoolantDate,
-                carLastMayorTuning,
-                carLastMinorTuning,
-                carHidden,
-                carErrorModel
-
+                null,
+                dateFormat.parse(carLastMaintenance),
+                null,
+                dateFormat.parse(carLastOilChange),
+                dateFormat.parse(carLastCoolantDate),
+                null,
+                null,
+                false,
+                mutableListOf("")
             )
 
         _addCarEnable.value = validFields(
@@ -211,10 +196,10 @@ class AddCarViewModel(
         carModel: String,
         carYear: Int,
         carKilometers: Int,
-        carLastOilChange: Date,
-        carLastMaintenance: Date
+        carLastOilChange: String,
+        carLastMaintenance: String
     ): Boolean =
-        profileCarName != "" && carBrand != "" && carModel != "" && carYear != null && carKilometers != null && carLastOilChange != null && carLastMaintenance != null
+        profileCarName != "" && carBrand != "" && carModel != "" && carYear.toString() != "" && carKilometers.toString() != "" && carLastOilChange != "" && carLastMaintenance != ""
 
     companion object {
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
