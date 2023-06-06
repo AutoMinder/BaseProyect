@@ -11,10 +11,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -102,7 +106,7 @@ fun RegisterForm(
 @Composable
 fun HeaderTitle() {
     Text(
-        text = "Bienvenido a AutoMinder", fontSize = 24.sp, modifier = Modifier
+        text = "Registro de autominder", fontSize = 24.sp, modifier = Modifier
             .padding(16.dp)
             .fillMaxWidth(),
         textAlign = TextAlign.Center,
@@ -124,7 +128,8 @@ fun RegisterBox(
     Card(
         modifier = Modifier
             .padding(16.dp)
-            .height(500.dp)
+            .height(450.dp),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer)
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -132,12 +137,6 @@ fun RegisterBox(
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            Text(
-                text = "Registro",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
-            )
             NameTextField(name) { viewModel.onRegisterChange(it, email, password, confirmPassword) }
             EmailTextField(email) {
                 viewModel.onRegisterChange(
@@ -185,7 +184,7 @@ fun NameTextField(
     OutlinedTextField(
         value = name,
         onValueChange = onTextFieldChanged,
-        label = { Text(text = "Nombre") },
+        label = { Text(text = "Nombre", color = MaterialTheme.colorScheme.onPrimaryContainer) },
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
@@ -202,7 +201,12 @@ fun EmailTextField(
     OutlinedTextField(
         value = email,
         onValueChange = onTextFieldChanged,
-        label = { Text(text = "Correo electrónico") },
+        label = {
+            Text(
+                text = "Correo electrónico",
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        },
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
@@ -220,7 +224,7 @@ fun PasswordTextField(
     OutlinedTextField(
         value = password,
         onValueChange = onTextFieldChanged,
-        label = { Text(text = "Contraseña") },
+        label = { Text(text = "Contraseña", color = MaterialTheme.colorScheme.onPrimaryContainer) },
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
@@ -238,7 +242,12 @@ fun ConfirmPasswordTextField(
     OutlinedTextField(
         value = Confirmpassword,
         onValueChange = onTextFieldChanged,
-        label = { Text(text = "Confirmar contraseña") },
+        label = {
+            Text(
+                text = "Confirmar contraseña",
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        },
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
@@ -258,8 +267,9 @@ fun RegisterButton(
         enabled = registerEnable,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 0.dp, bottom = 0.dp, start = 16.dp, end = 16.dp)
+            .padding(top = 0.dp, bottom = 0.dp, start = 16.dp, end = 16.dp),
+        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
     ) {
-        Text(text = "Registrarse")
+        Text(text = "Registrarse", color = MaterialTheme.colorScheme.onPrimary)
     }
 }
