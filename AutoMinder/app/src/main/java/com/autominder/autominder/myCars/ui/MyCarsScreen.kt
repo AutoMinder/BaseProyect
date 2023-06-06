@@ -40,6 +40,7 @@ import androidx.navigation.NavController
 import com.autominder.autominder.R
 import com.autominder.autominder.carinfo.ui.CarInfoViewModel
 import com.autominder.autominder.components.LoadingScreen
+import com.autominder.autominder.models.CarModel
 import com.autominder.autominder.myCars.data.CarDataModel
 
 
@@ -111,7 +112,7 @@ fun MainScreenCars(viewModel: MyCarsViewModel, navController: NavController?) {
 
 @Composable
 fun MyCarSection(
-    myCarListState: State<List<CarDataModel>>,
+    myCarListState: State<List<CarModel>>,
     navController: NavController?,
 
     ) {
@@ -150,7 +151,7 @@ fun MyCarSection(
 //* This is the individual carCard for each of the cars*//
 @Composable
 fun CardCar(
-    car: CarDataModel, navController: NavController,
+    car: CarModel, navController: NavController,
     infoViewModel: CarInfoViewModel = viewModel(
         factory = CarInfoViewModel.Factory
     )
@@ -199,8 +200,8 @@ fun CardCar(
                     .wrapContentSize(Alignment.CenterEnd)
                     .padding(end = 32.dp)
             ) {
-                Text(text = car.model, color = MaterialTheme.colorScheme.onPrimaryContainer, style = MaterialTheme.typography.headlineSmall)
-                Text(text = car.year, color = MaterialTheme.colorScheme.onPrimaryContainer, style = MaterialTheme.typography.headlineSmall)
+                Text(text = car.brand, color = MaterialTheme.colorScheme.onPrimaryContainer, style = MaterialTheme.typography.headlineSmall)
+                Text(text = car.year.toString(), color = MaterialTheme.colorScheme.onPrimaryContainer, style = MaterialTheme.typography.headlineSmall)
             }
             Text(
                 text = "Presiona para ver más",
