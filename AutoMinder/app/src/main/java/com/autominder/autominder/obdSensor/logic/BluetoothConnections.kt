@@ -9,7 +9,9 @@ import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothProfile
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import com.autominder.autominder.obdSensor.ui.ObdSensorViewModel
 import com.github.eltonvs.obd.command.control.VINCommand
 import com.github.eltonvs.obd.command.engine.RPMCommand
@@ -17,9 +19,11 @@ import com.github.eltonvs.obd.connection.ObdDeviceConnection
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 import java.lang.reflect.Method
+import java.util.UUID
 
 class BluetoothConnections(
     bluetoothAdapter: BluetoothAdapter,
@@ -66,8 +70,7 @@ class BluetoothConnections(
     val leDeviceListAdapter = mutableStateListOf<BluetoothDevice>()
 
     private val bluetoothLeScanner = bluetoothAdapter.bluetoothLeScanner
-    private val _scanning = MutableStateFlow<Boolean>(false)
-    val scanning = _scanning.value
+    var scanning = false
 
     private val handler = android.os.Handler()
 
@@ -81,7 +84,7 @@ class BluetoothConnections(
 
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 if (newState == BluetoothProfile.STATE_CONNECTED) {
-                    Log.w("escaneando", "Successfully connected to $deviceAddress")
+                    Log.w("bluele", "Successfully connected to $deviceAddress")
                     // TODO: Store a reference to BluetoothGatt
                     val obdDevice = gatt.device
                     //get InputOutputStream
@@ -90,12 +93,12 @@ class BluetoothConnections(
                     sipudo()
 
                 } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-                    Log.w("escaneando", "Successfully disconnected from $deviceAddress")
+                    Log.w("bluele", "Successfully disconnected from $deviceAddress")
                     gatt.close()
                 }
             } else {
                 Log.w(
-                    "escaneando",
+                    "bluele",
                     "Error $status encountered for $deviceAddress! Disconnecting..."
                 )
                 gatt.close()
@@ -106,7 +109,7 @@ class BluetoothConnections(
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
             super.onServicesDiscovered(gatt, status)
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                Log.d("escaneando", "SUCCESSSSS")
+                Log.d("bluele", "SUCCESSSSS")
 
 
             }
@@ -126,7 +129,7 @@ class BluetoothConnections(
                     leDeviceListAdapter.add(device)
                     Log.d("bluele", "${device.name} ${device.address}")
                     if (device.name == "OBDII") {
-                        Log.d("escaneando", "conectando")
+                        Log.d("bluele", "conectando")
 
                         //val gatt = device.connectGatt(context, true, gattCallback)
                         //gatt.connect()
@@ -138,22 +141,24 @@ class BluetoothConnections(
         }
     }
 
-    private val SCAN_PERIOD: Long = 1000
+    private val SCAN_PERIOD: Long = 100000
 
     @OptIn(DelicateCoroutinesApi::class)
     @SuppressLint("MissingPermission")
     fun sipudo() {
         val device = leDeviceListAdapter.find { it.name == "OBDII" }
         Log.d("bluele", "DISPOSITIVO SIENDO LEIDO: ${device!!.name}")
-        val bluetoothSocket =
-            device.createInsecureRfcommSocketToServiceRecord(device.uuids[2].uuid)
-        val inputStream = bluetoothSocket.inputStream
-        val outputStream = bluetoothSocket.outputStream
+        //val uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
+        //val bluetoothSocket =
+            //device.createInsecureRfcommSocketToServiceRecord(uuid)
+        /*val inputStream = bluetoothSocket.inputStream
+        val outputStream = bluetoothSocket.outputStream*/
 
-        val obdDeviceConnection = ObdDeviceConnection(inputStream, outputStream)
+       /* val obdDeviceConnection = ObdDeviceConnection(inputStream, outputStream)
         //TODO DECIRLE A NESTOR
         GlobalScope.launch {
             try {
+                Log.d("bluele", "ENTRANDO AL TRY")
                 val response = obdDeviceConnection.run(VINCommand())
                 Log.d("bluele", "LA RESPUESTA DEL OBD:::: $response")
 
@@ -164,7 +169,7 @@ class BluetoothConnections(
                 Log.e("bluele", "Error in coroutine: ${e.message}")
             }
 
-        }
+        }*/
     }
 
     @SuppressLint("MissingPermission")
