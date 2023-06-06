@@ -33,47 +33,17 @@ class BluetoothConnections(
     context: Context,
     private val viewModel: ObdSensorViewModel
 ) {
-
-    private fun isConnected(device: BluetoothDevice): Boolean {
-        return try {
-            val m: Method = device.javaClass.getMethod("isConnected")
-            m.invoke(device) as Boolean
-        } catch (e: Exception) {
-            throw IllegalStateException(e)
-        }
-
-    }
-
-    @SuppressLint("MissingPermission")
-    fun isDeviceConnectedByName(
-        context: Context,
-        deviceName: String,
-        bluetoothAdapter: BluetoothAdapter,
-        bluetoothManager: BluetoothManager?
-    ): BluetoothDevice? {
-
-        val pairedDevices = bluetoothAdapter.bondedDevices
-        val contexto = context
-
-        for (device in pairedDevices) {
-            if (device.name == "G435 Bluetooth Gaming Headset" || device.name == deviceName || device.name == "OBDII" || deviceName.contains(
-                    "OBD"
-                )
-            ) {
-                if (isConnected((device))) {
-                    return device
-                }
-            }
-
-        }
-        return null
-    }
-
+    //**************Variables declaration for later use**************
+    private val handler = android.os.Handler()
+    private var validator: Boolean = false
     val leDeviceListAdapter = mutableStateListOf<BluetoothDevice>()
-
     private val bluetoothLeScanner = bluetoothAdapter.bluetoothLeScanner
     var scanning = false
+    private val SCAN_PERIOD: Long = 100000
 
+
+
+//****//
     private fun BluetoothGatt.printGattTable() {
         if (services.isEmpty()) {
             Log.i(
@@ -94,11 +64,6 @@ class BluetoothConnections(
         }
     }
 
-    private val handler = android.os.Handler()
-
-    private var validator: Boolean = false
-
-    //gatt callback pls
     private val gattCallback: BluetoothGattCallback = object : BluetoothGattCallback() {
         @SuppressLint("MissingPermission")
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
@@ -149,8 +114,6 @@ class BluetoothConnections(
                                 )
                             )
                         }
-
-
                     }
                 }
                 sipudo()
@@ -228,7 +191,6 @@ class BluetoothConnections(
         }
     }
 
-    private val SCAN_PERIOD: Long = 100000
 
     @OptIn(DelicateCoroutinesApi::class)
     @SuppressLint("MissingPermission")
@@ -287,28 +249,6 @@ class BluetoothConnections(
             }
         }
 
-
-        /*if (inputStream != null && outputStream != null) {
-            // Call the necessary write operations on the outputStream
-            val obdDeviceConnection = ObdDeviceConnection(inputStream, outputStream)
-            GlobalScope.launch {
-            try {
-                Log.d("bluele", "ENTRANDO AL TRY")
-                val response = obdDeviceConnection.run(VINCommand())
-                Log.d("bluele", "LA RESPUESTA DEL OBD:::: $response")
-
-                // Process the response or update UI as needed
-                val rpm = obdDeviceConnection.run(RPMCommand())
-                Log.d("bluele", "LA RESPUESTA DEL OBD:::: $rpm")
-            } catch (e: Exception) {
-                Log.e("bluele", "Error in coroutine: ${e.message}")
-            }
-
-        }
-
-
-
-    }*/
     }
 
     @SuppressLint("MissingPermission")
