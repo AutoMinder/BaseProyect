@@ -140,7 +140,11 @@ class BluetoothConnections(
                         Log.d("bluele", "Service: ${service.uuid}")
                         for (characteristic in service.characteristics) {
                             Log.d("bluele", "Characteristic: ${characteristic.uuid}")
-                            gatt.readCharacteristic(characteristic.service.getCharacteristic(characteristic.uuid))
+                            gatt.readCharacteristic(
+                                characteristic.service.getCharacteristic(
+                                    characteristic.uuid
+                                )
+                            )
                         }
 
 
@@ -168,15 +172,17 @@ class BluetoothConnections(
                     }"
                 )
                 gatt.printGattTable()
+
                 val socket = gatt.device.createRfcommSocketToServiceRecord(characteristic.uuid)
+
                 socket.connect()
+
                 val obdConnection = ObdDeviceConnection(socket.inputStream, socket.outputStream)
                 GlobalScope.launch {
                     while (true) {
                         obdConnection.run(RPMCommand())
                         obdConnection.run(VINCommand())
                         Log.d("bluele", "RPM: ${obdConnection.run(RPMCommand()).formattedValue}")
-                        delay(1000)
                     }
                 }
 
