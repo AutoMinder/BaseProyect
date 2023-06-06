@@ -6,15 +6,15 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.autominder.autominder.database.dao.CarDao
 import com.autominder.autominder.database.dao.OwnerAndCarDao
-import com.autominder.autominder.database.dao.UserDao
+import com.autominder.autominder.database.dao.OwnerDao
 import com.autominder.autominder.database.models.CarModel
 import com.autominder.autominder.database.models.OwnerAndCarModel
-import com.autominder.autominder.database.models.UserModel
+import com.autominder.autominder.database.models.OwnerModel
 
-@Database(entities = [CarModel::class, UserModel::class, OwnerAndCarModel::class], version = 1)
+@Database(entities = [CarModel::class, OwnerModel::class, OwnerAndCarModel::class], version = 1)
 abstract class AutominderDatabase: RoomDatabase() {
     abstract fun carDao(): CarDao
-    abstract fun userDao(): UserDao
+    abstract fun ownerDao(): OwnerDao
     abstract fun ownerAndCarDao(): OwnerAndCarDao
 
     companion object{

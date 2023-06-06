@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "user_table")
-data class UserModel(
+data class OwnerModel(
     @PrimaryKey(autoGenerate = true) val userId: Long,
     @ColumnInfo(name = "email") val email : String,
     @ColumnInfo(name = "username") val username : String

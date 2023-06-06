@@ -4,7 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Relation
 
 data class OwnerAndCarModel(
-    @Embedded val user: UserModel,
+    @Embedded val user: OwnerModel,
     @Relation(
         parentColumn = "userId",
         entityColumn = "owner"

@@ -13,11 +13,11 @@ data class CarModel(
     @ColumnInfo(name = "brand") val brand : String,
     @ColumnInfo(name = "year") val year : String,
     @ColumnInfo(name = "kilometers") val kilometers : String,
-    @ColumnInfo(name = "kilometers_date") val kilometers_date : Date,
+    @ColumnInfo(name = "kilometers_date") val kilometers_date : String,
     @ColumnInfo(name = "hidden") val hidden : Boolean,
     @ColumnInfo(name = "owner") val owner : Long
 ) {
-    constructor(vin: String, car_name: String, brand: String, year: String, kilometers: String, kilometers_date: Date, owner: Long) :
+    constructor(vin: String, car_name: String, brand: String, year: String, kilometers: String, kilometers_date: String, owner: Long) :
         this(
             0,
             vin,

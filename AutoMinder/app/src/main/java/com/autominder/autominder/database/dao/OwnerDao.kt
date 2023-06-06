@@ -4,15 +4,15 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
-import com.autominder.autominder.database.models.UserModel
+import com.autominder.autominder.database.models.OwnerModel
 
 @Dao
-interface UserDao {
+interface OwnerDao {
 
     @Query("SELECT * FROM user_table")
-    suspend fun getAllUsers(): List<UserModel>
+    suspend fun getAllUsers(): List<OwnerModel>
 
     @Transaction
     @Insert
-    suspend fun insertUser(newUser: UserModel)
+    suspend fun insertUser(newUser: OwnerModel)
 }
