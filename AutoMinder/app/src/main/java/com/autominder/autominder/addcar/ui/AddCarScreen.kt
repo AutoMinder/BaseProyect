@@ -42,6 +42,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.autominder.autominder.models.CarModel
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.util.Date
 
 @Composable
@@ -86,32 +87,11 @@ fun FieldsWrapper(viewModel: AddCarViewModel, navController: NavController) {
     val profileCarName: String by viewModel.profileCarName.collectAsState(initial = "")
     val carBrand: String by viewModel.carBrand.collectAsState(initial = "")
     val carModel: String by viewModel.carModel.collectAsState(initial = "")
-    val carYear: Int by viewModel.carYear.collectAsState()
-    val carKilometers: Int by viewModel.carKilometers.collectAsState()
+    val carYear: String by viewModel.carYear.collectAsState(initial = "")
+    val carKilometers: String by viewModel.carKilometers.collectAsState(initial = "")
     val carLastOilChange: String by viewModel.carLastOilChange.collectAsState("")
     val carLastMaintenance: String by viewModel.carLastMaintenance.collectAsState("")
     val carLastCoolantDate: String by viewModel.carLastCoolantDate.collectAsState("")
-
-    val newCar: CarModel by viewModel.newCar.collectAsState(
-        initial = CarModel(
-            "",
-            "",
-            "",
-            "",
-            "",
-            0,
-            0,
-            null,
-            Date(),
-            null,
-            Date(),
-            Date(),
-            null,
-            null,
-            false,
-            null
-        )
-    )
     val addCarEnable: Boolean by viewModel.addCarEnable.collectAsState(initial = false)
 
     CarName(profileCarName) {
@@ -180,7 +160,9 @@ fun FieldsWrapper(viewModel: AddCarViewModel, navController: NavController) {
             carModel, carYear, carKilometers, carLastOilChange, it, carLastCoolantDate
         )
     }
-    SaveCar(addCarEnable, navController) { viewModel.addCar(newCar) }
+    SaveCar(addCarEnable, navController) { viewModel.addCar(
+        profileCarName, carBrand,
+        carModel, carYear, carKilometers, carLastOilChange, carLastMaintenance, carLastCoolantDate) }
 }
 
 @Composable
@@ -305,7 +287,7 @@ fun CarModelMenu(
 }
 
 @Composable
-fun CarYear(carYear: Int, onAddCarChange: (Int) -> Unit) {
+fun CarYear(carYear: String, onAddCarChange: (String) -> Unit) {
 
     Box(
         modifier = Modifier
@@ -315,9 +297,9 @@ fun CarYear(carYear: Int, onAddCarChange: (Int) -> Unit) {
     ) {
         OutlinedTextField(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            value = carYear.toString(),
+            value = carYear,
             onValueChange = {
-                onAddCarChange(it.toInt())
+                onAddCarChange(it)
             },
             label = { Text(text = "Año del automovil") }
         )
@@ -325,8 +307,7 @@ fun CarYear(carYear: Int, onAddCarChange: (Int) -> Unit) {
 }
 
 @Composable
-fun CarDistance(carKilometers: Int, onAddCarChange: (Int) -> Unit) {
-    //TODO(): Hacer con dummydata y luego con la API
+fun CarDistance(carKilometers: String, onAddCarChange: (String) -> Unit) {
 
     Box(
         modifier = Modifier
@@ -335,9 +316,9 @@ fun CarDistance(carKilometers: Int, onAddCarChange: (Int) -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         OutlinedTextField(
-            value = carKilometers.toString(),
+            value = carKilometers,
             onValueChange = {
-                onAddCarChange(it.toInt())
+                onAddCarChange(it)
             },
             label = { Text(text = "Distancia recorrida del automovil") },
             placeholder = { Text(text = "Ingresar en km") },
@@ -401,7 +382,7 @@ fun CarLastOilChange(carLastOilChange: String, onAddCarChange: (String) -> Unit)
         OutlinedTextField(
             value = date.value,
             onValueChange = {
-                onAddCarChange(it)
+                onAddCarChange(date.value)
             },
 
             label = { Text(text = "Ultimo cambio de aceite") },
@@ -481,7 +462,7 @@ fun CarLastMaintenance(carLastMaintenance: String, onAddCarChange: (String) -> U
         OutlinedTextField(
             value = date.value,
             onValueChange = {
-                onAddCarChange(it)
+                onAddCarChange(date.value)
             },
 
             label = { Text(text = "Ultimo mantenimiendo") },

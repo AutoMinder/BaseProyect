@@ -1,5 +1,6 @@
 package com.autominder.autominder.models
 
+import java.time.LocalDate
 import java.util.Date
 
 data class CarModel(
@@ -8,15 +9,15 @@ data class CarModel(
     val name: String,
     val brand: String,
     val model: String,
-    val year: Int,
-    val kilometers: Int,
-    val kilometersDate: Date?,
-    val lastMaintenance: Date,
-    val nextMaintenances: Date?,
-    val lastOilChange: Date,
-    val lastCoolantDate: Date?,
-    val lastMayorTuning: Date?,
-    val lastMinorTuning: Date?,
+    val year: Int?,
+    val kilometers: Int?,
+    val kilometersDate: LocalDate?,
+    val lastMaintenance: LocalDate,
+    val nextMaintenances: LocalDate?,
+    val lastOilChange: LocalDate,
+    val lastCoolantDate: LocalDate?,
+    val lastMayorTuning: LocalDate?,
+    val lastMinorTuning: LocalDate?,
     val hidden: Boolean?,
     val errorModel: MutableList<String>?,
 )
