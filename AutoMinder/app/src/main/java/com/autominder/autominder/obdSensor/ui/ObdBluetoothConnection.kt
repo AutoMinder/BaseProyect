@@ -73,6 +73,29 @@ fun ObdSensorConnectScreen(
         }) {
             Text(text = "Enable Bluetooth")
         }
+
+        Button(onClick = { bluetoothConnection.tryUuid("00001800-0000-1000-8000-00805f9b34fb") }) {
+            Text(text = "Try UUID 1 ")
+        }
+
+        Button(onClick = { bluetoothConnection.tryUuid("00001801-0000-1000-8000-00805f9b34fb") }) {
+            Text(text = "Try UUID 2 ")
+        }
+
+        Button(onClick = { bluetoothConnection.tryUuid("0000fff0-0000-1000-8000-00805f9b34fb") }) {
+            Text(text = "Try UUID 3 ")
+        }
+        Button(onClick = { bluetoothConnection.tryUuid("00002a00-0000-1000-8000-00805f9b34fb") }) {
+            Text(text = "Try UUID 4 ")
+        }
+        Button(onClick = { bluetoothConnection.tryUuid("c2be92d0-76ed-495c-92e8-42116f56f639") }) {
+            Text(text = "Try UUID 5 ")
+        }
+        Button(onClick = { bluetoothConnection.tryUuid("00001101-0000-1000-8000-00805f9b34fb") }) {
+            Text(text = "Try UUID 6 ")
+        }
+
+
         Text(text = "Hola")
         if (!isLoading) {
             Text(text = "NO CARGO")

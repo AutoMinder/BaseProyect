@@ -13,16 +13,28 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import com.autominder.autominder.obdSensor.ui.ObdSensorViewModel
+import com.github.eltonvs.obd.command.NonNumericResponseException
+import com.github.eltonvs.obd.command.ObdCommand
 import com.github.eltonvs.obd.command.control.VINCommand
 import com.github.eltonvs.obd.command.engine.RPMCommand
+import com.github.eltonvs.obd.command.temperature.AirIntakeTemperatureCommand
 import com.github.eltonvs.obd.connection.ObdDeviceConnection
+import com.github.pires.obd.commands.control.VinCommand
 import com.github.pires.obd.commands.protocol.EchoOffCommand
 import com.github.pires.obd.commands.protocol.LineFeedOffCommand
+import com.github.pires.obd.commands.protocol.ObdRawCommand
 import com.github.pires.obd.commands.protocol.TimeoutCommand
 import com.github.pires.obd.commands.temperature.AmbientAirTemperatureCommand
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStreamReader
+import java.io.OutputStream
 import java.lang.reflect.Method
 import java.util.UUID
 
@@ -119,7 +131,7 @@ class BluetoothConnections(
                         }
                     }
                 }
-                sipudo()
+                //sipudo()
             } else {
                 Log.d("bluele", "No services found")
             }
@@ -212,7 +224,8 @@ class BluetoothConnections(
 
         if (bluetoothSocket.isConnected) {
             Log.d("bluele", "ESTA CONECTADO")
-            val obdDeviceConnection = ObdDeviceConnection(bluetoothSocket.inputStream, bluetoothSocket.outputStream)
+            val obdDeviceConnection =
+                ObdDeviceConnection(bluetoothSocket.inputStream, bluetoothSocket.outputStream)
             EchoOffCommand().run(bluetoothSocket.inputStream, bluetoothSocket.outputStream)
             LineFeedOffCommand().run(bluetoothSocket.inputStream, bluetoothSocket.outputStream)
             TimeoutCommand(62).run(bluetoothSocket.inputStream, bluetoothSocket.outputStream)
@@ -235,6 +248,73 @@ class BluetoothConnections(
     }
 
 
+    @SuppressLint("MissingPermission")
+    fun tryUuid(uuidSended: String) {
+        GlobalScope.launch(Dispatchers.IO) {
+            val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+            val bluetoothDevice = bluetoothAdapter.getRemoteDevice("00:10:CC:4F:36:03")
+            Log.d("bluele", "Device: ${bluetoothDevice.name} ${bluetoothDevice.address}")
+            val uuid = UUID.fromString(uuidSended)
+            val bluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord(uuid)
+
+
+
+
+            try {
+                bluetoothSocket.connect()
+                // Socket connection successful, proceed with communication
+
+                val inputStream = bluetoothSocket.inputStream
+                val outputStream = bluetoothSocket.outputStream
+
+                val reader = BufferedReader(InputStreamReader(inputStream))
+
+                inputStream.skip(inputStream.available().toLong())
+
+                sendCommand("ATD", outputStream, reader)
+                sendCommand("ATZ", outputStream, reader)
+                sendCommand("AT E0", outputStream, reader)
+                sendCommand("AT L0", outputStream, reader)
+                sendCommand("AT S0", outputStream, reader)
+                sendCommand("AT H0", outputStream, reader)
+                sendCommand("AT SP 0", outputStream, reader)
+
+                sendCommand("ATI", outputStream, reader)
+
+                // Activate ECU and retrieve VIN
+                sendCommand("0100", outputStream, reader) // Send a command to activate the ECU (specific command may vary depending on your vehicle)
+                sendCommand("0902", outputStream, reader)
+
+                val obdDeviceConnection = ObdDeviceConnection(inputStream, outputStream)
+                val vinCommand = VINCommand()
+
+                try {
+                    obdDeviceConnection.run(vinCommand)
+                    val response = vinCommand.name
+                    Log.d("bluele", "VIN: $response")
+                } catch (e: NonNumericResponseException) {
+                    Log.e("bluele", "Non-numeric VIN response: ${e.message}")
+                }
+
+            } catch (e: IOException) {
+                Log.e("bluele", "Socket connection failed: ${e.message}")
+            }
+        }
+    }
+
+    fun sendCommand(command: String, outputStream: OutputStream, reader: BufferedReader) {
+        try {
+            outputStream.write((command + "\r").toByteArray())
+            outputStream.flush()
+
+            // Wait for the response
+            val response = reader.readLine()
+            println("Response: $response")
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
     //**********************************************
     // Scanning function, find bluetooth le devices
     // *********************************************//
@@ -254,4 +334,8 @@ class BluetoothConnections(
             bluetoothLeScanner.stopScan(leScanCallback)
         }
     }
+}
+
+fun useSendCommand(){
+
 }
