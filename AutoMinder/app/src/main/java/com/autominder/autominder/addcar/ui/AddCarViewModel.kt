@@ -13,9 +13,11 @@ import com.autominder.autominder.models.CarModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import java.util.Date
 
 class AddCarViewModel(
@@ -52,28 +54,6 @@ class AddCarViewModel(
     private val _carLastCoolantDate = MutableStateFlow("")
     val carLastCoolantDate: StateFlow<String> = _carLastCoolantDate
 
-
-    private val _newCar = MutableStateFlow(
-        CarModel(
-            "",
-            "",
-            "",
-            "",
-            "",
-            null,
-            null,
-            LocalDate.now(),
-            LocalDate.now(),
-            LocalDate.now(),
-            LocalDate.now(),
-            LocalDate.now(),
-            LocalDate.now(),
-            LocalDate.now(),
-            false,
-            mutableListOf()
-        )
-    )
-
     private val _addCarEnable = MutableStateFlow(false)
     val addCarEnable: StateFlow<Boolean> = _addCarEnable
 
@@ -106,6 +86,7 @@ class AddCarViewModel(
         }
 
     }
+
     private fun fetchBrands() {
         viewModelScope.launch {
             try {
@@ -142,8 +123,6 @@ class AddCarViewModel(
         _carLastOilChange.value = carLastOilChange
         _carLastMaintenance.value = carLastMaintenance
 
-        //TODO(): Los parse dan el problema
-
 
         _addCarEnable.value = validFields(
             profileCarName,
@@ -166,36 +145,43 @@ class AddCarViewModel(
         carLastOilChange: String,
         carLastCoolantDate: String
     ) {
+        //TODO(): Parsear bien
 
-        val lastMaintenance = LocalDate.parse(carLastMaintenance, DateTimeFormatter.ISO_DATE)
-        val lastOilChange = LocalDate.parse(carLastOilChange, DateTimeFormatter.ISO_DATE)
-        val lastCoolantDate = LocalDate.parse(carLastCoolantDate, DateTimeFormatter.ISO_DATE)
-        val carYearParsed = carYear.toInt()
-        val carKilometersParsed = carKilometers.toInt()
+        try{
+            //val lastMaintenance = LocalDate.parse(carLastMaintenance, DateTimeFormatter.ISO_DATE)
+            //val lastOilChange = LocalDate.parse(carLastOilChange, DateTimeFormatter.ISO_DATE)
+            //val lastCoolantDate = LocalDate.parse(carLastCoolantDate, DateTimeFormatter.ISO_DATE)
 
-        _newCar.value =
-            CarModel(
-                "",
-                "",
-                profileCarName,
-                carBrand,
-                carModel,
-                carYearParsed,
-                carKilometersParsed,
-                null,
-                lastMaintenance,
-                null,
-                lastOilChange,
-                lastCoolantDate,
-                null,
-                null,
-                false,
-                mutableListOf("")
-            )
 
-        repository.addCar(_newCar.value)
-        repository.getCars()
-        Log.d("APP TAG", getCars().toString())
+            val carYearParsed = carYear.toInt()
+            val carKilometersParsed = carKilometers.toInt()
+
+            val newCar =
+                CarModel(
+                    "",
+                    "",
+                    profileCarName,
+                    carBrand,
+                    carModel,
+                    carYearParsed,
+                    carKilometersParsed,
+                    null,
+                    carLastMaintenance,
+                    null,
+                    carLastOilChange,
+                    null,
+                    null,
+                    null,
+                    false,
+                    mutableListOf("")
+                )
+
+            repository.addCar(newCar)
+            Log.d("APP TAG", getCars().toString())
+
+        } catch (e: DateTimeParseException){
+            println("Error al parsear la fecha: ${e.message}")
+        }
     }
 
     private fun getCars() = repository.getCars()

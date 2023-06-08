@@ -23,6 +23,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -148,21 +149,31 @@ fun FieldsWrapper(viewModel: AddCarViewModel, navController: NavController) {
             carModel, carYear, it, carLastOilChange, carLastMaintenance, carLastCoolantDate
         )
     }
-    CarLastOilChange(carLastOilChange) {
-        viewModel.onAddCarChange(
-            profileCarName, carBrand,
-            carModel, carYear, carKilometers, it, carLastMaintenance, carLastCoolantDate
-        )
-    }
     CarLastMaintenance(carLastMaintenance) {
         viewModel.onAddCarChange(
             profileCarName, carBrand,
-            carModel, carYear, carKilometers, carLastOilChange, it, carLastCoolantDate
+            carModel, carYear, carKilometers, it, carLastOilChange, carLastCoolantDate
         )
     }
-    SaveCar(addCarEnable, navController) { viewModel.addCar(
-        profileCarName, carBrand,
-        carModel, carYear, carKilometers, carLastOilChange, carLastMaintenance, carLastCoolantDate) }
+    CarLastOilChange(carLastOilChange) {
+        viewModel.onAddCarChange(
+            profileCarName, carBrand,
+            carModel, carYear, carKilometers, carLastMaintenance, it, carLastCoolantDate
+        )
+    }
+
+    SaveCar(addCarEnable, navController) {
+        viewModel.addCar(
+            profileCarName,
+            carBrand,
+            carModel,
+            carYear,
+            carKilometers,
+            carLastMaintenance,
+            carLastOilChange,
+            carLastCoolantDate
+        )
+    }
 }
 
 @Composable
@@ -328,10 +339,11 @@ fun CarDistance(carKilometers: String, onAddCarChange: (String) -> Unit) {
 
 
 @Composable
-fun CarLastOilChange(carLastOilChange: String, onAddCarChange: (String) -> Unit) {
+fun CarLastMaintenance(carLastMaintenance: String, onAddCarChange: (String) -> Unit) {
     //TODO(): Hacer con dummydata y luego con la API
+
     val openDialog = remember { mutableStateOf(false) }
-    val date = remember { mutableStateOf("") }
+    var date by remember { mutableStateOf(carLastMaintenance) }
     val datePickerState =
         rememberDatePickerState(initialSelectedDateMillis = System.currentTimeMillis())
 
@@ -345,8 +357,8 @@ fun CarLastOilChange(carLastOilChange: String, onAddCarChange: (String) -> Unit)
                 TextButton(
                     onClick = {
                         openDialog.value = false
-                        date.value =
-                            SimpleDateFormat("dd/MM/yyyy").format(datePickerState.selectedDateMillis)
+                        date =
+                            SimpleDateFormat("yyyy-MM-dd").format(datePickerState.selectedDateMillis)
                                 .toString()
 
                     },
@@ -371,6 +383,9 @@ fun CarLastOilChange(carLastOilChange: String, onAddCarChange: (String) -> Unit)
         }
 
     }
+    LaunchedEffect(date){
+        onAddCarChange(date)
+    }
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -380,10 +395,89 @@ fun CarLastOilChange(carLastOilChange: String, onAddCarChange: (String) -> Unit)
 
         ) {
         OutlinedTextField(
-            value = date.value,
-            onValueChange = {
-                onAddCarChange(date.value)
+            value = date,
+            onValueChange = {},
+
+            label = { Text(text = "Ultimo mantenimiendo") },
+            modifier = Modifier
+                .pointerInput(Unit) {}
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) { openDialog.value = true },
+            readOnly = true,
+            enabled = false,
+            trailingIcon = {
+                Icon(
+                    painter = painterResource(id = com.google.android.material.R.drawable.material_ic_calendar_black_24dp),
+                    contentDescription = ""
+                )
+            }
+        )
+
+
+    }
+}
+
+@Composable
+fun CarLastOilChange(carLastOilChange: String, onAddCarChange: (String) -> Unit) {
+    //TODO(): Hacer con dummydata y luego con la API
+    val openDialog = remember { mutableStateOf(false) }
+    var date by remember { mutableStateOf(carLastOilChange) }
+    val datePickerState =
+        rememberDatePickerState(initialSelectedDateMillis = System.currentTimeMillis())
+
+    if (openDialog.value) {
+        DatePickerDialog(
+            onDismissRequest = {
+                openDialog.value = false
+
             },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        openDialog.value = false
+                        date =
+                            SimpleDateFormat("yyyy-MM-dd").format(datePickerState.selectedDateMillis)
+                                .toString()
+                    },
+                ) {
+                    Text("OK")
+
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        openDialog.value = false
+                    }
+                ) {
+                    Text("Cancel")
+                }
+            }
+        ) {
+            DatePicker(
+                state = datePickerState,
+            )
+        }
+
+    }
+    
+    LaunchedEffect(date){
+        onAddCarChange(date)
+    }
+    
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .clickable { openDialog.value = true },
+        contentAlignment = Alignment.Center,
+
+        ) {
+        OutlinedTextField(
+            value = date,
+            onValueChange = {},
 
             label = { Text(text = "Ultimo cambio de aceite") },
             modifier = Modifier
@@ -406,85 +500,6 @@ fun CarLastOilChange(carLastOilChange: String, onAddCarChange: (String) -> Unit)
     }
 }
 
-@Composable
-fun CarLastMaintenance(carLastMaintenance: String, onAddCarChange: (String) -> Unit) {
-    //TODO(): Hacer con dummydata y luego con la API
-
-    val openDialog = remember { mutableStateOf(false) }
-    val date = remember { mutableStateOf("") }
-    val datePickerState =
-        rememberDatePickerState(initialSelectedDateMillis = System.currentTimeMillis())
-
-    if (openDialog.value) {
-        DatePickerDialog(
-            onDismissRequest = {
-                openDialog.value = false
-
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        openDialog.value = false
-                        date.value =
-                            SimpleDateFormat("dd/MM/yyyy").format(datePickerState.selectedDateMillis)
-                                .toString()
-
-                    },
-                ) {
-                    Text("OK")
-
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = {
-                        openDialog.value = false
-                    }
-                ) {
-                    Text("Cancel")
-                }
-            }
-        ) {
-            DatePicker(
-                state = datePickerState,
-            )
-        }
-
-    }
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .clickable { openDialog.value = true },
-        contentAlignment = Alignment.Center,
-
-        ) {
-        OutlinedTextField(
-            value = date.value,
-            onValueChange = {
-                onAddCarChange(date.value)
-            },
-
-            label = { Text(text = "Ultimo mantenimiendo") },
-            modifier = Modifier
-                .pointerInput(Unit) {}
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null
-                ) { openDialog.value = true },
-            readOnly = true,
-            enabled = false,
-            trailingIcon = {
-                Icon(
-                    painter = painterResource(id = com.google.android.material.R.drawable.material_ic_calendar_black_24dp),
-                    contentDescription = ""
-                )
-            }
-        )
-
-
-    }
-}
 
 @Composable
 fun SaveCar(addCarEnable: Boolean, navController: NavController, addCar: () -> Unit) {
