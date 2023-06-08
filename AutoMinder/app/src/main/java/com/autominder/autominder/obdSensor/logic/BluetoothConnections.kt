@@ -271,7 +271,7 @@ class BluetoothConnections(
 
                 inputStream.skip(inputStream.available().toLong())
 
-                sendCommand("ATD", outputStream, reader)
+                /*sendCommand("ATD", outputStream, reader)
                 sendCommand("ATZ", outputStream, reader)
                 sendCommand("AT E0", outputStream, reader)
                 sendCommand("AT L0", outputStream, reader)
@@ -284,6 +284,12 @@ class BluetoothConnections(
                 // Activate ECU and retrieve VIN
                 sendCommand("0100", outputStream, reader) // Send a command to activate the ECU (specific command may vary depending on your vehicle)
                 sendCommand("0902", outputStream, reader)
+
+                sendCommand("010C", outputStream, reader)
+                sendCommand("010D", outputStream, reader)
+                sendCommand("010E", outputStream, reader)*/
+                sendCommand("010F", outputStream, reader)
+
 
                 val obdDeviceConnection = ObdDeviceConnection(inputStream, outputStream)
                 val vinCommand = VINCommand()
@@ -310,6 +316,7 @@ class BluetoothConnections(
             // Wait for the response
             val response = reader.readLine()
             println("Response: $response")
+            convertHexToRpm(response)
         } catch (e: IOException) {
             e.printStackTrace()
         }
@@ -336,6 +343,14 @@ class BluetoothConnections(
     }
 }
 
-fun useSendCommand(){
-
+fun convertHexToRpm(hexValue: String): Int {
+    try {
+        val rpmHex = hexValue.substring(4) // Extract the relevant part of the response (exclude the mode and PID)
+        val rpmDec = Integer.parseInt(rpmHex, 16)
+        return rpmDec / 4 // Divide by 4 to get the actual RPM value
+    } catch (e: NumberFormatException) {
+        // Handle invalid input or empty string
+        e.printStackTrace()
+        return -1 // or any other appropriate default value
+    }
 }
