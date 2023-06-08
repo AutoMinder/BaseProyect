@@ -25,6 +25,7 @@ import com.github.pires.obd.commands.protocol.LineFeedOffCommand
 import com.github.pires.obd.commands.protocol.ObdRawCommand
 import com.github.pires.obd.commands.protocol.TimeoutCommand
 import com.github.pires.obd.commands.temperature.AmbientAirTemperatureCommand
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -33,6 +34,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
 import java.io.IOException
+import java.io.InputStream
 import java.io.InputStreamReader
 import java.io.OutputStream
 import java.lang.reflect.Method
@@ -250,57 +252,22 @@ class BluetoothConnections(
 
     @SuppressLint("MissingPermission")
     fun tryUuid(uuidSended: String) {
-        GlobalScope.launch(Dispatchers.IO) {
+        CoroutineScope(Dispatchers.IO).launch {
             val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
             val bluetoothDevice = bluetoothAdapter.getRemoteDevice("00:10:CC:4F:36:03")
             Log.d("bluele", "Device: ${bluetoothDevice.name} ${bluetoothDevice.address}")
             val uuid = UUID.fromString(uuidSended)
             val bluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord(uuid)
 
-
-
-
             try {
                 bluetoothSocket.connect()
                 // Socket connection successful, proceed with communication
-
                 val inputStream = bluetoothSocket.inputStream
                 val outputStream = bluetoothSocket.outputStream
 
-                val reader = BufferedReader(InputStreamReader(inputStream))
-
-                inputStream.skip(inputStream.available().toLong())
-
-                /*sendCommand("ATD", outputStream, reader)
-                sendCommand("ATZ", outputStream, reader)
-                sendCommand("AT E0", outputStream, reader)
-                sendCommand("AT L0", outputStream, reader)
-                sendCommand("AT S0", outputStream, reader)
-                sendCommand("AT H0", outputStream, reader)
-                sendCommand("AT SP 0", outputStream, reader)
-
-                sendCommand("ATI", outputStream, reader)
-
-                // Activate ECU and retrieve VIN
-                sendCommand("0100", outputStream, reader) // Send a command to activate the ECU (specific command may vary depending on your vehicle)
-                sendCommand("0902", outputStream, reader)
-
-                sendCommand("010C", outputStream, reader)
-                sendCommand("010D", outputStream, reader)
-                sendCommand("010E", outputStream, reader)*/
-                sendCommand("010F", outputStream, reader)
-
-
-                val obdDeviceConnection = ObdDeviceConnection(inputStream, outputStream)
-                val vinCommand = VINCommand()
-
-                try {
-                    obdDeviceConnection.run(vinCommand)
-                    val response = vinCommand.name
-                    Log.d("bluele", "VIN: $response")
-                } catch (e: NonNumericResponseException) {
-                    Log.e("bluele", "Non-numeric VIN response: ${e.message}")
-                }
+                sendCommand("ATSP0", outputStream, inputStream)
+                delay(5000)
+                sendCommand("00", outputStream, inputStream)
 
             } catch (e: IOException) {
                 Log.e("bluele", "Socket connection failed: ${e.message}")
@@ -308,18 +275,16 @@ class BluetoothConnections(
         }
     }
 
-    fun sendCommand(command: String, outputStream: OutputStream, reader: BufferedReader) {
-        try {
-            outputStream.write((command + "\r").toByteArray())
-            outputStream.flush()
+    fun sendCommand(command: String, outputStream: OutputStream, inputStream: InputStream) {
+        outputStream.write((command + "\r").toByteArray())
+        outputStream.flush()
 
-            // Wait for the response
-            val response = reader.readLine()
-            println("Response: $response")
-            convertHexToRpm(response)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
+        val buffer = ByteArray(1024)
+        val bytesRead = inputStream.read(buffer)
+
+        val response = String(buffer, 0, bytesRead ?: 0)
+
+        Log.d("bluele", "RESPONSE: $response MESSAGE: ${response}")
     }
 
     //**********************************************
@@ -345,7 +310,8 @@ class BluetoothConnections(
 
 fun convertHexToRpm(hexValue: String): Int {
     try {
-        val rpmHex = hexValue.substring(4) // Extract the relevant part of the response (exclude the mode and PID)
+        val rpmHex =
+            hexValue.substring(4) // Extract the relevant part of the response (exclude the mode and PID)
         val rpmDec = Integer.parseInt(rpmHex, 16)
         return rpmDec / 4 // Divide by 4 to get the actual RPM value
     } catch (e: NumberFormatException) {
