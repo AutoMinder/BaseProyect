@@ -3,10 +3,10 @@ package com.autominder.autominder.database.models
 import androidx.room.Embedded
 import androidx.room.Relation
 
-data class OwnerAndCarModel(
-    @Embedded val user: OwnerModel,
+data class UserWithCars(
+    @Embedded val user: UserModel,
     @Relation(
-        parentColumn = "userId",
-        entityColumn = "owner"
+        parentColumn = "user_id",
+        entityColumn = "owner_id"
     ) val cars: List<CarModel>
 )
