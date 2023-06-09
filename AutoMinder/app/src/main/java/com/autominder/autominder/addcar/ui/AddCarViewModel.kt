@@ -13,12 +13,8 @@ import com.autominder.autominder.models.CarModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
-import java.util.Date
 
 class AddCarViewModel(
     private val repository: AddCarRepository,
@@ -122,6 +118,7 @@ class AddCarViewModel(
         _carKilometers.value = carKilometers
         _carLastOilChange.value = carLastOilChange
         _carLastMaintenance.value = carLastMaintenance
+        _carLastCoolantDate.value = carLastCoolantDate
 
 
         _addCarEnable.value = validFields(
@@ -131,7 +128,8 @@ class AddCarViewModel(
             carYear,
             carKilometers,
             carLastOilChange,
-            carLastMaintenance
+            carLastMaintenance,
+            carLastCoolantDate
         )
     }
 
@@ -145,13 +143,8 @@ class AddCarViewModel(
         carLastOilChange: String,
         carLastCoolantDate: String
     ) {
-        //TODO(): Parsear bien
 
         try{
-            //val lastMaintenance = LocalDate.parse(carLastMaintenance, DateTimeFormatter.ISO_DATE)
-            //val lastOilChange = LocalDate.parse(carLastOilChange, DateTimeFormatter.ISO_DATE)
-            //val lastCoolantDate = LocalDate.parse(carLastCoolantDate, DateTimeFormatter.ISO_DATE)
-
 
             val carYearParsed = carYear.toInt()
             val carKilometersParsed = carKilometers.toInt()
@@ -169,7 +162,7 @@ class AddCarViewModel(
                     carLastMaintenance,
                     null,
                     carLastOilChange,
-                    null,
+                    carLastCoolantDate,
                     null,
                     null,
                     false,
@@ -193,9 +186,10 @@ class AddCarViewModel(
         carYear: String,
         carKilometers: String,
         carLastOilChange: String,
-        carLastMaintenance: String
+        carLastMaintenance: String,
+        carLastCoolantDate: String
     ): Boolean =
-        profileCarName != "" && carBrand != "" && carModel != "" && carYear != "" && carKilometers != "" //&& carLastOilChange != "" && carLastMaintenance != ""
+        profileCarName != "" && carBrand != "" && carModel != "" && carYear != "" && carKilometers != "" && carLastOilChange != "" && carLastMaintenance != "" && carLastCoolantDate != ""
 
     companion object {
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {

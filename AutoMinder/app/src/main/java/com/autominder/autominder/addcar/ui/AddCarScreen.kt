@@ -162,6 +162,13 @@ fun FieldsWrapper(viewModel: AddCarViewModel, navController: NavController) {
         )
     }
 
+    CarLastCoolant(carLastCoolantDate) {
+        viewModel.onAddCarChange(
+            profileCarName, carBrand,
+            carModel, carYear, carKilometers, carLastMaintenance, carLastOilChange, it
+        )
+    }
+
     SaveCar(addCarEnable, navController) {
         viewModel.addCar(
             profileCarName,
@@ -309,8 +316,9 @@ fun CarYear(carYear: String, onAddCarChange: (String) -> Unit) {
         OutlinedTextField(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             value = carYear,
-            onValueChange = {
-                onAddCarChange(it)
+            onValueChange = {newValue ->
+                val numericValue = newValue.filter { it.isDigit() }
+                onAddCarChange(numericValue)
             },
             label = { Text(text = "Año del automovil") }
         )
@@ -328,8 +336,9 @@ fun CarDistance(carKilometers: String, onAddCarChange: (String) -> Unit) {
     ) {
         OutlinedTextField(
             value = carKilometers,
-            onValueChange = {
-                onAddCarChange(it)
+            onValueChange = {newValue ->
+                val numericValue = newValue.filter { it.isDigit() }
+                onAddCarChange(numericValue)
             },
             label = { Text(text = "Distancia recorrida del automovil") },
             placeholder = { Text(text = "Ingresar en km") },
@@ -480,6 +489,87 @@ fun CarLastOilChange(carLastOilChange: String, onAddCarChange: (String) -> Unit)
             onValueChange = {},
 
             label = { Text(text = "Ultimo cambio de aceite") },
+            modifier = Modifier
+                .pointerInput(Unit) {}
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) { openDialog.value = true },
+            readOnly = true,
+            enabled = false,
+            trailingIcon = {
+                Icon(
+                    painter = painterResource(id = com.google.android.material.R.drawable.material_ic_calendar_black_24dp),
+                    contentDescription = ""
+                )
+            }
+        )
+
+
+    }
+}
+
+@Composable
+fun CarLastCoolant(carLastCoolant: String, onAddCarChange: (String) -> Unit) {
+    //TODO(): Hacer con dummydata y luego con la API
+    val openDialog = remember { mutableStateOf(false) }
+    var date by remember { mutableStateOf(carLastCoolant) }
+    val datePickerState =
+        rememberDatePickerState(initialSelectedDateMillis = System.currentTimeMillis())
+
+    if (openDialog.value) {
+        DatePickerDialog(
+            onDismissRequest = {
+                openDialog.value = false
+
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        openDialog.value = false
+                        date =
+                            SimpleDateFormat("yyyy-MM-dd").format(datePickerState.selectedDateMillis)
+                                .toString()
+                    },
+                ) {
+                    Text("OK")
+
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        openDialog.value = false
+                    }
+                ) {
+                    Text("Cancel")
+                }
+            }
+        ) {
+            DatePicker(
+                state = datePickerState,
+            )
+        }
+
+    }
+
+    LaunchedEffect(date){
+        onAddCarChange(date)
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .clickable { openDialog.value = true },
+        contentAlignment = Alignment.Center,
+
+        ) {
+        OutlinedTextField(
+            value = date,
+            onValueChange = {},
+
+            label = { Text(text = "Ultimo cambio de refrigerante") },
             modifier = Modifier
                 .pointerInput(Unit) {}
                 .clickable(
