@@ -261,13 +261,20 @@ class BluetoothConnections(
 
             try {
                 bluetoothSocket.connect()
+                delay(5000)
                 // Socket connection successful, proceed with communication
                 val inputStream = bluetoothSocket.inputStream
                 val outputStream = bluetoothSocket.outputStream
+                delay(1000)
 
-                sendCommand("ATSP0", outputStream, inputStream)
-                delay(5000)
-                sendCommand("00", outputStream, inputStream)
+                sendCommand("ATZ", outputStream, inputStream)
+                delay(10000)
+                sendCommand("ATSP0\r", outputStream, inputStream)
+                delay(10000)
+                val obdDeviceConnection =
+                    ObdDeviceConnection(inputStream, outputStream)
+                val response = obdDeviceConnection.run(VINCommand())
+                Log.d("bluele", "LA RESPUESTA DEL OBD:::: $response")
 
             } catch (e: IOException) {
                 Log.e("bluele", "Socket connection failed: ${e.message}")
@@ -279,12 +286,12 @@ class BluetoothConnections(
         outputStream.write((command + "\r").toByteArray())
         outputStream.flush()
 
-        val buffer = ByteArray(1024)
+        val buffer = ByteArray(2056)
         val bytesRead = inputStream.read(buffer)
 
-        val response = String(buffer, 0, bytesRead ?: 0)
+        val response = String(buffer, 0, bytesRead ?: 0).trim()
 
-        Log.d("bluele", "RESPONSE: $response MESSAGE: ${response}")
+        Log.d("bluele", "RESPONSE: $response")
     }
 
     //**********************************************
