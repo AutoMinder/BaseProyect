@@ -50,7 +50,6 @@ class AutoMinderApplication : Application() {
     val carRepository: CarRepository by lazy{
         CarRepository(database.carDao())
     }
-        CarMaintenanceRepository(myCarsdummy)
 
     val ownerAndCarRepository: OwnerAndCarRepository by lazy{
         OwnerAndCarRepository(database.ownerAndCarDao())

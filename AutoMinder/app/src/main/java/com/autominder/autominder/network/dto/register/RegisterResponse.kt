@@ -1,6 +1,7 @@
 package com.autominder.autominder.network.dto.register
 
+import com.google.gson.annotations.SerializedName
+
 data class RegisterResponse(
-    val email: String,
-    val password: String,
+    @SerializedName("message") val message: String
 )
