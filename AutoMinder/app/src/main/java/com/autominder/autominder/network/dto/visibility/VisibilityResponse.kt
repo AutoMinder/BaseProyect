@@ -1,5 +1,7 @@
 package com.autominder.autominder.network.dto.visibility
 
+import com.google.gson.annotations.SerializedName
+
 data class VisibilityResponse(
-    val posts: List<String>
+    @SerializedName("message") val message: String
 )
