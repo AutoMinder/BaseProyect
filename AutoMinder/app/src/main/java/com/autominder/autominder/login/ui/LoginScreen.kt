@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.CoroutineScope
@@ -37,11 +38,12 @@ import kotlinx.coroutines.launch
 @Preview(showBackground = true)
 fun LoginScreenPreview() {        //TODO(): Cambiar ruta de navegacion
 
-    val viewModel = LoginViewModel()
+
+    val viewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory)
+
     val navController = rememberNavController()
     LoginScreen(viewModel, navController)
 }
-
 
 
 @Composable

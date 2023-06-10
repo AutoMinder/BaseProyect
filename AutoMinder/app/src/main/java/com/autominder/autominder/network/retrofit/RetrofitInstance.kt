@@ -23,4 +23,7 @@ object RetrofitInstance {
         return retrofit.create(AutominderApi::class.java)
     }
 
+
+
+
 }

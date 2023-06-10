@@ -1,6 +1,7 @@
 package com.autominder.autominder.database.models
 
 import androidx.room.Embedded
+import androidx.room.Entity
 import androidx.room.Relation
 
 data class UserWithCars(
