@@ -20,5 +20,4 @@ data class CarModel(
     val lastMinorTuning: String?,
     val hidden: Boolean?,
     val errorModel: MutableList<String>?,
-    val model: String,
 )
