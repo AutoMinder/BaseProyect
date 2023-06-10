@@ -27,15 +27,17 @@ class CarInfoViewModel(
             year = 0,
             id = "",
             kilometers = 0,
-            lastOilChange = Date(),
-            nextMaintenances = Date(),
-            kilometersDate = Date(),
+            lastOilChange = "",
+            nextMaintenances = "",
+            kilometersDate = "",
             errorModel = null,
             hidden = false,
             lastCoolantDate = null,
             lastMayorTuning = null,
             lastMinorTuning = null,
-            model = ""
+            lastMaintenance = "",
+            model = "",
+            vin = ""
         )
     )
     val carInfoList: StateFlow<CarModel> = _carInfoList

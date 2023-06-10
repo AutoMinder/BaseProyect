@@ -48,9 +48,9 @@ fun NavigationHost(
         modifier = Modifier.padding(8.dp),
         startDestination = startDestination
     ) {
-        composable("login") {
-            LoginScreen(LoginViewModel(), navController)
-        }
+        /*composable("login") {
+            LoginScreen(navController = navController, viewModel = LoginViewModel())
+        }*/
         composable("register") {
             RegisterScreen()
         }

@@ -4,11 +4,10 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.Relation
 
-@Entity(tableName = "owner_table")
-data class OwnerAndCarModel(
-    @Embedded val user: OwnerModel,
+data class UserWithCars(
+    @Embedded val user: UserModel,
     @Relation(
-        parentColumn = "userId",
-        entityColumn = "owner"
+        parentColumn = "user_id",
+        entityColumn = "owner_id"
     ) val cars: List<CarModel>
 )
