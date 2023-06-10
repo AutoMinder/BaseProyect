@@ -1,4 +1,4 @@
-package com.autominder.autominder.database.repository
+package com.autominder.autominder.network.RepositoryCredentials
 
 import com.autominder.autominder.network.ApiResponse
 import com.autominder.autominder.network.dto.login.LoginRequest

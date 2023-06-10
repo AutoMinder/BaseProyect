@@ -3,7 +3,7 @@ package com.autominder.autominder
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import com.autominder.autominder.database.repository.CredentialsRepository
+import com.autominder.autominder.network.RepositoryCredentials.CredentialsRepository
 import com.autominder.autominder.network.retrofit.RetrofitInstance
 
 class RetrofitApplication : Application() {

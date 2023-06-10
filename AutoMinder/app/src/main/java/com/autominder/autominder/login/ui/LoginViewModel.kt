@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.autominder.autominder.RetrofitApplication
-import com.autominder.autominder.database.repository.CredentialsRepository
+import com.autominder.autominder.network.RepositoryCredentials.CredentialsRepository
 import com.autominder.autominder.network.ApiResponse
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
