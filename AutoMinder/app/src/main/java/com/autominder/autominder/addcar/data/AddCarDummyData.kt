@@ -1,11 +1,27 @@
 package com.autominder.autominder.addcar.data
 
-val car1 =
-    CarModel("Carro de Rene", "Toyota", "Corolla", "2018", "80000", "01-01-2021", "01-01-2021")
-val car2 =
-    CarModel("Carro de Jose", "Nissan", "Sentra", "2015", "70000", "01-01-2021", "01-01-2021")
+import com.autominder.autominder.models.CarModel
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Calendar
+import java.util.Date
 
-val carsDummy = mutableListOf(car1, car2)
+fun generateDummyDate(): Date {
+    val calendar = Calendar.getInstance()
+    calendar.set(Calendar.YEAR, 2023)
+    calendar.set(Calendar.MONTH, Calendar.JUNE)
+    calendar.set(Calendar.DAY_OF_MONTH, 7)
+    return calendar.time
+}
+
+
+private val defaultDate = generateDummyDate()
+
+val car1 =
+    CarModel("1","1","Carro de Juan", "Toyota", "Corolla",2019, 70000, "defaultDate", "defaultDate", "defaultDate", "defaultDate", "defaultDate", "defaultDate", "defaultDate", false, mutableListOf("sdasdasd", "asdasdasd"))
+
+val carsDummy = mutableListOf(car1)
 
 val brands = mutableListOf("Toyota", "Nissan", "Hyundai", "Isuzu", "BMW", "Mazda")
 val models = mutableListOf("Yaris", "Corolla", "Prius", "Camry", "Tacoma")
