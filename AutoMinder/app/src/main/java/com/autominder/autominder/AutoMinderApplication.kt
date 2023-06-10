@@ -11,8 +11,7 @@ import com.autominder.autominder.carinfo.data.CarMaintenanceRepository
 import com.autominder.autominder.carinfo.data.dummyCarMaintenanceData
 import com.autominder.autominder.database.AutominderDatabase
 import com.autominder.autominder.database.repository.CarRepository
-import com.autominder.autominder.database.repository.OwnerAndCarRepository
-import com.autominder.autominder.database.repository.OwnerRepository
+import com.autominder.autominder.database.repository.UserRepository
 
 import com.autominder.autominder.myCars.data.MyCarsRepository
 import com.autominder.autominder.myCars.data.myCarsdummy
@@ -32,25 +31,20 @@ class AutoMinderApplication : Application() {
 
     }
     val CarMaintenanceRepository: CarMaintenanceRepository by lazy {
-        CarMaintenanceRepository(dummyCarMaintenanceData)
+//        CarMaintenanceRepository(dummyCarMaintenanceData) -   CHEQUEAR ESTE CAMPO, DA ERROR
+        TODO()
     }
 
-    //  DATABASE INSTANCE
+    //  DATABASE INSTANCES
     private val database: AutominderDatabase by lazy {
         AutominderDatabase.newInstance(this)
     }
 
-    val ownerRepository: OwnerRepository by lazy{
-        OwnerRepository(database.ownerDao())
+    val userRepository: UserRepository by lazy{
+        UserRepository(database.ownerDao())
     }
 
     val carRepository: CarRepository by lazy{
         CarRepository(database.carDao())
     }
-        CarMaintenanceRepository(myCarsdummy)
-
-    val ownerAndCarRepository: OwnerAndCarRepository by lazy{
-        OwnerAndCarRepository(database.ownerAndCarDao())
-    }
-
 }

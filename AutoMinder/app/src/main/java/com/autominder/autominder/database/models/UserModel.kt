@@ -5,15 +5,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "user_table")
-data class OwnerModel(
-    @PrimaryKey(autoGenerate = true) val userId: Long,
+data class UserModel(
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "user_id") val userId: Long,
     @ColumnInfo(name = "email") val email : String,
     @ColumnInfo(name = "username") val username : String
-) {
-    constructor(email:String, username: String) :
-            this(
-                0,
-                email,
-                username
-            )
-}
+)

@@ -5,17 +5,17 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.autominder.autominder.database.dao.CarDao
-import com.autominder.autominder.database.dao.OwnerAndCarDao
-import com.autominder.autominder.database.dao.OwnerDao
+import com.autominder.autominder.database.dao.UserDao
 import com.autominder.autominder.database.models.CarModel
-import com.autominder.autominder.database.models.OwnerAndCarModel
-import com.autominder.autominder.database.models.OwnerModel
+import com.autominder.autominder.database.models.UserWithCars
+import com.autominder.autominder.database.models.UserModel
 
-@Database(entities = [CarModel::class, OwnerModel::class, OwnerAndCarModel::class], version = 1)
+@Database(entities = [CarModel::class, UserModel::class], version = 1, exportSchema = false)
 abstract class AutominderDatabase: RoomDatabase() {
+
+    //  DAOs declaration
     abstract fun carDao(): CarDao
-    abstract fun ownerDao(): OwnerDao
-    abstract fun ownerAndCarDao(): OwnerAndCarDao
+    abstract fun ownerDao(): UserDao
 
     companion object{
        @Volatile
