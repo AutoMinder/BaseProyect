@@ -52,9 +52,7 @@ class AutoMinderApplication : Application() {
         CarRepository(database.carDao())
     }
 
-    val appContext: Context by lazy{
-        applicationContext
-    }
+
     //RETROFIT
 
     private val prefs: SharedPreferences by lazy{
