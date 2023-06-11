@@ -17,6 +17,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -70,7 +71,8 @@ fun LoginScreen(
         Login(
             Modifier
                 .align(Alignment.Center)
-                .fillMaxSize(), viewModel,
+                .fillMaxSize(),
+            viewModel,
             navController
         )
     }
@@ -132,6 +134,12 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
     }
 
 
+}
+
+@Composable
+fun showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
+    val context = LocalContext.current
+    Toast.makeText(context, message, duration).show()
 }
 
 @Composable

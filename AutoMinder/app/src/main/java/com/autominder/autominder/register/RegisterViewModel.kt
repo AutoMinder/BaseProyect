@@ -40,7 +40,7 @@ class RegisterViewModel(private val repository: CredentialsRepository) : ViewMod
     val status: MutableLiveData<RegisterUiStatus>
         get() = _status
 
-    private fun register(name: String, email: String, password: String) {
+    fun register(name: String, email: String, password: String) {
         viewModelScope.launch {
             _status.postValue(
                 when (val response = repository.register(name, email, password)) {
@@ -95,6 +95,8 @@ class RegisterViewModel(private val repository: CredentialsRepository) : ViewMod
                 password,
                 passwordConfirm
             )
+
+
     }
 
     private fun isValidPassword(password: String): Boolean = password.length >= 8

@@ -52,7 +52,7 @@ fun NavigationHost(
             LoginScreen(navController = navController)
         }
         composable("register") {
-            RegisterScreen()
+            RegisterScreen(navController = navController)
         }
         composable("forgot_password") {
 
