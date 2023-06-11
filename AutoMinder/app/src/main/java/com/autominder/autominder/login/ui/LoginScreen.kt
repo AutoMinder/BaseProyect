@@ -1,5 +1,7 @@
 package com.autominder.autominder.login.ui
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,22 +34,27 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.autominder.autominder.AutoMinderApplication
+import com.autominder.autominder.RetrofitApplication
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-@Composable
-@Preview(showBackground = true)
-fun LoginScreenPreview() {        //TODO(): Cambiar ruta de navegacion
+
+
+/*fun LoginScreenPreview() {        //TODO(): Cambiar ruta de navegacion
 
 
     val viewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory)
 
     val navController = rememberNavController()
     LoginScreen(viewModel, navController)
-}
+}*/
 
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel, navController: NavHostController) {
+fun LoginScreen(
+    navController: NavHostController,
+    viewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory)
+) {
     Box(
         Modifier
             .fillMaxSize()
@@ -68,7 +75,9 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
     val password: String by viewModel.password.observeAsState(initial = "")
     val loginEnable: Boolean by viewModel.loginEnabled.observeAsState(initial = false)
     val isLoading: Boolean by viewModel.isLoading.observeAsState(initial = false)
+    val status: LoginUiStatus by viewModel.status.observeAsState(initial = LoginUiStatus.Resume)
     val coroutineScope = rememberCoroutineScope()
+
 
 
     if (isLoading) {
@@ -81,7 +90,7 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
             HeaderTitle()
             Spacer(modifier = Modifier.padding(40.dp))
 
-            LoginBox(email, viewModel, password, loginEnable, coroutineScope, navController)
+            LoginBox(email, viewModel, password, loginEnable, coroutineScope, navController, status)
 
             Spacer(modifier = Modifier.padding(40.dp))
             RegisterBox(navController)
@@ -110,6 +119,7 @@ fun LoginBox(
     loginEnable: Boolean,
     coroutineScope: CoroutineScope,
     navController: NavHostController,
+    status: LoginUiStatus,
 ) {
 
     Card(
@@ -136,6 +146,25 @@ fun LoginBox(
             LoginButton(loginEnable) {
                 coroutineScope.launch {
                     viewModel.OnLoginSelected(email, password)
+                    Log.d("LoginScreen", "email: $email, password: $password")
+
+                    if (status is LoginUiStatus.Success) {
+                        val token = status.token
+                        val app = AutoMinderApplication()
+                        app.saveAuthToken(token)
+                        navController.navigate("principal_menu")
+                        viewModel.clearData()
+                        viewModel.clearStatus()
+                    } else if (status is LoginUiStatus.Error) {
+                        Log.d(
+                            "LoginScreen",
+                            "Error al iniciar sesion, excepcion: ${status.exception}"
+                        )
+                    } else if (status is LoginUiStatus.Resume) {
+                        Log.d("LoginScreen", "Resume")
+                    } else if (status is LoginUiStatus.ErrorWithMessage) {
+                        Log.d("LoginScreen", "error with message")
+                    }
                 }
 
             }

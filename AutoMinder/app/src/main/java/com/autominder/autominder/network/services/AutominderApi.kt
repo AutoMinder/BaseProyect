@@ -18,33 +18,33 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface AutominderApi {
-    @POST("/auth/signin")
+    @POST("auth/signin")
     suspend fun login(@Body credentials: LoginRequest): LoginResponse
 
-    @POST("/auth/signup")
+    @POST("auth/signup")
     suspend fun register(@Body credentials: RegisterRequest): RegisterResponse
 
 
 
     // TODO() Desarrollar pedir informacion de usuario
-    @GET("/auth/whoami")
+    @GET("auth/whoami")
     suspend fun whoami(): String
 
 
 
 
-    @POST("/post")
+    @POST("post")
     suspend fun create(@Body credentials: CreateRequest): CreateResponse
 
     // TODO() Desarrollar pedir carros propios
 
-    @GET("/post/own")
+    @GET("post/own")
     suspend fun ownCars(): String
 
 
 
 
-    @PATCH("/post/visibility/{post_id}")
+    @PATCH("post/visibility/{post_id}")
     suspend fun visibility(@Path("post_id") post_id: String): VisibilityResponse
 
 

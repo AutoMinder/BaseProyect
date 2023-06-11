@@ -1,5 +1,6 @@
 package com.autominder.autominder.network.RepositoryCredentials
 
+import android.util.Log
 import com.autominder.autominder.network.ApiResponse
 import com.autominder.autominder.network.dto.login.LoginRequest
 import com.autominder.autominder.network.dto.login.LoginResponse
@@ -12,9 +13,10 @@ import java.io.IOException
 class CredentialsRepository(private val api: AutominderApi) {
 
     suspend fun login(email: String, password: String): ApiResponse<String> {
+        Log.d("CredentialsRepository", "login: $email, $password")
         return try {
             val response: LoginResponse = api.login(LoginRequest(email, password))
-            return ApiResponse.Success(response.token)
+            return ApiResponse.Success(response.tokens)
         } catch (e: HttpException) {
             if (e.code() == 400) {
                 return ApiResponse.ErrorWithMessage("Credenciales incorrectas, email or password")

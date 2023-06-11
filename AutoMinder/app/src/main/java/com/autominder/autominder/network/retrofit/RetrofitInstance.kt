@@ -4,7 +4,7 @@ import com.autominder.autominder.network.services.AutominderApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-const val BASE_URL = "http://autominder.tech/api"
+const val BASE_URL = "https://autominder.tech/api/"
 
 object RetrofitInstance {
 

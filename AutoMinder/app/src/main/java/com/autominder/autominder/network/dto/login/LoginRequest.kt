@@ -1,6 +1,6 @@
 package com.autominder.autominder.network.dto.login
 
 data class LoginRequest(
-    val email: String,
+    val identifier: String,
     val password: String
 )

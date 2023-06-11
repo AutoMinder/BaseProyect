@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.autominder.autominder.AutoMinderApplication
 import com.autominder.autominder.RetrofitApplication
 import com.autominder.autominder.network.ApiResponse
 import com.autominder.autominder.network.RepositoryCredentials.CredentialsRepository
@@ -104,7 +105,7 @@ class RegisterViewModel(private val repository: CredentialsRepository) : ViewMod
     companion object{
         val Factory = viewModelFactory {
             initializer {
-                val app = this[APPLICATION_KEY] as RetrofitApplication
+                val app = this[APPLICATION_KEY] as AutoMinderApplication
                 RegisterViewModel(app.credentialsRepository)
             }
         }
