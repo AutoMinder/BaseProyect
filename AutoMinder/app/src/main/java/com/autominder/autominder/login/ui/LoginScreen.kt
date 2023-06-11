@@ -148,22 +148,31 @@ fun LoginBox(
                     viewModel.OnLoginSelected(email, password)
                     Log.d("LoginScreen", "email: $email, password: $password")
 
-                    if (status is LoginUiStatus.Success) {
-                        val token = status.token
-                        val app = AutoMinderApplication()
-                        app.saveAuthToken(token)
-                        navController.navigate("principal_menu")
-                        viewModel.clearData()
-                        viewModel.clearStatus()
-                    } else if (status is LoginUiStatus.Error) {
-                        Log.d(
-                            "LoginScreen",
-                            "Error al iniciar sesion, excepcion: ${status.exception}"
-                        )
-                    } else if (status is LoginUiStatus.Resume) {
-                        Log.d("LoginScreen", "Resume")
-                    } else if (status is LoginUiStatus.ErrorWithMessage) {
-                        Log.d("LoginScreen", "error with message")
+
+                    when (status) {
+                        is LoginUiStatus.Success -> {
+                            val token = status.token
+                            val app = AutoMinderApplication()
+                            app.saveAuthToken(token)
+                            navController.navigate("principal_menu")
+                            viewModel.clearData()
+                            viewModel.clearStatus()
+                        }
+
+                        is LoginUiStatus.Error -> {
+                            Log.d(
+                                "LoginScreen",
+                                "Error al iniciar sesion, excepcion: ${status.exception}"
+                            )
+                        }
+
+                        is LoginUiStatus.Resume -> {
+                            Log.d("LoginScreen", "Resume")
+                        }
+
+                        is LoginUiStatus.ErrorWithMessage -> {
+                            Log.d("LoginScreen", "error with message")
+                        }
                     }
                 }
 

@@ -40,7 +40,6 @@ class LoginViewModel(private val repository: CredentialsRepository) : ViewModel(
                     is ApiResponse.Error -> LoginUiStatus.Error(response.exception)
                     is ApiResponse.ErrorWithMessage -> LoginUiStatus.ErrorWithMessage(response.message)
                     is ApiResponse.Success -> LoginUiStatus.Success(response.data)
-
                 }
             )
             _isLoading.value = false

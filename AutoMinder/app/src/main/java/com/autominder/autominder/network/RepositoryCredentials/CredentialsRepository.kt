@@ -16,7 +16,7 @@ class CredentialsRepository(private val api: AutominderApi) {
         Log.d("CredentialsRepository", "login: $email, $password")
         return try {
             val response: LoginResponse = api.login(LoginRequest(email, password))
-            return ApiResponse.Success(response.tokens)
+            return ApiResponse.Success(response.token)
         } catch (e: HttpException) {
             if (e.code() == 400) {
                 return ApiResponse.ErrorWithMessage("Credenciales incorrectas, email or password")
