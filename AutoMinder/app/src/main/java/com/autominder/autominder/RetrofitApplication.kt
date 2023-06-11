@@ -11,7 +11,7 @@ class RetrofitApplication : Application() {
     //RETROFIT
 
     private val prefs: SharedPreferences by lazy{
-        getSharedPreferences("autominder", Context.MODE_PRIVATE)
+        getSharedPreferences(USER_TOKEN, Context.MODE_PRIVATE)
     }
 
     private fun getAPIService() = with(RetrofitInstance){
