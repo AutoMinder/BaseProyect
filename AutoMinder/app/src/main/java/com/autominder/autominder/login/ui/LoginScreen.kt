@@ -19,11 +19,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -31,12 +35,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.autominder.autominder.AutoMinderApplication
 import com.autominder.autominder.RetrofitApplication
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -53,7 +59,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginScreen(
     navController: NavHostController,
-    viewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory)
+    viewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory),
+    application: AutoMinderApplication = AutoMinderApplication()
 ) {
     Box(
         Modifier
@@ -75,16 +82,43 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
     val password: String by viewModel.password.observeAsState(initial = "")
     val loginEnable: Boolean by viewModel.loginEnabled.observeAsState(initial = false)
     val isLoading: Boolean by viewModel.isLoading.observeAsState(initial = false)
-    val status: LoginUiStatus by viewModel.status.observeAsState(initial = LoginUiStatus.Resume)
+    val status by viewModel.status.observeAsState(initial = LoginUiStatus.Resume)
     val coroutineScope = rememberCoroutineScope()
-
-
+    val application: AutoMinderApplication = LocalContext.current.applicationContext as AutoMinderApplication
 
     if (isLoading) {
         Box(modifier = Modifier.fillMaxSize()) {
             CircularProgressIndicator(Modifier.align(Alignment.Center))
         }
     } else {
+        val lifecycle = LocalLifecycleOwner.current
+        LaunchedEffect(lifecycle) {
+            viewModel.status.observe(lifecycle) { status ->
+                when (status) {
+                    is LoginUiStatus.Success -> {
+                        val token = status.token
+                        viewModel.updateToken(token)
+                        Log.d("LoginScreen", "token: $token")
+                        application.saveAuthToken(token)
+
+                        navController.navigate("principal_menu")
+                    }
+
+                    is LoginUiStatus.ErrorWithMessage -> {
+
+                    }
+
+                    is LoginUiStatus.Error -> {
+
+                    }
+
+                    else -> {}
+                }
+
+            }
+        }
+
+
         Column(modifier) {
 
             HeaderTitle()
@@ -143,36 +177,15 @@ fun LoginBox(
             ForgotPassword(navController)
             Spacer(modifier = Modifier.padding(8.dp))
 
+            val lifecycle = LocalLifecycleOwner.current
             LoginButton(loginEnable) {
                 coroutineScope.launch {
-                    viewModel.OnLoginSelected(email, password)
+                    viewModel.login(email, password)
+
                     Log.d("LoginScreen", "email: $email, password: $password")
-
-
-                    when (status) {
-                        is LoginUiStatus.Success -> {
-                            val token = status.token
-                            val app = AutoMinderApplication()
-                            app.saveAuthToken(token)
-                            navController.navigate("principal_menu")
-                            viewModel.clearData()
-                            viewModel.clearStatus()
-                        }
-
-                        is LoginUiStatus.Error -> {
-                            Log.d(
-                                "LoginScreen",
-                                "Error al iniciar sesion, excepcion: ${status.exception}"
-                            )
-                        }
-
-                        is LoginUiStatus.Resume -> {
-                            Log.d("LoginScreen", "Resume")
-                        }
-
-                        is LoginUiStatus.ErrorWithMessage -> {
-                            Log.d("LoginScreen", "error with message")
-                        }
+                    coroutineScope.launch {
+                        delay(1000)
+                        viewModel.login(email, password)
                     }
                 }
 
@@ -250,7 +263,7 @@ fun LoginButton(loginEnable: Boolean, onLoginSelected: () -> Unit) {
         enabled = loginEnable,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 0.dp, bottom = 0.dp, start = 16.dp, end = 16.dp)
+            .padding(top = 0.dp, bottom = 0.dp, start = 16.dp, end = 16.dp),
     ) {
         Text(text = "Iniciar sesión")
     }

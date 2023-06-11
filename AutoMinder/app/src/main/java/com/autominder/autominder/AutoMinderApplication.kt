@@ -52,7 +52,9 @@ class AutoMinderApplication : Application() {
         CarRepository(database.carDao())
     }
 
-
+    val appContext: Context by lazy{
+        applicationContext
+    }
     //RETROFIT
 
     private val prefs: SharedPreferences by lazy{
@@ -64,7 +66,7 @@ class AutoMinderApplication : Application() {
         getLoginService()
     }
 
-    private fun getToken() = prefs.getString(USER_TOKEN, "")!!
+    fun getToken():String = prefs.getString(USER_TOKEN, "")!!
 
     val credentialsRepository: CredentialsRepository by lazy {
         CredentialsRepository(getAPIService())

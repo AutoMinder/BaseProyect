@@ -27,16 +27,19 @@ class LoginViewModel(private val repository: CredentialsRepository) : ViewModel(
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
+    private val _token = MutableLiveData<String>()
+    val token: LiveData<String> = _token
 
-    private val _status =  MutableLiveData<LoginUiStatus>(LoginUiStatus.Resume)
+
+    private val _status = MutableLiveData<LoginUiStatus>(LoginUiStatus.Resume)
     val status: MutableLiveData<LoginUiStatus> = _status
 
 
-    private fun login(email: String, password: String){
+    fun login(email: String, password: String) {
         viewModelScope.launch {
             _isLoading.value = true
             _status.postValue(
-                when(val response = repository.login(email, password)){
+                when (val response = repository.login(email, password)) {
                     is ApiResponse.Error -> LoginUiStatus.Error(response.exception)
                     is ApiResponse.ErrorWithMessage -> LoginUiStatus.ErrorWithMessage(response.message)
                     is ApiResponse.Success -> LoginUiStatus.Success(response.data)
@@ -46,8 +49,8 @@ class LoginViewModel(private val repository: CredentialsRepository) : ViewModel(
         }
     }
 
-    suspend fun onLogin(){
-        if(!validateData()) {
+    suspend fun onLogin() {
+        if (!validateData()) {
             _status.value = LoginUiStatus.ErrorWithMessage("Invalid data")
             return
         }
@@ -74,6 +77,10 @@ class LoginViewModel(private val repository: CredentialsRepository) : ViewModel(
         _status.value = LoginUiStatus.Resume
     }
 
+    private fun updateStatus(result: LoginUiStatus) {
+        _status.value = result
+    }
+
     fun onLoginChange(email: String, password: String) {
         _email.value = email
         _password.value = password
@@ -86,12 +93,17 @@ class LoginViewModel(private val repository: CredentialsRepository) : ViewModel(
 
     suspend fun OnLoginSelected(email: String, password: String) {
         login(email, password)
+
     }
 
+    fun updateToken(token: String) {
+        _token.value = token
+    }
 
     fun setStatus(status: LoginUiStatus) {
         _status.value = status
     }
+
     companion object {
         val Factory = viewModelFactory {
             initializer {
