@@ -7,12 +7,15 @@ import android.app.Application
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
+import android.companion.BluetoothLeDeviceFilter
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
@@ -27,84 +30,16 @@ import kotlinx.coroutines.launch
 
 class ObdSensorViewModel() : ViewModel() {
 
+    val bluetoothDevice: MutableState<BluetoothDevice?> = mutableStateOf(null)
+    private val _isLoading = MutableStateFlow<Boolean>(false)
+    val isLoading = _isLoading
 
-    private val _bluetoothEnabled = MutableStateFlow(false)
-    val bluetoothEnabled: StateFlow<Boolean> = _bluetoothEnabled
-
-    private val _discoveredDevices = MutableStateFlow(emptyList<BluetoothDevice>())
-    val discoveredDevices: StateFlow<List<BluetoothDevice>> = _discoveredDevices
-
-
-    fun verifyBluetoothEnabled(context: Context) {
-        val bluetoothManager =
-            context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager?
-        val bluetoothAdapter = bluetoothManager?.adapter
-        _bluetoothEnabled.value = bluetoothAdapter?.isEnabled ?: false
+    fun setIsLoading(isLoading: Boolean) {
+        _isLoading.value = true
     }
 
-    private val discoveryReciever = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val action = intent?.action
-            if (action == BluetoothDevice.ACTION_FOUND) {
-                val device: BluetoothDevice? =
-                    intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+    fun callBluetoothScann(){
 
-
-
-                _discoveredDevices.value = listOf(
-                )
-
-
-                device?.let {
-                    viewModelScope.launch {
-
-                    }
-                }
-            }
-        }
-    }
-
-    fun startBluetoothDiscovery(
-        context: Context,
-        bluetoothAdapter: BluetoothAdapter,
-        bluetoothManager: BluetoothManager
-    ) {
-
-
-
-        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled) {
-            return
-        }
-
-        if (ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                ActivityCompat.requestPermissions(
-                    context as Activity,
-                    arrayOf(
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.BLUETOOTH_SCAN
-                    ),
-                    PERMISSION_REQUEST_CODE
-                )
-            }
-            return
-        }
-
-        val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
-        context.registerReceiver(discoveryReciever, filter)
-
-        if (bluetoothAdapter.isDiscovering) {
-            bluetoothAdapter.cancelDiscovery()
-        }
-
-        val discoveryStarted = bluetoothAdapter.startDiscovery()
-        if (discoveryStarted) {
-
-        }
     }
 
 
