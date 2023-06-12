@@ -121,7 +121,7 @@ fun MyCarSection(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp)
+            .padding(start = 24.dp, end = 24.dp, top = 16.dp)
     )
 
     {
@@ -160,6 +160,7 @@ fun CardCar(
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(top = 16.dp)
 
             //* If clicked, it will navigate to the details of the specific car with the id*//
             .clickable {
