@@ -1,6 +1,7 @@
 package com.autominder.autominder.register
 
 import android.provider.ContactsContract.CommonDataKinds.Email
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,11 +21,15 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -36,15 +41,20 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.autominder.autominder.AutoMinderApplication
+import com.autominder.autominder.login.ui.Login
+import com.autominder.autominder.login.ui.LoginUiStatus
+import com.autominder.autominder.login.ui.LoginViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+/*
 @Preview(showBackground = true)
 @Composable
 fun RegisterScreen() {
     val viewModel: RegisterViewModel = viewModel(factory = RegisterViewModel.Factory)
-    val navController = rememberNavController()
-    Register(viewModel = viewModel, navController = navController)
+    val navController: NavHostController
+    Register(viewModel, navController)
 
 }
 
@@ -68,6 +78,30 @@ fun Register(viewModel: RegisterViewModel, navController: NavHostController) {
 
 }
 
+*/
+
+
+@Composable
+fun RegisterScreen(
+    navController: NavHostController,
+    viewModel: RegisterViewModel = viewModel(factory = RegisterViewModel.Factory),
+    application: AutoMinderApplication = AutoMinderApplication()
+) {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        RegisterForm(
+            Modifier
+                .align(Alignment.Center)
+                .fillMaxSize(),
+            viewModel,
+            navController
+        )
+    }
+}
+
 @Composable
 fun RegisterForm(
     modifier: Modifier,
@@ -81,12 +115,41 @@ fun RegisterForm(
     val isLoading: Boolean by viewModel.isLoading.collectAsState(false)
     val registerEnable: Boolean by viewModel.registerEnabled.collectAsState(false)
     val coroutineScope = rememberCoroutineScope()
+    val status by viewModel.status.observeAsState(initial = RegisterUiStatus.Resume)
+    val application: AutoMinderApplication = LocalContext.current.applicationContext as AutoMinderApplication
 
     if (isLoading) {
         Box(modifier = Modifier.fillMaxSize()) {
             CircularProgressIndicator(Modifier.align(Alignment.Center))
         }
     } else {
+
+        val lifecycle = LocalLifecycleOwner.current
+        LaunchedEffect(lifecycle) {
+            viewModel.status.observe(lifecycle) { status ->
+                when (status) {
+                    is RegisterUiStatus.Success -> {
+                        viewModel.clearStatus()
+                        viewModel.clearData()
+                        navController.navigate("login")
+                    }
+
+                    is RegisterUiStatus.ErrorWithMessage -> {
+
+                    }
+
+                    is RegisterUiStatus.Error -> {
+
+                    }
+
+                    else -> {}
+                }
+
+            }
+        }
+
+
+
         Column(modifier) {
             HeaderTitle()
             RegisterBox(
@@ -97,9 +160,13 @@ fun RegisterForm(
                 registerEnable = registerEnable,
                 viewModel = viewModel,
                 coroutineScope = coroutineScope,
-                navController = navController
+                navController = navController,
+                status = status
+
             )
         }
+
+
     }
 }
 
@@ -124,7 +191,8 @@ fun RegisterBox(
     registerEnable: Boolean,
     viewModel: RegisterViewModel,
     coroutineScope: CoroutineScope,
-    navController: NavHostController
+    navController: NavHostController,
+    status: RegisterUiStatus
 ) {
     Card(
         modifier = Modifier
@@ -171,6 +239,7 @@ fun RegisterBox(
                         password,
                         confirmPassword
                     )
+                    viewModel.register(name, email, password)
                 }
             }
         }
