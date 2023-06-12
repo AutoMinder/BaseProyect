@@ -275,17 +275,17 @@ class BluetoothConnections(
                 delay(1000)
                 sendCommand("ATI\r", outputStream, inputStream)
                 delay(1000)
-                sendCommand("010C\r", outputStream, inputStream)
+                sendCommand("0902\r", outputStream, inputStream)
                 delay(1000)
-                sendCommand("010C\r", outputStream, inputStream)
+                sendCommand("0902\r", outputStream, inputStream)
                 delay(1000)
-                sendCommand("010C\r", outputStream, inputStream)
+                sendCommand("0902\r", outputStream, inputStream)
                 delay(1000)
-                sendCommand("010C\r", outputStream, inputStream)
+                sendCommand("0902\r", outputStream, inputStream)
                 delay(1000)
-                sendCommand("010C\r", outputStream, inputStream)
+                sendCommand("0902\r", outputStream, inputStream)
                 delay(1000)
-                sendCommand("010C\r", outputStream, inputStream)
+                sendCommand("0902\r", outputStream, inputStream)
 
 
             } catch (e: IOException) {
