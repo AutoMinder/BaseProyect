@@ -27,6 +27,14 @@ fun PrincipalScaffold() {
             bottomBarState.value = true
             topAppBarState.value = true
         }
+        "register" -> {
+            bottomBarState.value = false
+            topAppBarState.value = false
+        }
+        "login" -> {
+            bottomBarState.value = false
+            topAppBarState.value = false
+        }
 
         "principal_menu" -> {
             bottomBarState.value = true
