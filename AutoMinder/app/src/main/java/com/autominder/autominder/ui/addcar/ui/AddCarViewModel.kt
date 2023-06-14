@@ -13,6 +13,7 @@ import com.autominder.autominder.data.models_dummy.CarModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import retrofit2.Response
 import java.time.format.DateTimeParseException
 
 class AddCarViewModel(
@@ -132,6 +133,8 @@ class AddCarViewModel(
         )
     }
 
+
+
     fun addCar(
         profileCarName: String,
         carBrand: String,
@@ -169,6 +172,7 @@ class AddCarViewModel(
                 )
 
             repository.addCar(newCar)
+
             Log.d("APP TAG", getCars().toString())
 
         } catch (e: DateTimeParseException){

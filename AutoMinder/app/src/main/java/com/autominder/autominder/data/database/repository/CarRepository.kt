@@ -6,4 +6,5 @@ import com.autominder.autominder.data.database.models.CarModel
 class CarRepository(private val carDao: CarDao) {
     suspend fun addCar(newCar: CarModel) = carDao.insertCar(newCar)
     suspend fun getMyCars(user_id: Long) = carDao.getMyCars(user_id)
+    suspend fun getCarById(car_id: String) = carDao.getCarById(car_id)
 }

@@ -2,6 +2,9 @@ package com.autominder.autominder.ui.navigation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -41,7 +44,7 @@ fun NavigationHost(
         factory = ObdSensorViewModel.Factory
     )
 ) {
-
+    val coroutineScope = rememberCoroutineScope()
     NavHost(
         navController = navController,
         modifier = Modifier.padding(8.dp),
@@ -76,13 +79,15 @@ fun NavigationHost(
                 }
             )
         ) {
+
             val carId = it.arguments?.getString("carId")
-            if (carId != null) {
-                val car = viewModel.fetchCarById(carId)
-                if (car != null) {
-                    CarInfoScreen(car, navController = navController)
+            DisposableEffect(carId){
+                val car = viewModel.fetchCarById(carId!!)
+                onDispose {
+                    viewModel.clearCarInfo()
                 }
             }
+
 
 
         }

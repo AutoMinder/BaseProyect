@@ -16,4 +16,8 @@ interface CarDao {
     @Transaction
     @Insert
     suspend fun insertCar(newCar: CarModel)
+
+    @Transaction
+    @Query("SELECT * FROM car_table WHERE car_id = :carId")
+    fun getCarById(carId: String): CarModel
 }

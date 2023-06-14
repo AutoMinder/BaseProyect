@@ -7,15 +7,15 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.autominder.autominder.AutoMinderApplication
+import com.autominder.autominder.data.database.repository.CarRepository
 import com.autominder.autominder.data.models_dummy.CarModel
-import com.autominder.autominder.ui.myCars.data.MyCarsRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class CarInfoViewModel(
-    private val repository: MyCarsRepository,
+    private val repository: CarRepository,
 ) : ViewModel() {
 
 
@@ -43,7 +43,7 @@ class CarInfoViewModel(
     private val _isLoading = MutableStateFlow<Boolean>(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
-    fun fetchCarMaintenanceInfoByCarId(carId: String) {
+    /*fun fetchCarMaintenanceInfoByCarId(carId: String) {
         viewModelScope.launch {
             try {
                 setLoading(true)
@@ -55,7 +55,7 @@ class CarInfoViewModel(
                 setLoading(false)
             }
         }
-    }
+    }*/
 
     private fun setLoading(loading: Boolean) {
         _isLoading.value = loading
@@ -65,7 +65,7 @@ class CarInfoViewModel(
         val Factory = viewModelFactory {
             initializer {
                 val app = this[APPLICATION_KEY] as AutoMinderApplication
-                CarInfoViewModel(app.myCarsRepository)
+                CarInfoViewModel(app.carRepository)
             }
         }
     }

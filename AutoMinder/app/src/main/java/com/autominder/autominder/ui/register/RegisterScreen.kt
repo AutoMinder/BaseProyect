@@ -1,3 +1,4 @@
+
 package com.autominder.autominder.ui.register
 
 import android.provider.ContactsContract.CommonDataKinds.Email

@@ -15,7 +15,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -39,7 +38,7 @@ import com.autominder.autominder.ui.myCars.ui.MyCarsViewModel
 //
 @Composable
 fun CarInfoScreen(
-    car: CarModel,
+    car: com.autominder.autominder.data.database.models.CarModel,
     viewModel: MyCarsViewModel = viewModel(
         factory = MyCarsViewModel.Factory,
     ),
@@ -49,10 +48,9 @@ fun CarInfoScreen(
     navController: NavController
 ) {
     val isLoading by infoViewModel.isLoading.collectAsState(false)
-    LaunchedEffect(key1 = car.id) {
+    /*LaunchedEffect(key1 = car.id) {
         infoViewModel.fetchCarMaintenanceInfoByCarId(car.id)
-    }
-
+    }*/
     Scaffold(
         bottomBar = {
             //TODO: Call the BottomNavigationForCarInfo

@@ -161,7 +161,8 @@ fun CardCar(
             //* If clicked, it will navigate to the details of the specific car with the id*//
             .clickable {
                 navController.navigate("car_info/${car.id}")
-                infoViewModel.fetchCarMaintenanceInfoByCarId(car.id)
+
+                //infoViewModel.fetchCarMaintenanceInfoByCarId(car.id)
             },
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer),
 
