@@ -4,23 +4,23 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 
-import com.autominder.autominder.addcar.data.AddCarRepository
-import com.autominder.autominder.addcar.data.carsDummy
-import com.autominder.autominder.addcar.data.brands
-import com.autominder.autominder.addcar.data.models
+import com.autominder.autominder.ui.addcar.data.AddCarRepository
+import com.autominder.autominder.ui.addcar.data.carsDummy
+import com.autominder.autominder.ui.addcar.data.brands
+import com.autominder.autominder.ui.addcar.data.models
 
-import com.autominder.autominder.carinfo.data.CarMaintenanceRepository
-import com.autominder.autominder.carinfo.data.dummyCarMaintenanceData
-import com.autominder.autominder.database.AutominderDatabase
-import com.autominder.autominder.database.repository.CarRepository
-import com.autominder.autominder.database.repository.UserRepository
+import com.autominder.autominder.ui.carinfo.data.CarMaintenanceRepository
+import com.autominder.autominder.ui.carinfo.data.dummyCarMaintenanceData
+import com.autominder.autominder.data.database.AutominderDatabase
+import com.autominder.autominder.data.database.repository.CarRepository
+import com.autominder.autominder.data.database.repository.UserRepository
 
-import com.autominder.autominder.myCars.data.MyCarsRepository
-import com.autominder.autominder.myCars.data.myCarsdummy
-import com.autominder.autominder.network.RepositoryCredentials.CredentialsRepository
-import com.autominder.autominder.network.retrofit.RetrofitInstance
-import com.autominder.autominder.principalMenu.data.AlertsRepository
-import com.autominder.autominder.principalMenu.data.dummyAlerts
+import com.autominder.autominder.ui.myCars.data.MyCarsRepository
+import com.autominder.autominder.ui.myCars.data.myCarsdummy
+import com.autominder.autominder.data.network.RepositoryCredentials.CredentialsRepository
+import com.autominder.autominder.data.network.retrofit.RetrofitInstance
+import com.autominder.autominder.ui.principalMenu.data.AlertsRepository
+import com.autominder.autominder.ui.principalMenu.data.dummyAlerts
 
 class AutoMinderApplication : Application() {
     val alertsRepository: AlertsRepository by lazy {
