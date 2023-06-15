@@ -8,8 +8,8 @@ import com.autominder.autominder.data.database.models.UserModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-private const val USER_DATA_STORE = "USER_DATA_STORE"
-val Context.dataStore by preferencesDataStore(USER_DATA_STORE)
+private const val USER_DATA = "USER_DATA"
+val Context.dataStore by preferencesDataStore(USER_DATA)
 
 class DataStoreManager(val context: Context) {
 

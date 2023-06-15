@@ -45,6 +45,7 @@ class LoginViewModel(private val repository: CredentialsRepository) : ViewModel(
                     is ApiResponse.Success -> LoginUiStatus.Success(response.data)
                 }
             )
+            repository.saveUserData(_token.value!!)
             _isLoading.value = false
         }
     }

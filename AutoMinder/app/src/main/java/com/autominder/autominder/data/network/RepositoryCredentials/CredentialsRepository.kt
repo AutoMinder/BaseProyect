@@ -2,12 +2,16 @@ package com.autominder.autominder.data.network.RepositoryCredentials
 
 import android.util.Log
 import com.autominder.autominder.data.DataStoreManager
+import com.autominder.autominder.data.database.models.UserModel
 import com.autominder.autominder.data.network.ApiResponse
+import com.autominder.autominder.data.JWT
+import com.autominder.autominder.data.Payload
 import com.autominder.autominder.data.network.dto.login.LoginRequest
 import com.autominder.autominder.data.network.dto.login.LoginResponse
 import com.autominder.autominder.data.network.dto.register.RegisterRequest
 import com.autominder.autominder.data.network.dto.register.RegisterResponse
 import com.autominder.autominder.data.network.services.AutominderApi
+import com.google.gson.Gson
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -43,10 +47,21 @@ class CredentialsRepository(private val api: AutominderApi, private val dataStor
         }
     }
 
-    private suspend fun saveUserData(token: String) {
-        //val jwtDecoded = .decoded(token)
+    suspend fun saveUserData(token: String) {
+        val jwtDecoded = JWT.decoded(token)
+
+        val payload = Gson().fromJson(jwtDecoded, Payload::class.java)
+
+        dataStoreManager.saveUserData(UserModel(
+            userId = payload.id,
+            email = payload.email,
+            username = payload.username,
+            roles = payload.roles,
+            token = payload.token
+        )
+        )
     }
 
-
+    fun getUserData() = dataStoreManager.getUserData()
 
 }
