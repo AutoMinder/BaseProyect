@@ -1,4 +1,4 @@
-package com.autominder.autominder.ui
+package com.autominder.autominder.ui.main
 
 import android.Manifest
 import android.app.Activity

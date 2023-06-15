@@ -3,6 +3,7 @@ package com.autominder.autominder
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import com.autominder.autominder.data.DataStoreManager
 
 import com.autominder.autominder.ui.addcar.data.AddCarRepository
 import com.autominder.autominder.ui.addcar.data.carsDummy
@@ -67,7 +68,7 @@ class AutoMinderApplication : Application() {
     fun getToken():String = prefs.getString(USER_TOKEN, "")!!
 
     val credentialsRepository: CredentialsRepository by lazy {
-        CredentialsRepository(getAPIService())
+        CredentialsRepository(getAPIService(), DataStoreManager(this))
     }
 
     fun saveAuthToken(token: String){
