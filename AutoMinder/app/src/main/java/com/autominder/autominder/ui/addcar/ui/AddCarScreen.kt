@@ -81,7 +81,6 @@ fun AddCarForm(viewModel: AddCarViewModel, navController: NavController) {
 @Composable
 fun FieldsWrapper(viewModel: AddCarViewModel, navController: NavController) {
     val context = LocalContext.current
-    //TODO(): Hacer con la API
     val carBrandList by remember { viewModel.carBrandsList }.collectAsState()
     val carModelList by remember { viewModel.carModelsList }.collectAsState()
 
@@ -384,7 +383,6 @@ fun CarDistance(carKilometers: String, onAddCarChange: (String) -> Unit) {
 
 @Composable
 fun CarLastMaintenance(carLastMaintenance: String, onAddCarChange: (String) -> Unit) {
-    //TODO(): Hacer con dummydata y luego con la API
 
     val openDialog = remember { mutableStateOf(false) }
     var date by remember { mutableStateOf(carLastMaintenance) }
@@ -471,7 +469,6 @@ fun CarLastMaintenance(carLastMaintenance: String, onAddCarChange: (String) -> U
 
 @Composable
 fun CarLastOilChange(carLastOilChange: String, onAddCarChange: (String) -> Unit) {
-    //TODO(): Hacer con dummydata y luego con la API
     val openDialog = remember { mutableStateOf(false) }
     var date by remember { mutableStateOf(carLastOilChange) }
     val datePickerState =
@@ -557,7 +554,7 @@ fun CarLastOilChange(carLastOilChange: String, onAddCarChange: (String) -> Unit)
 
 @Composable
 fun CarLastCoolant(carLastCoolant: String, onAddCarChange: (String) -> Unit) {
-    //TODO(): Hacer con dummydata y luego con la API
+
     val openDialog = remember { mutableStateOf(false) }
     var date by remember { mutableStateOf(carLastCoolant) }
     val datePickerState =
