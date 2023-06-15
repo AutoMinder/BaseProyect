@@ -2,10 +2,10 @@ package com.autominder.autominder.data.network.RepositoryCredentials
 
 import android.util.Log
 import com.autominder.autominder.data.DataStoreManager
-import com.autominder.autominder.data.database.models.UserModel
-import com.autominder.autominder.data.network.ApiResponse
 import com.autominder.autominder.data.JWT
 import com.autominder.autominder.data.Payload
+import com.autominder.autominder.data.database.models.UserModel
+import com.autominder.autominder.data.network.ApiResponse
 import com.autominder.autominder.data.network.dto.login.LoginRequest
 import com.autominder.autominder.data.network.dto.login.LoginResponse
 import com.autominder.autominder.data.network.dto.register.RegisterRequest
@@ -16,7 +16,8 @@ import retrofit2.HttpException
 import java.io.IOException
 
 class CredentialsRepository(
-    private val api: AutominderApi
+    private val api: AutominderApi,
+    private val userDataManager: DataStoreManager
 ) {
 
     suspend fun login(email: String, password: String): ApiResponse<String> {
@@ -48,13 +49,13 @@ class CredentialsRepository(
             return ApiResponse.Error(e)
         }
     }
-/*
+
     suspend fun saveUserData(token: String) {
         val jwtDecoded = JWT.decoded(token)
 
         val payload = Gson().fromJson(jwtDecoded, Payload::class.java)
 
-        dataStoreManager.saveUserData(
+        userDataManager.saveUserData(
             UserModel(
                 userId = payload.id,
                 email = payload.email,
@@ -65,6 +66,6 @@ class CredentialsRepository(
         )
     }
 
-    fun getUserData() = dataStoreManager.getUserData()
-*/
+    fun getUserData() = userDataManager.getUserData()
+
 }

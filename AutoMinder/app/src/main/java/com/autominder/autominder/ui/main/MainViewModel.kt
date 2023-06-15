@@ -3,11 +3,13 @@ package com.autominder.autominder.ui.main
 import androidx.lifecycle.ViewModel
 import com.autominder.autominder.ui.navigation.Destinations
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class MainViewModel: ViewModel() {
-    var startDestination = MutableStateFlow(Destinations.Login.route)
+    private val _startDestination = MutableStateFlow(Destinations.Login.route)
+    val startDestination: StateFlow<String> = _startDestination
 
     fun setStartDestination(destination: String){
-        startDestination.value = destination
+        _startDestination.value = destination
     }
 }

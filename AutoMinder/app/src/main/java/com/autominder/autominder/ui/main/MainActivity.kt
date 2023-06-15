@@ -18,7 +18,12 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import com.autominder.autominder.AutoMinderApplication
+import com.autominder.autominder.ui.navigation.Destinations
 import com.autominder.autominder.ui.navigation.PrincipalScaffold
 import com.autominder.autominder.ui.theme.AutoMinderTheme
 

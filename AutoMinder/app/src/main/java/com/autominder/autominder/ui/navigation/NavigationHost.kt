@@ -1,5 +1,6 @@
 package com.autominder.autominder.ui.navigation
 
+import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -14,6 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.autominder.autominder.AutoMinderApplication
+import com.autominder.autominder.data.DataStoreManager
 import com.autominder.autominder.ui.addcar.ui.AddCarScreen
 import com.autominder.autominder.ui.addcar.ui.AddCarViewModel
 import com.autominder.autominder.ui.carinfo.ui.CarInfoScreen
@@ -31,6 +33,8 @@ import com.autominder.autominder.ui.userInfo.UserInfoScreen
 import com.autominder.autominder.ui.userInfo.UserInfoViewModel
 import com.autominder.autominder.ui.userInfo.changePassword.ChangePasswordScreen
 import com.autominder.autominder.ui.userInfo.changePassword.ChangePasswordViewModel
+import kotlinx.coroutines.flow.collect
+
 
 @Composable
 fun NavigationHost(
@@ -44,15 +48,20 @@ fun NavigationHost(
     obdSensorViewModel: ObdSensorViewModel = viewModel(
         factory = ObdSensorViewModel.Factory
     ),
-    mainViewModel: MainViewModel = MainViewModel()
-) {
-    val application: AutoMinderApplication = LocalContext.current.applicationContext as AutoMinderApplication
-    val startDestination = mainViewModel.startDestination.collectAsState().value
-    LaunchedEffect(application.getToken()){
-        if (application.getToken().isNullOrEmpty()) {
-            mainViewModel.setStartDestination(Destinations.Login.route)
-        } else {
-            mainViewModel.setStartDestination(Destinations.PrincipalMenu.route)
+    ) {
+
+    val mainViewModel = MainViewModel()
+    val startDestination = mainViewModel.startDestination.collectAsState()//TODO: Must be collected with lifecycle
+    val dataStoreManager = DataStoreManager(LocalContext.current)
+
+    LaunchedEffect(dataStoreManager.getUserData()){
+        val user = dataStoreManager.getUserData()
+        user.collect{
+            if(it.token != ""){
+                mainViewModel.setStartDestination(Destinations.PrincipalMenu.route)
+            } else {
+                mainViewModel.setStartDestination(Destinations.Login.route)
+            }
         }
     }
 

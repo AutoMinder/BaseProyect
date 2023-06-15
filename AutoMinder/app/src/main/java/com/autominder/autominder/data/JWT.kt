@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets
 
 
 object JWT {
+
     @Throws(Exception::class)
     fun decoded(JWTEncoded: String):String {
         try {

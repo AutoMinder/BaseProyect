@@ -54,8 +54,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginScreen(
     navController: NavHostController,
-    viewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory),
-    application: AutoMinderApplication = AutoMinderApplication()
+    viewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory)
 ) {
     Box(
         Modifier
@@ -120,7 +119,7 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
             HeaderTitle()
             Spacer(modifier = Modifier.padding(40.dp))
 
-            LoginBox(email, viewModel, password, loginEnable, coroutineScope, navController, status)
+            LoginBox(email, viewModel, password, loginEnable, coroutineScope, navController, status, application)
 
             Spacer(modifier = Modifier.padding(40.dp))
             RegisterBox(navController)
@@ -156,6 +155,7 @@ fun LoginBox(
     coroutineScope: CoroutineScope,
     navController: NavHostController,
     status: LoginUiStatus,
+    application: AutoMinderApplication,
 ) {
 
     Card(
@@ -182,12 +182,12 @@ fun LoginBox(
             val lifecycle = LocalLifecycleOwner.current
             LoginButton(loginEnable) {
                 coroutineScope.launch {
-                    viewModel.login(email, password)
+                    viewModel.login(email, password, application.getToken())
 
                     Log.d("LoginScreen", "email: $email, password: $password")
                     coroutineScope.launch {
                         delay(1000)
-                        viewModel.login(email, password)
+                        viewModel.login(email, password, application.getToken())
                     }
                 }
 
