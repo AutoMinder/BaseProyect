@@ -9,7 +9,7 @@ data class CreateRequest(
     val model: String = "",
     val year: String = "",
     val kilometers: String = "",
-    val kilometersDate: String,
+    val kilometersDate: Date,
     val lastMaintenance: String,
     val mayorTuning: String?,
     val minorTuning: String?,
