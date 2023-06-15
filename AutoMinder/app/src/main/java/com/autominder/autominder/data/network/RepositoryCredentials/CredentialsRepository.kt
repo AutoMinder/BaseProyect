@@ -51,21 +51,22 @@ class CredentialsRepository(
     }
 
     suspend fun saveUserData(token: String) {
-        val jwtDecoded = JWT.decoded(token)
+        val jwtDecoded: String = JWT.decoded(token)
 
         val payload = Gson().fromJson(jwtDecoded, Payload::class.java)
 
         userDataManager.saveUserData(
-            UserModel(
+            /*UserModel(
                 userId = payload.id,
                 email = payload.email,
                 username = payload.username,
                 roles = payload.roles,
                 token = payload.token
-            )
+            )*/
+        token
         )
     }
 
-    fun getUserData() = userDataManager.getUserData()
+    //fun getUserData() = userDataManager.getUserData()
 
 }

@@ -14,7 +14,6 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.autominder.autominder.AutoMinderApplication
 import com.autominder.autominder.data.DataStoreManager
 import com.autominder.autominder.ui.addcar.ui.AddCarScreen
 import com.autominder.autominder.ui.addcar.ui.AddCarViewModel
@@ -33,12 +32,12 @@ import com.autominder.autominder.ui.userInfo.UserInfoScreen
 import com.autominder.autominder.ui.userInfo.UserInfoViewModel
 import com.autominder.autominder.ui.userInfo.changePassword.ChangePasswordScreen
 import com.autominder.autominder.ui.userInfo.changePassword.ChangePasswordViewModel
-import kotlinx.coroutines.flow.collect
 
 
 @Composable
 fun NavigationHost(
     navController: NavHostController,
+    startDestination:String = "login",
     viewModel: MyCarsViewModel = viewModel(
         factory = MyCarsViewModel.Factory
     ),
@@ -51,24 +50,26 @@ fun NavigationHost(
     ) {
 
     val mainViewModel = MainViewModel()
-    val startDestination = mainViewModel.startDestination.collectAsState()//TODO: Must be collected with lifecycle
-    val dataStoreManager = DataStoreManager(LocalContext.current)
+    //val startDestination = mainViewModel.startDestination.collectAsState()//TODO: Must be collected with lifecycle
+    /*val dataStoreManager = DataStoreManager(LocalContext.current)
 
     LaunchedEffect(dataStoreManager.getUserData()){
         val user = dataStoreManager.getUserData()
         user.collect{
+            Log.d("NavigationHost", "user: ${it.token}")
+
             if(it.token != ""){
-                mainViewModel.setStartDestination(Destinations.PrincipalMenu.route)
+                mainViewModel.setStartDestination("login")
             } else {
-                mainViewModel.setStartDestination(Destinations.Login.route)
+                mainViewModel.setStartDestination("principal_menu")
             }
         }
-    }
+    }*/
 
     NavHost(
         navController = navController,
         modifier = Modifier.padding(8.dp),
-        startDestination = startDestination.value
+        startDestination = startDestination
     ) {
         composable("login") {
             LoginScreen(navController = navController)

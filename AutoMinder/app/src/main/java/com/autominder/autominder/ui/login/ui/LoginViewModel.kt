@@ -35,18 +35,25 @@ class LoginViewModel(private val repository: CredentialsRepository) : ViewModel(
     val status: MutableLiveData<LoginUiStatus> = _status
 
 
-    fun login(email: String, password: String, token: String) {
+    fun login(email: String, password: String) {
         viewModelScope.launch {
             _isLoading.value = true
             _status.postValue(
                 when (val response = repository.login(email, password)) {
                     is ApiResponse.Error -> LoginUiStatus.Error(response.exception)
                     is ApiResponse.ErrorWithMessage -> LoginUiStatus.ErrorWithMessage(response.message)
-                    is ApiResponse.Success -> LoginUiStatus.Success(response.data)
+                    is ApiResponse.Success -> {
+                        LoginUiStatus.Success(response.data)
+                    }
                 }
             )
-            repository.saveUserData(token)
             _isLoading.value = false
+        }
+    }
+
+    fun saveUserData (token: String) {
+        viewModelScope.launch {
+            repository.saveUserData(token)
         }
     }
 
@@ -91,11 +98,11 @@ class LoginViewModel(private val repository: CredentialsRepository) : ViewModel(
     private fun isValidPassword(password: String): Boolean = password.length >= 8
 
     private fun isValidEmail(email: String): Boolean = email.contains("@") && email.contains(".")
-/*
-    suspend fun OnLoginSelected(email: String, password: String) {
-        login(email, password)
+    /*
+        suspend fun OnLoginSelected(email: String, password: String) {
+            login(email, password)
 
-    } */
+        } */
 
     fun updateToken(token: String) {
         _token.value = token

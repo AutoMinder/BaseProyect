@@ -79,7 +79,8 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
     val isLoading: Boolean by viewModel.isLoading.observeAsState(initial = false)
     val status by viewModel.status.observeAsState(initial = LoginUiStatus.Resume)
     val coroutineScope = rememberCoroutineScope()
-    val application: AutoMinderApplication = LocalContext.current.applicationContext as AutoMinderApplication
+    val application: AutoMinderApplication =
+        LocalContext.current.applicationContext as AutoMinderApplication
 
     if (isLoading) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -119,7 +120,16 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
             HeaderTitle()
             Spacer(modifier = Modifier.padding(40.dp))
 
-            LoginBox(email, viewModel, password, loginEnable, coroutineScope, navController, status, application)
+            LoginBox(
+                email,
+                viewModel,
+                password,
+                loginEnable,
+                coroutineScope,
+                navController,
+                status,
+                application
+            )
 
             Spacer(modifier = Modifier.padding(40.dp))
             RegisterBox(navController)
@@ -155,7 +165,8 @@ fun LoginBox(
     coroutineScope: CoroutineScope,
     navController: NavHostController,
     status: LoginUiStatus,
-    application: AutoMinderApplication,
+    application: AutoMinderApplication
+
 ) {
 
     Card(
@@ -182,15 +193,12 @@ fun LoginBox(
             val lifecycle = LocalLifecycleOwner.current
             LoginButton(loginEnable) {
                 coroutineScope.launch {
-                    viewModel.login(email, password, application.getToken())
-
                     Log.d("LoginScreen", "email: $email, password: $password")
-                    coroutineScope.launch {
-                        delay(1000)
-                        viewModel.login(email, password, application.getToken())
-                    }
+                    delay(1000)
+                    viewModel.login(email, password)
+                    Log.d("APP TAG", application.getToken())
+                    viewModel.saveUserData(application.getToken())
                 }
-
             }
         }
     }

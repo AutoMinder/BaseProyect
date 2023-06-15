@@ -13,25 +13,27 @@ val Context.dataStore by preferencesDataStore(USER_DATA)
 
 class DataStoreManager(val context: Context) {
 
-    suspend fun saveUserData(userModel: UserModel) {
+    suspend fun saveUserData(token: String) {
         context.dataStore.edit { preferences ->
-            preferences[ID] = userModel.userId.toString()
-            preferences[EMAIL] = userModel.email
-            preferences[USERNAME] = userModel.email
-            preferences[ROLES] = userModel.roles
-            preferences[TOKEN] = userModel.token
+            /*preferences[ID] = userModel.userId.toString()
+            preferences[EMAIL] = userModel.email ?: ""
+            preferences[USERNAME] = userModel.username
+            preferences[ROLES] = userModel.roles*/
+            preferences[TOKEN] = token
         }
     }
 
-    fun getUserData(): Flow<UserModel> = context.dataStore.data.map {
-        UserModel(
+    /*
+    fun getUserData(): Flow<String> = context.dataStore.data.map {
+        /*UserModel(
             userId = it[ID]?.toLong() ?: 0,
             email = it[EMAIL] ?: "",
             username = it[USERNAME] ?: "",
             roles = it[ROLES] ?: "",
             token = it[TOKEN] ?: ""
-        )
-    }
+        )*/
+
+    }*/
 
     suspend fun deleteUserData() {
         context.dataStore.edit { preferences ->
@@ -40,10 +42,10 @@ class DataStoreManager(val context: Context) {
     }
 
     companion object {
-        val ID = stringPreferencesKey("user_id")
+        /*val ID = stringPreferencesKey("id")
         val EMAIL = stringPreferencesKey("email")
         val USERNAME = stringPreferencesKey("username")
-        val ROLES = stringPreferencesKey("roles")
+        val ROLES = stringPreferencesKey("roles")*/
         val TOKEN = stringPreferencesKey("token")
     }
 }
