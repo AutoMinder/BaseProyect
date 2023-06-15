@@ -4,6 +4,7 @@ import android.util.Log
 import com.autominder.autominder.data.network.ApiResponse
 import com.autominder.autominder.data.network.dto.login.LoginRequest
 import com.autominder.autominder.data.network.dto.login.LoginResponse
+import com.autominder.autominder.data.network.dto.ownCars.OwnResponse
 import com.autominder.autominder.data.network.dto.register.RegisterRequest
 import com.autominder.autominder.data.network.dto.register.RegisterResponse
 import com.autominder.autominder.data.network.services.AutominderApi
@@ -42,8 +43,33 @@ class CredentialsRepository(private val api: AutominderApi) {
         }
     }
 
+    suspend fun ownCars(): ApiResponse<OwnResponse> {
 
+        try {
+            val response = api.ownCars()
 
+            if (response.isSuccessful) {
+                val carsResponse = response.body()
+                val carsList = carsResponse?.cars
 
+                // Process the list of cars
+                carsList?.forEach { car ->
+                    Log.d("I GOT THE CARS", car.name)
+                }
+
+                return ApiResponse.Success(response.body()!!)
+            }
+
+            return ApiResponse.ErrorWithMessage("Error al obtener los autos")
+
+        } catch (e: HttpException) {
+            if (e.code() == 400) {
+                return ApiResponse.ErrorWithMessage("Credenciales incorrectas, email or password")
+            }
+            return ApiResponse.Error(e)
+        } catch (e: IOException) {
+            return ApiResponse.Error(e)
+        }
+    }
 
 }

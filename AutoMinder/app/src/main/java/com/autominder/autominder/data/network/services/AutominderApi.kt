@@ -4,11 +4,13 @@ import com.autominder.autominder.data.network.dto.create.CreateRequest
 import com.autominder.autominder.data.network.dto.create.CreateResponse
 import com.autominder.autominder.data.network.dto.login.LoginRequest
 import com.autominder.autominder.data.network.dto.login.LoginResponse
+import com.autominder.autominder.data.network.dto.ownCars.OwnResponse
 import com.autominder.autominder.data.network.dto.register.RegisterRequest
 import com.autominder.autominder.data.network.dto.register.RegisterResponse
 import com.autominder.autominder.data.network.dto.visibility.VisibilityResponse
 
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -38,8 +40,9 @@ interface AutominderApi {
 
     // TODO() Desarrollar pedir carros propios
 
+    //OwnCarsService
     @GET("post/own")
-    suspend fun ownCars(): String
+    suspend fun ownCars(): Response<OwnResponse>
 
 
 

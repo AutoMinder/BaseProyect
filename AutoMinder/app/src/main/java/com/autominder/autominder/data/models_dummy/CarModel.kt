@@ -1,20 +1,22 @@
 package com.autominder.autominder.data.models_dummy
 
+import com.google.gson.annotations.SerializedName
+
 data class CarModel(
-    val id: String,
-    val vin: String?,
-    val name: String,
-    val brand: String,
-    val model: String,
-    val year: Int?,
-    val kilometers: Int?,
-    val kilometersDate: String?,
-    val lastMaintenance: String,
+    @SerializedName("_id") val id: String,
+    @SerializedName("vin") val vin: String?,
+    @SerializedName("car_name") val name: String,
+    @SerializedName("brand") val brand: String,
+    @SerializedName("model") val model: String,
+    @SerializedName("year") val year: Int?,
+    @SerializedName("kilometers") val kilometers: Int?,
+    @SerializedName("kilometersDate") val kilometersDate: String?,
+    @SerializedName("lastMaintenance") val lastMaintenance: String,
     val nextMaintenances: String?,
-    val lastOilChange: String,
-    val lastCoolantDate: String?,
-    val lastMayorTuning: String?,
-    val lastMinorTuning: String?,
+    @SerializedName("lastOilChange") val lastOilChange: String,
+    @SerializedName("lastCoolantChange") val lastCoolantDate: String?,
+    @SerializedName("mayorTuning") val lastMayorTuning: String?,
+    @SerializedName("minorTuning") val lastMinorTuning: String?,
     val hidden: Boolean?,
-    val errorModel: MutableList<String>?,
+    @SerializedName("errorRecord") val errorModel: MutableList<String>?,
 )
