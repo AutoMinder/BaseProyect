@@ -3,7 +3,6 @@ package com.autominder.autominder.data.database.models
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.Date
 
 @Entity(tableName = "car_table")
 data class CarModel(
@@ -20,7 +19,7 @@ data class CarModel(
     @ColumnInfo(name = "minorTuning") val minor_tuning : String,
     @ColumnInfo(name = "lastOilChange") val last_oil_change : String,
     @ColumnInfo(name = "lastCoolantChange") val last_coolant_change : String,
-//    TODO: Revisar implementacion de arreglo de errores /* @ColumnInfo(name = "errorRecord") val error_record : List<String>,  */
+//    @ColumnInfo(name = "errorRecord") val error_record : MutableList<String>,
     @ColumnInfo(name = "hidden") val hidden : Boolean,
     @ColumnInfo(name = "owner_id") val owner : Long
 )
