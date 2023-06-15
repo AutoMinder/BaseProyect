@@ -68,7 +68,7 @@ fun NavigationHost(
     NavHost(
         navController = navController,
         modifier = Modifier.padding(8.dp),
-        startDestination = startDestination
+        startDestination = startDestination.value
     ) {
         composable("login") {
             LoginScreen(navController = navController)
