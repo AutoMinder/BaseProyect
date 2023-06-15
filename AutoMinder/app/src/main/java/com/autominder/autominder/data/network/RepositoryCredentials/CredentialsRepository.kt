@@ -2,6 +2,8 @@ package com.autominder.autominder.data.network.RepositoryCredentials
 
 import android.util.Log
 import com.autominder.autominder.data.network.ApiResponse
+import com.autominder.autominder.data.network.dto.create.CreateRequest
+import com.autominder.autominder.data.network.dto.create.CreateResponse
 import com.autominder.autominder.data.network.dto.login.LoginRequest
 import com.autominder.autominder.data.network.dto.login.LoginResponse
 import com.autominder.autominder.data.network.dto.register.RegisterRequest
@@ -43,7 +45,50 @@ class CredentialsRepository(private val api: AutominderApi) {
     }
 
 
+    suspend fun addCar(
+        car_name: String,
+        model: String,
+        brand: String,
+        year: String,
+        kilometers: String,
+        kilometersDate: String? = null,
+        lastMaintenance: String,
+        lastOilChange: String,
+        lastCoolantChange: String,
+        mayorTuning: String?,
+        minorTuning: String?,
+        errorRecord: List<String>? = null,
+        vin: String = "321321",
+    ): ApiResponse<String> {
+        return try {
+            val response: CreateResponse = api.create(
+                CreateRequest(
+                    vin,
+                    car_name,
+                    brand,
+                    model,
+                    year,
+                    kilometers,
+                    kilometersDate.toString(),
+                    lastMaintenance,
+                    mayorTuning,
+                    minorTuning,
+                    lastOilChange,
+                    lastCoolantChange,
 
+                )
+            )
+            return ApiResponse.Success(response.id)
+        } catch (e: HttpException) {
+
+            if (e.code() == 400) {
+
+            }
+            return ApiResponse.Error(e)
+        } catch (e: IOException) {
+            return ApiResponse.Error(e)
+        }
+    }
 
 
 }

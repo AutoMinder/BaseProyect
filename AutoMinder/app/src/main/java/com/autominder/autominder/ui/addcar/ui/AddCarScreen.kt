@@ -28,6 +28,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 
 @Composable
@@ -91,6 +93,8 @@ fun FieldsWrapper(viewModel: AddCarViewModel, navController: NavController) {
     val carLastMaintenance: String by viewModel.carLastMaintenance.collectAsState("")
     val carLastCoolantDate: String by viewModel.carLastCoolantDate.collectAsState("")
     val addCarEnable: Boolean by viewModel.addCarEnable.collectAsState(initial = false)
+    val coroutineScope = rememberCoroutineScope()
+
 
     CarName(profileCarName) {
         viewModel.onAddCarChange(
@@ -166,7 +170,7 @@ fun FieldsWrapper(viewModel: AddCarViewModel, navController: NavController) {
         )
     }
 
-    SaveCar(addCarEnable, navController) {
+    SaveCar(addCarEnable, navController, viewModel) {
         viewModel.addCar(
             profileCarName,
             carBrand,
@@ -177,6 +181,26 @@ fun FieldsWrapper(viewModel: AddCarViewModel, navController: NavController) {
             carLastOilChange,
             carLastCoolantDate
         )
+    }
+    Button(onClick = {
+        coroutineScope.launch {
+            viewModel.addCarToDatabase(
+                name = profileCarName,
+                model = carModel,
+                brand = carBrand,
+                year = carYear,
+                kilometers = carKilometers,
+                kilometersDate = null,
+                lastMaintenance = carLastMaintenance,
+                lastOilChange = carLastOilChange,
+                lastCoolantChange = carLastCoolantDate,
+                mayorTuning = null,
+                minorTuning = null,
+                errorRecord = null,
+            )
+        }
+    }) {
+        Text(text = "Agregar a base")
     }
 }
 
@@ -313,7 +337,7 @@ fun CarYear(carYear: String, onAddCarChange: (String) -> Unit) {
         OutlinedTextField(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             value = carYear,
-            onValueChange = {newValue ->
+            onValueChange = { newValue ->
                 val numericValue = newValue.filter { it.isDigit() }
                 onAddCarChange(numericValue)
             },
@@ -333,7 +357,7 @@ fun CarDistance(carKilometers: String, onAddCarChange: (String) -> Unit) {
     ) {
         OutlinedTextField(
             value = carKilometers,
-            onValueChange = {newValue ->
+            onValueChange = { newValue ->
                 val numericValue = newValue.filter { it.isDigit() }
                 onAddCarChange(numericValue)
             },
@@ -389,7 +413,7 @@ fun CarLastMaintenance(carLastMaintenance: String, onAddCarChange: (String) -> U
         }
 
     }
-    LaunchedEffect(date){
+    LaunchedEffect(date) {
         onAddCarChange(date)
     }
     Box(
@@ -468,11 +492,11 @@ fun CarLastOilChange(carLastOilChange: String, onAddCarChange: (String) -> Unit)
         }
 
     }
-    
-    LaunchedEffect(date){
+
+    LaunchedEffect(date) {
         onAddCarChange(date)
     }
-    
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -550,7 +574,7 @@ fun CarLastCoolant(carLastCoolant: String, onAddCarChange: (String) -> Unit) {
 
     }
 
-    LaunchedEffect(date){
+    LaunchedEffect(date) {
         onAddCarChange(date)
     }
 
@@ -589,7 +613,12 @@ fun CarLastCoolant(carLastCoolant: String, onAddCarChange: (String) -> Unit) {
 
 
 @Composable
-fun SaveCar(addCarEnable: Boolean, navController: NavController, addCar: () -> Unit) {
+fun SaveCar(
+    addCarEnable: Boolean,
+    navController: NavController,
+    viewModel: AddCarViewModel,
+    addCar: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -597,7 +626,9 @@ fun SaveCar(addCarEnable: Boolean, navController: NavController, addCar: () -> U
         contentAlignment = Alignment.Center
     ) {
         Button(onClick = {
+
             addCar()
+
             navController.navigateUp()
         }, enabled = addCarEnable) {
 

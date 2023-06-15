@@ -9,11 +9,11 @@ data class CreateRequest(
     val model: String = "",
     val year: String = "",
     val kilometers: String = "",
-    val kilometersDate: Date,
-    val lastMaintenance: Date,
-    val mayorTuning: Date,
-    val minorTuning: Date,
-    val lastOilChange: Date,
-    val lastCoolantChange: Date,
-    val errorRecord: List<String>,
+    val kilometersDate: String,
+    val lastMaintenance: String,
+    val mayorTuning: String?,
+    val minorTuning: String?,
+    val lastOilChange: String,
+    val lastCoolantChange: String,
+
 )
