@@ -27,8 +27,8 @@ class LoginViewModel(private val repository: CredentialsRepository) : ViewModel(
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    private val _token = MutableLiveData<String>()
-    val token: LiveData<String> = _token
+    private val _token = MutableLiveData<String?>()
+    val token: LiveData<String?> = _token
 
 
     private val _status = MutableLiveData<LoginUiStatus>(LoginUiStatus.Resume)
@@ -45,7 +45,6 @@ class LoginViewModel(private val repository: CredentialsRepository) : ViewModel(
                     is ApiResponse.Success -> LoginUiStatus.Success(response.data)
                 }
             )
-            repository.saveUserData(_token.value!!)
             _isLoading.value = false
         }
     }

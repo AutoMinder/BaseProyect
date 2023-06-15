@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 class MainViewModel: ViewModel() {
     var startDestination = MutableStateFlow(Destinations.Login.route)
 
-    fun setStartDestination(destination: Destinations){
-        startDestination.value = destination.route
+    fun setStartDestination(destination: String){
+        startDestination.value = destination
     }
 }

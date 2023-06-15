@@ -68,7 +68,7 @@ class AutoMinderApplication : Application() {
     fun getToken():String = prefs.getString(USER_TOKEN, "")!!
 
     val credentialsRepository: CredentialsRepository by lazy {
-        CredentialsRepository(getAPIService(), DataStoreManager(this))
+        CredentialsRepository(getAPIService())
     }
 
     fun saveAuthToken(token: String){

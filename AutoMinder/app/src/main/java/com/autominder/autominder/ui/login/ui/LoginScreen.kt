@@ -94,8 +94,8 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
                     is LoginUiStatus.Success -> {
                         val token = status.token
                         viewModel.updateToken(token)
-                        Log.d("LoginScreen", "token: $token")
                         application.saveAuthToken(token)
+                        Log.d("LoginScreen", "token: ${application.getToken()}")
 
                         navController.navigate("principal_menu")
                     }

@@ -15,7 +15,9 @@ import com.google.gson.Gson
 import retrofit2.HttpException
 import java.io.IOException
 
-class CredentialsRepository(private val api: AutominderApi, private val dataStoreManager: DataStoreManager) {
+class CredentialsRepository(
+    private val api: AutominderApi
+) {
 
     suspend fun login(email: String, password: String): ApiResponse<String> {
         Log.d("CredentialsRepository", "login: $email, $password")
@@ -46,22 +48,23 @@ class CredentialsRepository(private val api: AutominderApi, private val dataStor
             return ApiResponse.Error(e)
         }
     }
-
+/*
     suspend fun saveUserData(token: String) {
         val jwtDecoded = JWT.decoded(token)
 
         val payload = Gson().fromJson(jwtDecoded, Payload::class.java)
 
-        dataStoreManager.saveUserData(UserModel(
-            userId = payload.id,
-            email = payload.email,
-            username = payload.username,
-            roles = payload.roles,
-            token = payload.token
-        )
+        dataStoreManager.saveUserData(
+            UserModel(
+                userId = payload.id,
+                email = payload.email,
+                username = payload.username,
+                roles = payload.roles,
+                token = payload.token
+            )
         )
     }
 
     fun getUserData() = dataStoreManager.getUserData()
-
+*/
 }

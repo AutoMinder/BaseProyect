@@ -2,7 +2,10 @@ package com.autominder.autominder.ui.navigation
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -10,6 +13,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.autominder.autominder.AutoMinderApplication
 import com.autominder.autominder.ui.addcar.ui.AddCarScreen
 import com.autominder.autominder.ui.addcar.ui.AddCarViewModel
 import com.autominder.autominder.ui.carinfo.ui.CarInfoScreen
@@ -20,6 +24,7 @@ import com.autominder.autominder.ui.myCars.ui.MyCarsViewModel
 import com.autominder.autominder.obdApiSensor.ui.ObdReader
 import com.autominder.autominder.obdApiSensor.ui.ObdSensorConnectScreen
 import com.autominder.autominder.obdApiSensor.ui.ObdSensorViewModel
+import com.autominder.autominder.ui.main.MainViewModel
 import com.autominder.autominder.ui.principalMenu.ui.PrincipalMenuScreen
 import com.autominder.autominder.ui.register.RegisterScreen
 import com.autominder.autominder.ui.userInfo.UserInfoScreen
@@ -30,7 +35,6 @@ import com.autominder.autominder.ui.userInfo.changePassword.ChangePasswordViewMo
 @Composable
 fun NavigationHost(
     navController: NavHostController,
-    startDestination: String = "login",
     viewModel: MyCarsViewModel = viewModel(
         factory = MyCarsViewModel.Factory
     ),
@@ -39,8 +43,18 @@ fun NavigationHost(
     ),
     obdSensorViewModel: ObdSensorViewModel = viewModel(
         factory = ObdSensorViewModel.Factory
-    )
+    ),
+    mainViewModel: MainViewModel = MainViewModel()
 ) {
+    val application: AutoMinderApplication = LocalContext.current.applicationContext as AutoMinderApplication
+    val startDestination = mainViewModel.startDestination.collectAsState().value
+    LaunchedEffect(application.getToken()){
+        if (application.getToken().isNullOrEmpty()) {
+            mainViewModel.setStartDestination(Destinations.Login.route)
+        } else {
+            mainViewModel.setStartDestination(Destinations.PrincipalMenu.route)
+        }
+    }
 
     NavHost(
         navController = navController,
