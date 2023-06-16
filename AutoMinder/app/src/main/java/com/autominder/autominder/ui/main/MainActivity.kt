@@ -22,10 +22,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.autominder.autominder.AutoMinderApplication
+import com.autominder.autominder.data.DataStoreManager
 import com.autominder.autominder.ui.navigation.Destinations
 import com.autominder.autominder.ui.navigation.PrincipalScaffold
 import com.autominder.autominder.ui.theme.AutoMinderTheme
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 
 class MainActivity : ComponentActivity() {
@@ -36,6 +41,23 @@ class MainActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
         setContent {
+            val mainViewModel: MainViewModel = viewModel<MainViewModel>()
+            val dataStoreManager = DataStoreManager(LocalContext.current)
+
+            LaunchedEffect(dataStoreManager.getUserData()) {
+                lifecycleScope.launch {
+                    val user = dataStoreManager.getUserData()
+                    user.collect { token ->
+                        Log.d("NavigationHost", "NavigationHost: $token")
+                        if (token != "") {
+                            mainViewModel.setStartDestination("principal_menu")
+                        } else {
+                            mainViewModel.setStartDestination("login")
+                        }
+                    }
+                }
+            }
+
             AutoMinderTheme(useDarkTheme = isSystemInDarkTheme()) {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     PrincipalScaffold()

@@ -32,13 +32,14 @@ import com.autominder.autominder.ui.userInfo.UserInfoScreen
 import com.autominder.autominder.ui.userInfo.UserInfoViewModel
 import com.autominder.autominder.ui.userInfo.changePassword.ChangePasswordScreen
 import com.autominder.autominder.ui.userInfo.changePassword.ChangePasswordViewModel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collect
 
 
 @Composable
 fun NavigationHost(
     navController: NavHostController,
-    //startDestination:String = "login",
+    mainViewModel: MainViewModel = viewModel(),
     viewModel: MyCarsViewModel = viewModel(
         factory = MyCarsViewModel.Factory
     ),
@@ -49,23 +50,7 @@ fun NavigationHost(
         factory = ObdSensorViewModel.Factory
     ),
 ) {
-
-    val mainViewModel = MainViewModel()
-    val startDestination =
-        mainViewModel.startDestination.collectAsState()//TODO: Must be collected with lifecycle
-    val dataStoreManager = DataStoreManager(LocalContext.current)
-
-    LaunchedEffect(dataStoreManager.getUserData()) {
-        val user = dataStoreManager.getUserData()
-        user.collect { token ->
-            Log.d("NavigationHost", "NavigationHost: $token")
-            if (token != "") {
-                mainViewModel.setStartDestination("principal_menu")
-            } else {
-                mainViewModel.setStartDestination("login")
-            }
-        }
-    }
+    val startDestination = mainViewModel.startDestination.collectAsState()
 
     NavHost(
         navController = navController,

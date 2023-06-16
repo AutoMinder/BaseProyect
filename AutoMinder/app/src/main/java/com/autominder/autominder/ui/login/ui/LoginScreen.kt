@@ -41,16 +41,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
-/*fun LoginScreenPreview() {        //TODO(): Cambiar ruta de navegacion
-
-
-    val viewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory)
-
-    val navController = rememberNavController()
-    LoginScreen(viewModel, navController)
-}*/
-
-
 @Composable
 fun LoginScreen(
     navController: NavHostController,
@@ -95,6 +85,7 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
                         val token = status.token
                         viewModel.updateToken(token)
                         application.saveAuthToken(token)
+                        viewModel.saveUserData(token)
                         Log.d("LoginScreen", "token: ${application.getToken()}")
 
                         navController.navigate("principal_menu")
@@ -190,14 +181,11 @@ fun LoginBox(
             ForgotPassword(navController)
             Spacer(modifier = Modifier.padding(8.dp))
 
-            val lifecycle = LocalLifecycleOwner.current
             LoginButton(loginEnable) {
                 coroutineScope.launch {
                     Log.d("LoginScreen", "email: $email, password: $password")
                     delay(1000)
                     viewModel.login(email, password)
-                    Log.d("APP TAG", application.getToken())
-                    viewModel.saveUserData(application.getToken())
                 }
             }
         }
