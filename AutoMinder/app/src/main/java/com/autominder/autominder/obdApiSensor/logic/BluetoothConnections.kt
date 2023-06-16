@@ -11,6 +11,7 @@ import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothProfile
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.mutableStateListOf
 import com.autominder.autominder.obdApiSensor.ui.ObdSensorViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -194,7 +195,7 @@ class BluetoothConnections(
     }
 
     @SuppressLint("MissingPermission")
-    fun sendVinCommandToCar(uuidSended: String) {
+    fun sendVinCommandToCar(uuidSended: String, context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
             val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
             val bluetoothDevice = bluetoothAdapter.getRemoteDevice("00:10:CC:4F:36:03")
@@ -228,8 +229,12 @@ class BluetoothConnections(
                 delay(1000)
                 sendCommand("0902\r", outputStream, inputStream)
                 delay(1000)
-                sendCommand("0902\r", outputStream, inputStream)
+                val response = sendCommand("0902\r", outputStream, inputStream)
                 delay(1000)
+
+                Toast.makeText(context, "Tu VIN es $response", Toast.LENGTH_LONG).show()
+
+
                 bluetoothSocket.close()
 
             } catch (e: IOException) {
@@ -239,7 +244,7 @@ class BluetoothConnections(
     }
 
     @SuppressLint("MissingPermission")
-    fun sendTemperatureCommandToCar(uuidSended: String){
+    fun sendTemperatureCommandToCar(uuidSended: String, context: Context){
         CoroutineScope(Dispatchers.IO).launch {
             val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
             val bluetoothDevice = bluetoothAdapter.getRemoteDevice("00:10:CC:4F:36:03")
@@ -273,7 +278,9 @@ class BluetoothConnections(
                 delay(1000)
                 sendCommand("0105\r", outputStream, inputStream)
                 delay(1000)
-                sendCommand("0105\r", outputStream, inputStream)
+                val response =  sendCommand("0105\r", outputStream, inputStream)
+                Toast.makeText(context, "Tu VIN es $response", Toast.LENGTH_LONG).show()
+
                 delay(1000)
                 bluetoothSocket.close()
 
@@ -283,7 +290,7 @@ class BluetoothConnections(
         }
     }
 
-    private fun sendCommand(command: String, outputStream: OutputStream, inputStream: InputStream) {
+    private fun sendCommand(command: String, outputStream: OutputStream, inputStream: InputStream): String {
         outputStream.write((command + "\r").toByteArray())
         outputStream.flush()
 
@@ -293,6 +300,8 @@ class BluetoothConnections(
         val response = String(buffer, 0, bytesRead ?: 0).trim()
 
         Log.d("bluele", "RESPONSE: $response")
+
+        return response
     }
 
     //**********************************************

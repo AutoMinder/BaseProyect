@@ -79,12 +79,12 @@ fun ObdSensorConnectScreen(
         }
         Button(
             shape = MaterialTheme.shapes.small,
-            onClick = { bluetoothConnection.sendVinCommandToCar("00001101-0000-1000-8000-00805f9b34fb") }) {
+            onClick = { bluetoothConnection.sendVinCommandToCar("00001101-0000-1000-8000-00805f9b34fb", context) }) {
             Text(text = "Obtener VIN de mi carro")
         }
         Button(
             shape = MaterialTheme.shapes.small,
-            onClick = { bluetoothConnection.sendTemperatureCommandToCar("00001101-0000-1000-8000-00805f9b34fb") }) {
+            onClick = { bluetoothConnection.sendTemperatureCommandToCar("00001101-0000-1000-8000-00805f9b34fb", context) }) {
             Text(text = "Obtener temperatura del refrigerante de de mi carro")
         }
     }
