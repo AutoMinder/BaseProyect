@@ -2,6 +2,7 @@ package com.autominder.autominder.ui.register
 
 import android.provider.ContactsContract.CommonDataKinds.Email
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -28,6 +30,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
@@ -195,16 +198,19 @@ fun RegisterBox(
     status: RegisterUiStatus
 ) {
     Card(
+        shape = RoundedCornerShape(16.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 12.dp,
+        ),
         modifier = Modifier
             .padding(16.dp)
-            .height(450.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer)
+            .height(500.dp)
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+
         ) {
             NameTextField(name) { viewModel.onRegisterChange(it, email, password, confirmPassword) }
             EmailTextField(email) {
@@ -255,6 +261,7 @@ fun NameTextField(
         value = name,
         onValueChange = onTextFieldChanged,
         label = { Text(text = "Nombre", color = MaterialTheme.colorScheme.onPrimaryContainer) },
+        shape = RoundedCornerShape(8.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
@@ -277,6 +284,7 @@ fun EmailTextField(
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
         },
+        shape = RoundedCornerShape(8.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
@@ -295,6 +303,7 @@ fun PasswordTextField(
         value = password,
         onValueChange = onTextFieldChanged,
         label = { Text(text = "Contraseña", color = MaterialTheme.colorScheme.onPrimaryContainer) },
+        shape = RoundedCornerShape(8.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
@@ -318,6 +327,7 @@ fun ConfirmPasswordTextField(
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
         },
+        shape = RoundedCornerShape(8.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
@@ -337,7 +347,7 @@ fun RegisterButton(
         enabled = registerEnable,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 0.dp, bottom = 0.dp, start = 16.dp, end = 16.dp),
+            .padding(top = 16.dp, bottom = 0.dp, start = 16.dp, end = 16.dp),
         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
     ) {
         Text(text = "Registrarse", color = MaterialTheme.colorScheme.onPrimary)

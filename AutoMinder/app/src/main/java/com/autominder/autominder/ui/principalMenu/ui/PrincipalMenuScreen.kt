@@ -1,5 +1,6 @@
 package com.autominder.autominder.ui.principalMenu.ui
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -96,6 +97,9 @@ fun AlertsSection(alerts: State<List<Alerts>>) {
 @Composable
 fun AlertCard(alert: Alerts) {
     Card(
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 12.dp,
+        ),
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)

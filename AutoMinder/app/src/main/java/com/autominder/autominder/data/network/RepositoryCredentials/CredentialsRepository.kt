@@ -3,6 +3,8 @@ package com.autominder.autominder.data.network.RepositoryCredentials
 import android.util.Log
 import com.autominder.autominder.data.DataStoreManager
 import com.autominder.autominder.data.network.ApiResponse
+import com.autominder.autominder.data.network.dto.create.CreateRequest
+import com.autominder.autominder.data.network.dto.create.CreateResponse
 import com.autominder.autominder.data.network.dto.login.LoginRequest
 import com.autominder.autominder.data.network.dto.login.LoginResponse
 import com.autominder.autominder.data.network.dto.register.RegisterRequest
@@ -10,6 +12,7 @@ import com.autominder.autominder.data.network.dto.register.RegisterResponse
 import com.autominder.autominder.data.network.services.AutominderApi
 import retrofit2.HttpException
 import java.io.IOException
+import java.util.Date
 
 class CredentialsRepository(
     private val api: AutominderApi,
@@ -52,6 +55,59 @@ class CredentialsRepository(
         )
     }
 
+
     //fun getUserData() = userDataManager.getUserData()
 
+    suspend fun addCar(
+        car_name: String,
+        model: String,
+        brand: String,
+        year: String,
+        kilometers: String,
+        kilometersDate: String? = null,
+        lastMaintenance: String,
+        lastOilChange: String,
+        lastCoolantChange: String,
+        mayorTuning: String?,
+        minorTuning: String?,
+        errorRecord: List<String>? = null,
+        vin: String = "321321",
+    ): ApiResponse<String> {
+
+        //create a date val to get the current date
+        val date = Date()
+
+        //create a val to get the current date in string format
+
+
+
+        return try {
+            val response: CreateResponse = api.create(
+                token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDhhODM2ZjJmMTI5ZGIxNzUzMjU4ODEiLCJpYXQiOjE2ODY4MDA5MDEsImV4cCI6MTY4OTM5MjkwMX0.e8CxQV6BhnzxNGFrqQvYRlzmV8tz7KsZ9aCLCIEcSuI",
+                CreateRequest(
+                    vin,
+                    car_name,
+                    brand,
+                    model,
+                    year,
+                    kilometers,
+                    date,
+                    lastMaintenance,
+                    mayorTuning,
+                    minorTuning,
+                    lastOilChange,
+                    lastCoolantChange,
+                )
+            )
+            return ApiResponse.Success(response.id)
+        } catch (e: HttpException) {
+
+            if (e.code() == 400) {
+
+            }
+            return ApiResponse.Error(e)
+        } catch (e: IOException) {
+            return ApiResponse.Error(e)
+        }
+    }
 }

@@ -99,7 +99,7 @@ fun ButtonWrapper(navController: NavController, viewModel: UserInfoViewModel) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(0.dp, 0.dp, 0.dp, 32.dp),
+            .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -107,7 +107,7 @@ fun ButtonWrapper(navController: NavController, viewModel: UserInfoViewModel) {
             .fillMaxWidth()
             .padding(16.dp, 0.dp, 16.dp, 0.dp)
 
-        ChangePasswordButton(navController, modifier)
+        //ChangePasswordButton(navController, modifier)
 
         ContactDevelopersButton(modifier) { viewModel.onContactDevelopersClicked(context) }
 
