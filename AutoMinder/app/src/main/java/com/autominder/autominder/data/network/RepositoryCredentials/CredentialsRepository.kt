@@ -1,6 +1,7 @@
 package com.autominder.autominder.data.network.RepositoryCredentials
 
 import android.util.Log
+import com.autominder.autominder.data.DataStoreManager
 import com.autominder.autominder.data.network.ApiResponse
 import com.autominder.autominder.data.network.dto.create.CreateRequest
 import com.autominder.autominder.data.network.dto.create.CreateResponse
@@ -13,7 +14,10 @@ import retrofit2.HttpException
 import java.io.IOException
 import java.util.Date
 
-class CredentialsRepository(private val api: AutominderApi) {
+class CredentialsRepository(
+    private val api: AutominderApi,
+    private val userDataManager: DataStoreManager
+) {
 
     suspend fun login(email: String, password: String): ApiResponse<String> {
         Log.d("CredentialsRepository", "login: $email, $password")
@@ -45,6 +49,14 @@ class CredentialsRepository(private val api: AutominderApi) {
         }
     }
 
+    suspend fun saveUserData(token: String) {
+        userDataManager.saveUserData(
+            token
+        )
+    }
+
+
+    //fun getUserData() = userDataManager.getUserData()
 
     suspend fun addCar(
         car_name: String,
@@ -98,6 +110,4 @@ class CredentialsRepository(private val api: AutominderApi) {
             return ApiResponse.Error(e)
         }
     }
-
-
 }

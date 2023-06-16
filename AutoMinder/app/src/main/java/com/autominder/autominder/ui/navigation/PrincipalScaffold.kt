@@ -1,17 +1,21 @@
 package com.autominder.autominder.ui.navigation
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.autominder.autominder.AutoMinderApplication
 import com.autominder.autominder.ui.components.BottomNavigationBar
 import com.autominder.autominder.ui.components.TopBar
+import com.autominder.autominder.ui.main.MainViewModel
 
 @Composable
 fun PrincipalScaffold() {
