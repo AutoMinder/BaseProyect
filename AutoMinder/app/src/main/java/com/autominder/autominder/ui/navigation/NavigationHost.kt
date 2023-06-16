@@ -32,12 +32,13 @@ import com.autominder.autominder.ui.userInfo.UserInfoScreen
 import com.autominder.autominder.ui.userInfo.UserInfoViewModel
 import com.autominder.autominder.ui.userInfo.changePassword.ChangePasswordScreen
 import com.autominder.autominder.ui.userInfo.changePassword.ChangePasswordViewModel
+import kotlinx.coroutines.flow.collect
 
 
 @Composable
 fun NavigationHost(
     navController: NavHostController,
-    startDestination:String = "login",
+    //startDestination:String = "login",
     viewModel: MyCarsViewModel = viewModel(
         factory = MyCarsViewModel.Factory
     ),
@@ -47,29 +48,29 @@ fun NavigationHost(
     obdSensorViewModel: ObdSensorViewModel = viewModel(
         factory = ObdSensorViewModel.Factory
     ),
-    ) {
+) {
 
     val mainViewModel = MainViewModel()
-    //val startDestination = mainViewModel.startDestination.collectAsState()//TODO: Must be collected with lifecycle
-    /*val dataStoreManager = DataStoreManager(LocalContext.current)
+    val startDestination =
+        mainViewModel.startDestination.collectAsState()//TODO: Must be collected with lifecycle
+    val dataStoreManager = DataStoreManager(LocalContext.current)
 
-    LaunchedEffect(dataStoreManager.getUserData()){
+    LaunchedEffect(dataStoreManager.getUserData()) {
         val user = dataStoreManager.getUserData()
-        user.collect{
-            Log.d("NavigationHost", "user: ${it.token}")
-
-            if(it.token != ""){
-                mainViewModel.setStartDestination("login")
-            } else {
+        user.collect { token ->
+            Log.d("NavigationHost", "NavigationHost: $token")
+            if (token != "") {
                 mainViewModel.setStartDestination("principal_menu")
+            } else {
+                mainViewModel.setStartDestination("login")
             }
         }
-    }*/
+    }
 
     NavHost(
         navController = navController,
         modifier = Modifier.padding(8.dp),
-        startDestination = startDestination
+        startDestination = startDestination.value
     ) {
         composable("login") {
             LoginScreen(navController = navController)
@@ -117,7 +118,10 @@ fun NavigationHost(
             ObdSensorConnectScreen(obdSensorViewModel, navController)
         }
         composable("obd_reader") {
-            ObdReader(obdSensorViewModel = obdSensorViewModel, bluetoothDevice = obdSensorViewModel.bluetoothDevice)
+            ObdReader(
+                obdSensorViewModel = obdSensorViewModel,
+                bluetoothDevice = obdSensorViewModel.bluetoothDevice
+            )
 
         }
     }
