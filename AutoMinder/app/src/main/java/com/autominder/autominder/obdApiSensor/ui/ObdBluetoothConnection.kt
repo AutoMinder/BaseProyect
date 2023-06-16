@@ -11,7 +11,10 @@ import android.content.IntentFilter
 import android.os.Build
 import android.os.Build.VERSION
 import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
@@ -55,38 +58,37 @@ fun ObdSensorConnectScreen(
 
 
     Column(
-        modifier = Modifier.padding(10.dp)
+        modifier = Modifier
+            .padding(10.dp)
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
     ) {
-        Button(onClick = {
-            if (bluetoothAdapter?.isEnabled == true) {
-                val reciever = onBluetoothEnable(context)
-                val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
-                bluetoothConnection.scanLeDevice()
-                context.registerReceiver(reciever, filter)
-                obdSensorViewModel.setIsLoading(true)
-            }
+        Button(
+            shape = MaterialTheme.shapes.small,
+            onClick = {
+                if (bluetoothAdapter?.isEnabled == true) {
+                    val reciever = onBluetoothEnable(context)
+                    val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
+                    bluetoothConnection.scanLeDevice()
+                    context.registerReceiver(reciever, filter)
+                    obdSensorViewModel.setIsLoading(true)
+                }
 
-        }) {
+            }) {
             Text(text = "Enable Bluetooth")
         }
+        Button(
+            shape = MaterialTheme.shapes.small,
+            onClick = { bluetoothConnection.sendVinCommandToCar("00001101-0000-1000-8000-00805f9b34fb") }) {
+            Text(text = "Obtener VIN de mi carro")
+        }
+        Button(
+            shape = MaterialTheme.shapes.small,
+            onClick = { bluetoothConnection.sendTemperatureCommandToCar("00001101-0000-1000-8000-00805f9b34fb") }) {
+            Text(text = "Obtener temperatura del refrigerante de de mi carro")
+        }
+    }
 
-    }
-    Button(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 0.dp, bottom = 0.dp, start = 16.dp, end = 16.dp),
-        shape = MaterialTheme.shapes.small,
-        onClick = { bluetoothConnection.sendVinCommandToCar("00001101-0000-1000-8000-00805f9b34fb") }) {
-        Text(text = "Obtener VIN de mi carro")
-    }
-    Button(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 0.dp, bottom = 0.dp, start = 16.dp, end = 16.dp),
-        shape = MaterialTheme.shapes.small,
-        onClick = { bluetoothConnection.sendTemperatureCommandToCar("00001101-0000-1000-8000-00805f9b34fb") }) {
-        Text(text = "Obtener temperatura del refrigerante de de mi carro")
-    }
 
 
 

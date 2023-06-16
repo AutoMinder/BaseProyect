@@ -30,7 +30,7 @@ import com.autominder.autominder.ui.userInfo.changePassword.ChangePasswordViewMo
 @Composable
 fun NavigationHost(
     navController: NavHostController,
-    startDestination: String = "login",
+    startDestination: String = "obd_sensor",
     viewModel: MyCarsViewModel = viewModel(
         factory = MyCarsViewModel.Factory
     ),
