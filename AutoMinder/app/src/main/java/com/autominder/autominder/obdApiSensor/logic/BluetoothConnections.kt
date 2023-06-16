@@ -13,15 +13,8 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import com.autominder.autominder.obdApiSensor.ui.ObdSensorViewModel
-import com.github.eltonvs.obd.command.control.VINCommand
-import com.github.eltonvs.obd.connection.ObdDeviceConnection
-import com.github.pires.obd.commands.protocol.EchoOffCommand
-import com.github.pires.obd.commands.protocol.LineFeedOffCommand
-import com.github.pires.obd.commands.protocol.TimeoutCommand
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -122,7 +115,7 @@ class BluetoothConnections(
                         }
                     }
                 }
-                //sipudo()
+
             } else {
                 Log.d("bluele", "No services found")
             }
@@ -200,47 +193,8 @@ class BluetoothConnections(
         }
     }
 
-    //**********************************************
-    // trash funtion just to try the connection
-    // *********************************************//
-    @OptIn(DelicateCoroutinesApi::class)
     @SuppressLint("MissingPermission")
-    fun sipudo() {
-        val device = leDeviceListAdapter.find { it.name == "OBDII" }
-        Log.d("bluele", "DISPOSITIVO SIENDO LEIDO: ${device!!.name}")
-
-        val uuid = UUID.fromString("00002a00-0000-1000-8000-00805f9b34fb")
-        val bluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(uuid)
-        bluetoothSocket.connect()
-
-        if (bluetoothSocket.isConnected) {
-            Log.d("bluele", "ESTA CONECTADO")
-            val obdDeviceConnection =
-                ObdDeviceConnection(bluetoothSocket.inputStream, bluetoothSocket.outputStream)
-            EchoOffCommand().run(bluetoothSocket.inputStream, bluetoothSocket.outputStream)
-            LineFeedOffCommand().run(bluetoothSocket.inputStream, bluetoothSocket.outputStream)
-            TimeoutCommand(62).run(bluetoothSocket.inputStream, bluetoothSocket.outputStream)
-            Log.d(
-                "bluele",
-                "COMANDOS ENVIADOS: ${EchoOffCommand().formattedResult} ${LineFeedOffCommand().formattedResult} ${
-                    TimeoutCommand(62).formattedResult
-                }"
-            )
-            Log.d("bluele", "OBD: $obdDeviceConnection")
-            GlobalScope.launch {
-                try {
-                    val response = obdDeviceConnection.run(VINCommand())
-                    Log.d("bluele", "LA RESPUESTA DEL OBD:::: $response")
-                } catch (e: Exception) {
-                    Log.e("bluele", "Error in coroutine: ${e.message}")
-                }
-            }
-        }
-    }
-
-
-    @SuppressLint("MissingPermission")
-    fun tryUuid(uuidSended: String) {
+    fun sendVinCommandToCar(uuidSended: String) {
         CoroutineScope(Dispatchers.IO).launch {
             val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
             val bluetoothDevice = bluetoothAdapter.getRemoteDevice("00:10:CC:4F:36:03")
@@ -275,7 +229,8 @@ class BluetoothConnections(
                 sendCommand("0902\r", outputStream, inputStream)
                 delay(1000)
                 sendCommand("0902\r", outputStream, inputStream)
-
+                delay(1000)
+                bluetoothSocket.close()
 
             } catch (e: IOException) {
                 Log.e("bluele", "Socket connection failed: ${e.message}")
@@ -283,7 +238,52 @@ class BluetoothConnections(
         }
     }
 
-    fun sendCommand(command: String, outputStream: OutputStream, inputStream: InputStream) {
+    @SuppressLint("MissingPermission")
+    fun sendTemperatureCommandToCar(uuidSended: String){
+        CoroutineScope(Dispatchers.IO).launch {
+            val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+            val bluetoothDevice = bluetoothAdapter.getRemoteDevice("00:10:CC:4F:36:03")
+            Log.d("bluele", "Device: ${bluetoothDevice.name} ${bluetoothDevice.address}")
+            val uuid = UUID.fromString(uuidSended)
+            val bluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord(uuid)
+
+            try {
+                bluetoothSocket.connect()
+
+                // Socket connection successful, proceed with communication
+                val inputStream = bluetoothSocket.inputStream
+                val outputStream = bluetoothSocket.outputStream
+
+                delay(1000)
+                sendCommand("ATZ\r", outputStream, inputStream)
+                delay(1000)
+                sendCommand("ATSP0\r", outputStream, inputStream)
+                delay(1000)
+                sendCommand("ATL0\r", outputStream, inputStream)
+                delay(1000)
+                sendCommand("ATI\r", outputStream, inputStream)
+                delay(1000)
+                sendCommand("0105\r", outputStream, inputStream)
+                delay(1000)
+                sendCommand("0105\r", outputStream, inputStream)
+                delay(1000)
+                sendCommand("0105\r", outputStream, inputStream)
+                delay(1000)
+                sendCommand("0105\r", outputStream, inputStream)
+                delay(1000)
+                sendCommand("0105\r", outputStream, inputStream)
+                delay(1000)
+                sendCommand("0105\r", outputStream, inputStream)
+                delay(1000)
+                bluetoothSocket.close()
+
+            } catch (e: IOException) {
+                Log.e("bluele", "Socket connection failed: ${e.message}")
+            }
+        }
+    }
+
+    private fun sendCommand(command: String, outputStream: OutputStream, inputStream: InputStream) {
         outputStream.write((command + "\r").toByteArray())
         outputStream.flush()
 
