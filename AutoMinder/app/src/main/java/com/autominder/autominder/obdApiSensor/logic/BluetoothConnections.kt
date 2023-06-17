@@ -236,6 +236,9 @@ class BluetoothConnections(
                 val response = sendCommand("0902\r", outputStream, inputStream)
                 Log.d("bluele", "Response inside fun: ${response}")
                 val vin = translateVin(response)
+                CoroutineScope(Dispatchers.Main).launch {
+                    Toast.makeText(context, "VIN: $vin", Toast.LENGTH_LONG).show()
+                }
                 Log.d("bluele", "VIN: $vin")
 
 
@@ -247,7 +250,7 @@ class BluetoothConnections(
         }
     }
 
-    fun translateVin(response: String): String {
+    private fun translateVin(response: String): String {
         val vinSection = response.substringBefore(">").trim()
         val hexValues = vinSection.split(" ")
 
