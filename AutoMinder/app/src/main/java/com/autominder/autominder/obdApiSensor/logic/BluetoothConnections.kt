@@ -14,6 +14,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.mutableStateListOf
 import com.autominder.autominder.obdApiSensor.ui.ObdSensorViewModel
+import com.github.eltonvs.obd.command.control.VINCommand
+import com.github.eltonvs.obd.connection.ObdDeviceConnection
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -229,10 +231,12 @@ class BluetoothConnections(
                 delay(1000)
                 sendCommand("0902\r", outputStream, inputStream)
                 delay(1000)
-                val response = sendCommand("0902\r", outputStream, inputStream)
-                delay(1000)
 
-                Toast.makeText(context, "Tu VIN es $response", Toast.LENGTH_LONG).show()
+                delay(1000)
+                val response = sendCommand("0902\r", outputStream, inputStream)
+                Log.d("bluele", "Response inside fun: ${response}")
+                val vin = translateVin(response)
+                Log.d("bluele", "VIN: $vin")
 
 
                 bluetoothSocket.close()
@@ -243,8 +247,32 @@ class BluetoothConnections(
         }
     }
 
+    fun translateVin(response: String): String {
+        val vinSection = response.substringBefore(">").trim()
+        val hexValues = vinSection.split(" ")
+
+        val vin = StringBuilder()
+        var includePrefix = true
+        for (hex in hexValues) {
+            if (hex.startsWith("0")) {
+                includePrefix = false // Set includePrefix to false if a hex value starts with 0
+                continue
+            }
+            val asciiValue = hex.toIntOrNull(16)?.toChar()
+            if (asciiValue != null) {
+                if (includePrefix) {
+                    vin.append(asciiValue) // Append ASCII character to VIN
+                } else {
+                    includePrefix = true // Reset includePrefix for subsequent characters
+                }
+            }
+        }
+
+        return vin.toString()
+    }
+
     @SuppressLint("MissingPermission")
-    fun sendTemperatureCommandToCar(uuidSended: String, context: Context){
+    fun sendTemperatureCommandToCar(uuidSended: String, context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
             val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
             val bluetoothDevice = bluetoothAdapter.getRemoteDevice("00:10:CC:4F:36:03")
@@ -278,7 +306,7 @@ class BluetoothConnections(
                 delay(1000)
                 sendCommand("0105\r", outputStream, inputStream)
                 delay(1000)
-                val response =  sendCommand("0105\r", outputStream, inputStream)
+                val response = sendCommand("0105\r", outputStream, inputStream)
                 Toast.makeText(context, "Tu VIN es $response", Toast.LENGTH_LONG).show()
 
                 delay(1000)
@@ -290,7 +318,11 @@ class BluetoothConnections(
         }
     }
 
-    private fun sendCommand(command: String, outputStream: OutputStream, inputStream: InputStream): String {
+    private fun sendCommand(
+        command: String,
+        outputStream: OutputStream,
+        inputStream: InputStream
+    ): String {
         outputStream.write((command + "\r").toByteArray())
         outputStream.flush()
 
