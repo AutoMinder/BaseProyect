@@ -55,12 +55,13 @@ class AutoMinderApplication : Application() {
     //RETROFIT
 
     private val prefs: SharedPreferences by lazy{
-        getSharedPreferences(USER_TOKEN, Context.MODE_PRIVATE)
+        getSharedPreferences("Retrofit", Context.MODE_PRIVATE)
     }
 
     private fun getAPIService() = with(RetrofitInstance){
         setToken(getToken())
         getLoginService()
+        getOwnCarsService()
     }
 
     fun getToken():String = prefs.getString(USER_TOKEN, "")!!
@@ -73,6 +74,7 @@ class AutoMinderApplication : Application() {
         val editor = prefs.edit()
         editor.putString(USER_TOKEN, token)
         editor.apply()
+        RetrofitInstance.setToken(token)
     }
 
     companion object{

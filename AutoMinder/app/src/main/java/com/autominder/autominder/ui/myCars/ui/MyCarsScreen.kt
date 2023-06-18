@@ -1,5 +1,7 @@
 package com.autominder.autominder.ui.myCars.ui
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,10 +26,12 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,12 +39,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.core.content.ContentProviderCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.autominder.autominder.R
 import com.autominder.autominder.ui.carinfo.ui.CarInfoViewModel
 import com.autominder.autominder.ui.components.LoadingScreen
 import com.autominder.autominder.data.models_dummy.CarModel
+import kotlinx.coroutines.launch
 
 
 //*
@@ -56,6 +64,28 @@ fun MyCarsScreen(
 ) {
     val isLoading by viewModel.isLoading.collectAsState(false)
 
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val coroutineScope = rememberCoroutineScope()
+
+    fun handleUiStatus(status: OwnCarsUiStatus) {
+        when (status) {
+            is OwnCarsUiStatus.Success -> {
+                Toast.makeText(context, "Exito en el fetcheo de carros", Toast.LENGTH_SHORT).show()
+                println("Success: ${status.cars}")
+            }
+            is OwnCarsUiStatus.Error -> {
+                Toast.makeText(context, "Error en el fetcheo de carros", Toast.LENGTH_SHORT).show()
+                Log.d("MyCarsViewModel", "Error: ${status.exception}")
+            }
+            is OwnCarsUiStatus.ErrorWithMessage -> {
+                Toast.makeText(context, "Error con mensaje en el fetcheo de carros", Toast.LENGTH_SHORT).show()
+                Log.d("MyCarsViewModel", "ErrorWithMessage: ${status.message}")
+            }
+            else -> {Toast.makeText(context, "Else de When en HandleUIStatus", Toast.LENGTH_SHORT).show()}
+        }
+    }
+
     //*
     // The Scaffold is the one in charge to add the floating button
     // and the content in { } is the one that will be displayed
@@ -68,6 +98,14 @@ fun MyCarsScreen(
                 .padding(contentPadding)
                 .background(MaterialTheme.colorScheme.surface),
         ) {
+    
+            LaunchedEffect(coroutineScope){
+                coroutineScope.launch {
+                    viewModel.status.observe(lifecycleOwner) { status ->
+                        handleUiStatus(status)
+                    }
+                }
+            }
 
 
             //Checks if is loading, if it is, it will display the loading screen, if not, it will display the main screen
@@ -76,6 +114,7 @@ fun MyCarsScreen(
 
             } else {
                 MainScreenCars(viewModel, navController)
+
             }
         }
     }
@@ -163,7 +202,7 @@ fun CardCar(
         ),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 16.dp)
+            .padding(16.dp)
 
             //* If clicked, it will navigate to the details of the specific car with the id*//
             .clickable {
@@ -192,7 +231,6 @@ fun CardCar(
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
             Image(
-
                 painter = painterResource(id = R.drawable.ic_car),
                 contentDescription = "Car brand",
                 modifier = Modifier
@@ -205,9 +243,9 @@ fun CardCar(
                 modifier = Modifier
                     .fillMaxSize()
                     .wrapContentSize(Alignment.CenterEnd)
-                    .padding(end = 32.dp)
+                    .padding(end = 64.dp)
             ) {
-                Text(text = car.brand, color = MaterialTheme.colorScheme.onPrimaryContainer, style = MaterialTheme.typography.headlineSmall)
+                Text(text = car.brand, color = MaterialTheme.colorScheme.onPrimaryContainer, style = MaterialTheme.typography.headlineMedium)
                 Text(text = car.year.toString(), color = MaterialTheme.colorScheme.onPrimaryContainer, style = MaterialTheme.typography.headlineSmall)
             }
             Text(
@@ -215,7 +253,8 @@ fun CardCar(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.secondaryContainer),
+                    .background(MaterialTheme.colorScheme.secondaryContainer)
+                    .padding(8.dp),
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                 style = MaterialTheme.typography.bodyMedium
