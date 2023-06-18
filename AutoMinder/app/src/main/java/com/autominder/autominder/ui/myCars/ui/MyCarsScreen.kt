@@ -68,7 +68,7 @@ fun MyCarsScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
     val coroutineScope = rememberCoroutineScope()
 
-    fun handleUiStatus(status: OwnCarsUiStatus) {
+    fun handleUiStatus(status: OwnCarsUiStatus) { //This function will handle the status of the screen
         when (status) {
             is OwnCarsUiStatus.Success -> {
                 Toast.makeText(context, "Exito en el fetcheo de carros", Toast.LENGTH_SHORT).show()
@@ -82,7 +82,7 @@ fun MyCarsScreen(
                 Toast.makeText(context, "Error con mensaje en el fetcheo de carros", Toast.LENGTH_SHORT).show()
                 Log.d("MyCarsViewModel", "ErrorWithMessage: ${status.message}")
             }
-            else -> {Toast.makeText(context, "Else de When en HandleUIStatus", Toast.LENGTH_SHORT).show()}
+            else -> {Toast.makeText(context, "Caí en el Else del When en HandleUIStatus de la screen", Toast.LENGTH_SHORT).show()}
         }
     }
 
@@ -99,10 +99,10 @@ fun MyCarsScreen(
                 .background(MaterialTheme.colorScheme.surface),
         ) {
     
-            LaunchedEffect(coroutineScope){
+            LaunchedEffect(coroutineScope){ //This is a coroutine that will be launched when the screen is created
                 coroutineScope.launch {
-                    viewModel.status.observe(lifecycleOwner) { status ->
-                        handleUiStatus(status)
+                    viewModel.status.observe(lifecycleOwner) { status -> //This is the observer of the status
+                        handleUiStatus(status) //This function will handle the status
                     }
                 }
             }
