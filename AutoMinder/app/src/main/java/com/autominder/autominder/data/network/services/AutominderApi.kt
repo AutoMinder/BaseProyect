@@ -27,16 +27,15 @@ interface AutominderApi {
     suspend fun register(@Body credentials: RegisterRequest): RegisterResponse
 
 
-
     // TODO() Desarrollar pedir informacion de usuario
     @GET("auth/whoami")
     suspend fun whoami(): String
 
-
-
-
     @POST("post")
-    suspend fun create(@Body credentials: CreateRequest): CreateResponse
+    suspend fun create(
+        @Header("Authorization") token: String,
+        @Body credentials: CreateRequest
+    ): CreateResponse
 
     // TODO() Desarrollar pedir carros propios
 
@@ -45,15 +44,8 @@ interface AutominderApi {
     suspend fun ownCars(): Response<OwnResponse>
 
 
-
-
     @PATCH("post/visibility/{post_id}")
     suspend fun visibility(@Path("post_id") post_id: String): VisibilityResponse
-
-
-
-
-
 
 
 }

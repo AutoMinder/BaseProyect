@@ -2,6 +2,7 @@ package com.autominder.autominder.ui.login.ui
 
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,9 +12,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -25,12 +28,14 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -41,21 +46,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
-/*fun LoginScreenPreview() {        //TODO(): Cambiar ruta de navegacion
-
-
-    val viewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory)
-
-    val navController = rememberNavController()
-    LoginScreen(viewModel, navController)
-}*/
-
-
 @Composable
 fun LoginScreen(
     navController: NavHostController,
-    viewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory),
-    application: AutoMinderApplication = AutoMinderApplication()
+    viewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory)
 ) {
     Box(
         Modifier
@@ -65,6 +59,7 @@ fun LoginScreen(
         Login(
             Modifier
                 .align(Alignment.Center)
+
                 .fillMaxSize(),
             viewModel,
             navController
@@ -80,7 +75,8 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
     val isLoading: Boolean by viewModel.isLoading.observeAsState(initial = false)
     val status by viewModel.status.observeAsState(initial = LoginUiStatus.Resume)
     val coroutineScope = rememberCoroutineScope()
-    val application: AutoMinderApplication = LocalContext.current.applicationContext as AutoMinderApplication
+    val application: AutoMinderApplication =
+        LocalContext.current.applicationContext as AutoMinderApplication
 
     if (isLoading) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -94,8 +90,9 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
                     is LoginUiStatus.Success -> {
                         val token = status.token
                         viewModel.updateToken(token)
-                        Log.d("LoginScreen", "token: $token")
                         application.saveAuthToken(token)
+                        viewModel.saveUserData(token)
+                        Log.d("LoginScreen", "token: ${application.getToken()}")
 
                         navController.navigate("principal_menu")
                     }
@@ -120,7 +117,16 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
             HeaderTitle()
             Spacer(modifier = Modifier.padding(40.dp))
 
-            LoginBox(email, viewModel, password, loginEnable, coroutineScope, navController, status)
+            LoginBox(
+                email,
+                viewModel,
+                password,
+                loginEnable,
+                coroutineScope,
+                navController,
+                status,
+                application
+            )
 
             Spacer(modifier = Modifier.padding(40.dp))
             RegisterBox(navController)
@@ -139,13 +145,15 @@ fun showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
 @Composable
 fun HeaderTitle() {
     Text(
-        text = "Bienvenido a Autominder", fontSize = 24.sp, modifier = Modifier
+        text = "Bienvenido a Autominder", fontSize = 24.sp,
+        modifier = Modifier
             .padding(16.dp)
             .fillMaxWidth(),
         textAlign = TextAlign.Center,
         fontWeight = FontWeight.Bold
     )
 }
+
 
 @Composable
 fun LoginBox(
@@ -156,19 +164,25 @@ fun LoginBox(
     coroutineScope: CoroutineScope,
     navController: NavHostController,
     status: LoginUiStatus,
+    application: AutoMinderApplication
+
+
 ) {
 
     Card(
-
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 12.dp,
+        ),
         modifier = Modifier
-            .padding(16.dp)
-            .height(350.dp),
+            .background(color = Color.White)
+            .height(350.dp)
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
+
         ) {
 
             AccountHeader()
@@ -179,23 +193,18 @@ fun LoginBox(
             ForgotPassword(navController)
             Spacer(modifier = Modifier.padding(8.dp))
 
-            val lifecycle = LocalLifecycleOwner.current
             LoginButton(loginEnable) {
                 coroutineScope.launch {
-                    viewModel.login(email, password)
-
                     Log.d("LoginScreen", "email: $email, password: $password")
-                    coroutineScope.launch {
-                        delay(1000)
-                        viewModel.login(email, password)
-                    }
+                    delay(1000)
+                    viewModel.login(email, password)
                 }
-
             }
         }
     }
 }
 
+@Preview
 @Composable
 fun AccountHeader() {
     Text(
@@ -205,6 +214,7 @@ fun AccountHeader() {
             .padding(8.dp),
         textAlign = TextAlign.Center,
         fontSize = 22.sp,
+        fontWeight = FontWeight.Bold
 
         )
 }

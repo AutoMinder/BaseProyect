@@ -1,15 +1,21 @@
 package com.autominder.autominder.ui.addcar.ui
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.autominder.autominder.AutoMinderApplication
 import com.autominder.autominder.ui.addcar.data.AddCarRepository
 import com.autominder.autominder.data.models_dummy.CarModel
+import com.autominder.autominder.data.network.ApiResponse
+import com.autominder.autominder.data.network.RepositoryCredentials.CredentialsRepository
+import com.autominder.autominder.data.network.dto.create.CreateRequest
+import com.autominder.autominder.ui.register.RegisterUiStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -17,7 +23,8 @@ import java.time.format.DateTimeParseException
 
 class AddCarViewModel(
     private val repository: AddCarRepository,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val credentialsRepository: CredentialsRepository
 ) : ViewModel() {
 
 
@@ -61,14 +68,58 @@ class AddCarViewModel(
     private val _isLoading = MutableStateFlow<Boolean>(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
+    private val _status = MutableLiveData<CreateUiStatus>(CreateUiStatus.Resume)
+    val status: MutableLiveData<CreateUiStatus>
+        get() = _status
+
 
     init {
         fetchCarModels()
         fetchBrands()
     }
 
-    //TODO(): Clasificar por modelos
-    private fun fetchCarModels() {
+    suspend fun addCarToDatabase(
+        name: String,
+        model: String,
+        brand: String,
+        year: String,
+        kilometers: String,
+        kilometersDate: String?,
+        lastMaintenance: String,
+        lastOilChange: String,
+        lastCoolantChange: String,
+        mayorTuning: String?,
+        minorTuning: String?,
+        errorRecord: List<String>?,
+    ) {
+        viewModelScope.launch {
+            _status.postValue(
+                when (
+                    val response = credentialsRepository.addCar(
+                        name,
+                        model,
+                        brand,
+                        year,
+                        kilometers,
+                        kilometersDate,
+                        lastMaintenance,
+                        lastOilChange,
+                        lastCoolantChange,
+                        mayorTuning,
+                        minorTuning,
+                        errorRecord
+                    )
+                ) {
+                    is ApiResponse.Success -> CreateUiStatus.Success
+                    is ApiResponse.Error -> CreateUiStatus.Error(response.exception)
+                    is ApiResponse.ErrorWithMessage -> CreateUiStatus.ErrorWithMessage(response.message)
+                }
+            )
+        }
+    }
+
+
+    fun fetchCarModels() {
         viewModelScope.launch {
             try {
                 setLoading(true)
@@ -143,7 +194,7 @@ class AddCarViewModel(
         carLastCoolantDate: String
     ) {
 
-        try{
+        try {
 
             val carYearParsed = carYear.toInt()
             val carKilometersParsed = carKilometers.toInt()
@@ -169,9 +220,10 @@ class AddCarViewModel(
                 )
 
             repository.addCar(newCar)
+            //addCarToDatabase(newCar)
             Log.d("APP TAG", getCars().toString())
 
-        } catch (e: DateTimeParseException){
+        } catch (e: DateTimeParseException) {
             println("Error al parsear la fecha: ${e.message}")
         }
     }
@@ -191,19 +243,14 @@ class AddCarViewModel(
         profileCarName != "" && carBrand != "" && carModel != "" && carYear != "" && carKilometers != "" && carLastOilChange != "" && carLastMaintenance != "" && carLastCoolantDate != ""
 
     companion object {
-        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(
-                modelClass: Class<T>,
-                extras: CreationExtras
-            ): T {
-                val application =
-                    checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
-                val savedStateHandle = extras.createSavedStateHandle()
-                return AddCarViewModel(
-                    (application as AutoMinderApplication).addCarRepository,
-                    savedStateHandle
-                ) as T
+        val Factory = viewModelFactory {
+            initializer {
+                val app = this[APPLICATION_KEY] as AutoMinderApplication
+                AddCarViewModel(
+                    app.addCarRepository,
+                    createSavedStateHandle(),
+                    app.credentialsRepository
+                )
             }
         }
     }

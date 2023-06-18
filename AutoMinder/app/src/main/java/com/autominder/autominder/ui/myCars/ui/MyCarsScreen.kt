@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -33,11 +34,13 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.core.content.ContentProviderCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -184,6 +187,7 @@ fun MyCarSection(
 }
 
 //* This is the individual carCard for each of the cars*//
+
 @Composable
 fun CardCar(
     car: CarModel, navController: NavController,
@@ -193,6 +197,9 @@ fun CardCar(
 ) {
 
     Card(
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 12.dp,
+        ),
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
@@ -209,6 +216,9 @@ fun CardCar(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(200.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(MaterialTheme.colorScheme.primaryContainer)
+
         ) {
             Text(
                 text = car.name,
@@ -227,7 +237,7 @@ fun CardCar(
                     .wrapContentSize(Alignment.CenterStart)
                     .fillMaxHeight()
                     .size(100.dp)
-                    .padding(16.dp)
+                    .padding(start = 32.dp)
             )
             Column(
                 modifier = Modifier
