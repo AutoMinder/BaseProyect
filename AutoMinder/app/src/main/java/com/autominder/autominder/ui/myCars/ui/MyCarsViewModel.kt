@@ -18,6 +18,8 @@ import com.autominder.autominder.data.network.RepositoryCredentials.CredentialsR
 import com.autominder.autominder.data.network.dto.ownCars.OwnResponse
 import com.autominder.autominder.ui.login.ui.LoginUiStatus
 import com.autominder.autominder.ui.myCars.data.MyCarsRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,9 +27,8 @@ import kotlinx.coroutines.launch
 
 
 class MyCarsViewModel(
-    private val repository: MyCarsRepository,
-    private val savedStateHandle: SavedStateHandle,
-    private val credentialsRepository: CredentialsRepository
+    private val credentialsRepository: CredentialsRepository,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     /*
@@ -48,37 +49,54 @@ class MyCarsViewModel(
 
     //fetchCarById searches for a car by its id
     fun fetchCarById(id: String): CarModel? {
-        return repository.getCarById(id)
+
+        var car: CarModel? = null
+
+        viewModelScope.launch {
+            car = credentialsRepository.getCarById(id)
+        }
+
+        return car
     }
 
     //fetchMyCars fetches the cars owned by the user
     private fun fetchMyCars() {
 
-
-        Log.d("MyCarsViewModel", "Estoy en fetchMyCars() del VM de MyCars")
-
+        //Launching a coroutine
         viewModelScope.launch {
 
-            setLoading(true) //Loading starts
+            //Loading starts
+            setLoading(true)
 
-            Log.d("MyCarsViewModel", "Voy a entrar a credentials: ")
+            //response is the result of the request to the server
+            val response = credentialsRepository.ownCars()
 
-            val response = credentialsRepository.ownCars() //response is the result of the request to the server
+            //postValue is used to update the value of a MutableLiveData object from a background thread
+            _status.postValue(
+                //Checking the type of response
+                when (response) {
+                    is ApiResponse.Error ->
 
-            _status.postValue( //postValue is used to update the value of a MutableLiveData object
-                    when (response) {//Checking the type of response
-                        is ApiResponse.Error -> OwnCarsUiStatus.Error(response.exception) //If the response is an error, the status is set to Error
-                        is ApiResponse.ErrorWithMessage -> OwnCarsUiStatus.ErrorWithMessage(response.message) //If the response is an error with message, the status is set to ErrorWithMessage
-                        is ApiResponse.Success -> OwnCarsUiStatus.Success(response.data.cars) //If the response is a success, the status is set to Success
+                        //If the response is an error, the status is set to Error
+                        OwnCarsUiStatus.Error(response.exception)
+
+                    is ApiResponse.ErrorWithMessage ->
+
+                        //If the response is an error with message, the status is set to ErrorWithMessage
+                        OwnCarsUiStatus.ErrorWithMessage(response.message)
+
+                    is ApiResponse.Success ->
+
+                        //If the response is a success, the status is set to Success
+                        OwnCarsUiStatus.Success(response.data.cars)
                     }
-
                 )
 
-            setLoading(false) //Loading ends
+            //Loading ends
+            setLoading(false)
 
-            Log.d("MyCarsViewModel", "Ya sali de credentials, la respuesta ya está seteada.")
-
-            myCarsList.value = repository.getMyCars()
+            //myCarsList is set to the list of cars so it can be rendered in the screen
+            myCarsList.value = (credentialsRepository.ownCars() as ApiResponse.Success<OwnResponse>).data.cars
         }
     }
 
@@ -98,11 +116,18 @@ class MyCarsViewModel(
             ): T {
                 val application =
                     checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
-                val savedStateHandle = extras.createSavedStateHandle() //Creates a SavedStateHandle
-                return MyCarsViewModel(//Returns a MyCarsViewModel
-                    (application as AutoMinderApplication).myCarsRepository,//(application as AutoMinderApplication).myCarsRepository is the repository of the application
-                    savedStateHandle,//savedStateHandle is the savedStateHandle of the application
-                    (application as AutoMinderApplication).credentialsRepository //credentialsRepository is the credentialsRepository of the application
+
+                //Creates a SavedStateHandle
+                val savedStateHandle = extras.createSavedStateHandle()
+
+                //Returns a MyCarsViewModel
+                return MyCarsViewModel(
+
+                    //credentialsRepository is the credentialsRepository of the application
+                    (application as AutoMinderApplication).credentialsRepository,
+
+                    //savedStateHandle is the savedStateHandle of the application
+                    savedStateHandle
                 ) as T
             }
         }

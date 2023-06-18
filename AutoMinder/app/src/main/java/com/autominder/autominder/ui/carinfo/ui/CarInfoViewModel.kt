@@ -1,22 +1,27 @@
 package com.autominder.autominder.ui.carinfo.ui
 
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.autominder.autominder.AutoMinderApplication
 import com.autominder.autominder.data.models_dummy.CarModel
 import com.autominder.autominder.data.network.RepositoryCredentials.CredentialsRepository
 import com.autominder.autominder.ui.myCars.data.MyCarsRepository
+import com.autominder.autominder.ui.myCars.ui.MyCarsViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class CarInfoViewModel(
-    private val repository: MyCarsRepository
+    private val credentialsRepository: CredentialsRepository,
 ) : ViewModel() {
 
 
@@ -48,8 +53,10 @@ class CarInfoViewModel(
         viewModelScope.launch {
             try {
                 setLoading(true)
-                delay(100)
-                _carInfoList.value = repository.getCarById(carId)!!
+
+                _carInfoList.value = credentialsRepository.getCarById(carId)!!
+
+                Log.d("INFO", "Car info fetched: ${_carInfoList.value.name}")
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {
@@ -66,7 +73,7 @@ class CarInfoViewModel(
         val Factory = viewModelFactory {
             initializer {
                 val app = this[APPLICATION_KEY] as AutoMinderApplication
-                CarInfoViewModel(app.myCarsRepository)
+                CarInfoViewModel((app).credentialsRepository)
             }
         }
     }

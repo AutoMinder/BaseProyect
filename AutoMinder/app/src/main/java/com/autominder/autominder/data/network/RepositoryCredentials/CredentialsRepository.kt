@@ -1,7 +1,9 @@
 package com.autominder.autominder.data.network.RepositoryCredentials
 
 import android.util.Log
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.autominder.autominder.data.DataStoreManager
+import com.autominder.autominder.data.models_dummy.CarModel
 import com.autominder.autominder.data.network.ApiResponse
 import com.autominder.autominder.data.network.dto.create.CreateRequest
 import com.autominder.autominder.data.network.dto.create.CreateResponse
@@ -118,9 +120,9 @@ class CredentialsRepository(
             return ApiResponse.Error(e)
         }
     }
-    
+
     //Get own cars function
-    suspend fun ownCars(): ApiResponse<OwnResponse> { //TODO(): Check how to return List<CarModel> instead of ApiResponse<OwnResponse>
+    suspend fun ownCars(): ApiResponse<OwnResponse> {
 
         // Section to try getting vehicles
         try {
@@ -133,10 +135,10 @@ class CredentialsRepository(
 
                 //TODO(): Once function is complete, remove this next section
 
-                // Process the list of cars
-                carsList?.forEach { car -> //For each car in the list
-                    Log.d("I GOT THE CARS", car.name) //Log the name of the car (testing purposes)
-                }
+//                // Process the list of cars
+//                carsList?.forEach { car -> //For each car in the list
+//                    Log.d("I GOT THE CARS", car.name) //Log the name of the car (testing purposes)
+//                }
 
                 return ApiResponse.Success(response.body()!!) //Return the body of the response
             }
@@ -154,5 +156,14 @@ class CredentialsRepository(
         catch (e: IOException) { //Any other error
             return ApiResponse.Error(e)
         }
+    }
+
+    suspend fun getCarById(id: String): CarModel? {
+
+        val cars = (ownCars() as ApiResponse.Success<OwnResponse>).data.cars
+
+        val searchedCar = cars.find{car -> car.id == id}!!
+
+        return searchedCar
     }
 }

@@ -1,5 +1,6 @@
 package com.autominder.autominder.data.network
 
+import com.autominder.autominder.data.network.dto.ownCars.OwnResponse
 import java.lang.Exception
 
 //Sealed class for handling api response
