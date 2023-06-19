@@ -10,6 +10,7 @@ import com.autominder.autominder.data.network.dto.register.RegisterResponse
 import com.autominder.autominder.data.network.dto.update.UpdateRequest
 import com.autominder.autominder.data.network.dto.update.UpdateResponse
 import com.autominder.autominder.data.network.dto.visibility.VisibilityResponse
+import com.autominder.autominder.data.network.dto.whoami.WhoamiResponse
 
 import retrofit2.Call
 import retrofit2.Response
@@ -31,7 +32,9 @@ interface AutominderApi {
 
     // TODO() Desarrollar pedir informacion de usuario
     @GET("auth/whoami")
-    suspend fun whoami(): String
+    suspend fun whoami(
+        @Header("Authorization") token: String,
+    ): WhoamiResponse
 
     @POST("post")
     suspend fun create(
