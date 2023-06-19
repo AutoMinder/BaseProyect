@@ -39,7 +39,9 @@ import kotlinx.coroutines.flow.collect
 @Composable
 fun NavigationHost(
     navController: NavHostController,
+
     mainViewModel: MainViewModel = viewModel(),
+
     viewModel: MyCarsViewModel = viewModel(
         factory = MyCarsViewModel.Factory
     ),

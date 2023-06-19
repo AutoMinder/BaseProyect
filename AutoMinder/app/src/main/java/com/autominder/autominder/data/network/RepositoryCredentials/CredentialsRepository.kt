@@ -1,6 +1,7 @@
 package com.autominder.autominder.data.network.RepositoryCredentials
 
 import android.util.Log
+import androidx.datastore.preferences.protobuf.Api
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.autominder.autominder.data.DataStoreManager
 import com.autominder.autominder.data.models_dummy.CarModel
@@ -12,6 +13,8 @@ import com.autominder.autominder.data.network.dto.login.LoginResponse
 import com.autominder.autominder.data.network.dto.ownCars.OwnResponse
 import com.autominder.autominder.data.network.dto.register.RegisterRequest
 import com.autominder.autominder.data.network.dto.register.RegisterResponse
+import com.autominder.autominder.data.network.dto.update.UpdateRequest
+import com.autominder.autominder.data.network.dto.update.UpdateResponse
 import com.autominder.autominder.data.network.services.AutominderApi
 import retrofit2.HttpException
 import java.io.IOException
@@ -102,7 +105,6 @@ class CredentialsRepository(
                     model,
                     year,
                     kilometers,
-                    date,
                     lastMaintenance,
                     mayorTuning,
                     minorTuning,
@@ -154,6 +156,40 @@ class CredentialsRepository(
             return ApiResponse.Error(e)
         }
         catch (e: IOException) { //Any other error
+            return ApiResponse.Error(e)
+        }
+    }
+
+
+    suspend fun updateCar(
+        car_name: String,
+        kilometers: String,
+        lastMaintenance: String,
+        mayorTuning: String,
+        minorTuning: String,
+        lastOilChange: String,
+        lastCoolantChange: String
+    ): ApiResponse<String> {
+        return try {
+            val response: UpdateResponse = api.update(
+                token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDhhODM2ZjJmMTI5ZGIxNzUzMjU4ODEiLCJpYXQiOjE2ODY4MDA5MDEsImV4cCI6MTY4OTM5MjkwMX0.e8CxQV6BhnzxNGFrqQvYRlzmV8tz7KsZ9aCLCIEcSuI",
+                UpdateRequest(
+                car_name,
+                kilometers,
+                lastMaintenance,
+                mayorTuning,
+                minorTuning,
+                lastOilChange,
+                lastCoolantChange
+                )
+            )
+            return ApiResponse.Success(response.message)
+        } catch (e: HttpException) {
+            if (e.code() == 404) {
+                return ApiResponse.ErrorWithMessage("Post no encontrado")
+            }
+            return ApiResponse.Error(e)
+        } catch (e: IOException) {
             return ApiResponse.Error(e)
         }
     }
