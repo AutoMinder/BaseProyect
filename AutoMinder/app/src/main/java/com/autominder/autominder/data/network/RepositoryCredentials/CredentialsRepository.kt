@@ -2,7 +2,9 @@ package com.autominder.autominder.data.network.RepositoryCredentials
 
 import android.util.Log
 import androidx.datastore.preferences.protobuf.Api
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.autominder.autominder.data.DataStoreManager
+import com.autominder.autominder.data.models_dummy.CarModel
 import com.autominder.autominder.data.network.ApiResponse
 import com.autominder.autominder.data.network.dto.create.CreateRequest
 import com.autominder.autominder.data.network.dto.create.CreateResponse
@@ -23,28 +25,31 @@ class CredentialsRepository(
     private val userDataManager: DataStoreManager
 ) {
 
+    //Login function
     suspend fun login(email: String, password: String): ApiResponse<String> {
-        Log.d("CredentialsRepository", "login: $email, $password")
-        return try {
-            val response: LoginResponse = api.login(LoginRequest(email, password))
-            return ApiResponse.Success(response.token)
-        } catch (e: HttpException) {
-            if (e.code() == 400) {
-                return ApiResponse.ErrorWithMessage("Credenciales incorrectas, email or password")
+
+        Log.d("CredentialsRepository", "login: $email, $password") //Log the email and password
+
+        return try { //Try to login
+            val response: LoginResponse = api.login(LoginRequest(email, password)) //Get the response from the api
+            return ApiResponse.Success(response.token) //Return the token
+        } catch (e: HttpException) {//If there is an error
+            if (e.code() == 400) {//If the error is 400
+                return ApiResponse.ErrorWithMessage("Credenciales incorrectas, email or password") //Return an error with a message
             }
-            return ApiResponse.Error(e)
-        } catch (e: IOException) {
+            return ApiResponse.Error(e) //Return an error
+        } catch (e: IOException) { //If there is any other error
             return ApiResponse.Error(e)
         }
     }
 
+    //Register function
     suspend fun register(email: String, password: String, name: String): ApiResponse<String> {
-        return try {
-            val response: RegisterResponse = api.register(RegisterRequest(email, password, name))
-            return ApiResponse.Success(response.message)
-        } catch (e: HttpException) {
-
-            if (e.code() == 400) {
+        return try {//Try to register
+            val response: RegisterResponse = api.register(RegisterRequest(email, password, name)) //Get the response from the api
+            return ApiResponse.Success(response.message) //Return the message
+        } catch (e: HttpException) { //If there is an error
+            if (e.code() == 400) { //If the error is 400
                 return ApiResponse.ErrorWithMessage("El usuario que desea ingresar ya existe")
             }
             return ApiResponse.Error(e)
@@ -53,15 +58,18 @@ class CredentialsRepository(
         }
     }
 
+    //Save the user data
     suspend fun saveUserData(token: String) {
-        userDataManager.saveUserData(
-            token
+        userDataManager.saveUserData(//Save the user data
+            token//Save the token
         )
     }
 
 
     //fun getUserData() = userDataManager.getUserData()
 
+    //TODO(): Check function parameters and token sent to the API
+    //Adding a new car function
     suspend fun addCar(
         car_name: String,
         model: String,
@@ -78,6 +86,8 @@ class CredentialsRepository(
         vin: String = "321321",
     ): ApiResponse<String> {
 
+        // Section to test saving vehicles
+
         //create a date val to get the current date
         val date = Date()
 
@@ -86,7 +96,7 @@ class CredentialsRepository(
 
 
         return try {
-            val response: CreateResponse = api.create(
+            val response: CreateResponse = api.create( //Sending car parameters so it can be added to online database
                 token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDhhODM2ZjJmMTI5ZGIxNzUzMjU4ODEiLCJpYXQiOjE2ODY4MDA5MDEsImV4cCI6MTY4OTM5MjkwMX0.e8CxQV6BhnzxNGFrqQvYRlzmV8tz7KsZ9aCLCIEcSuI",
                 CreateRequest(
                     vin,
@@ -102,9 +112,8 @@ class CredentialsRepository(
                     lastCoolantChange,
                 )
             )
-            return ApiResponse.Success(response.id)
+            return ApiResponse.Success(response.id) //Return the id (will only happen once the car has been created successfully)
         } catch (e: HttpException) {
-
             if (e.code() == 400) {
              //TODO()
             }
@@ -113,36 +122,44 @@ class CredentialsRepository(
             return ApiResponse.Error(e)
         }
     }
-    
 
+    //Get own cars function
     suspend fun ownCars(): ApiResponse<OwnResponse> {
 
+        // Section to try getting vehicles
         try {
-            val response = api.ownCars()
+            val response = api.ownCars() //Get the response from the api
 
-            if (response.isSuccessful) {
-                val carsResponse = response.body()
-                val carsList = carsResponse?.cars
+            if (response.isSuccessful) { //If the response is successful
 
-                // Process the list of cars
-                carsList?.forEach { car ->
-                    Log.d("I GOT THE CARS", car.name)
-                }
+                val carsResponse = response.body() //Get the body of the response
+                val carsList = carsResponse?.cars //Get the list of cars
 
-                return ApiResponse.Success(response.body()!!)
+                //TODO(): Once function is complete, remove this next section
+
+//                // Process the list of cars
+//                carsList?.forEach { car -> //For each car in the list
+//                    Log.d("I GOT THE CARS", car.name) //Log the name of the car (testing purposes)
+//                }
+
+                return ApiResponse.Success(response.body()!!) //Return the body of the response
             }
 
+            //If the response is not successful
             return ApiResponse.ErrorWithMessage("Error al obtener los autos")
 
-        } catch (e: HttpException) {
-            if (e.code() == 400) {
+        } //Section of error handling
+        catch (e: HttpException) {
+            if (e.code() == 400) { //Error produced by incorrect authorization credentials
                 return ApiResponse.ErrorWithMessage("Credenciales incorrectas, email or password")
             }
             return ApiResponse.Error(e)
-        } catch (e: IOException) {
+        }
+        catch (e: IOException) { //Any other error
             return ApiResponse.Error(e)
         }
     }
+
 
     suspend fun updateCar(
         car_name: String,
@@ -177,4 +194,12 @@ class CredentialsRepository(
         }
     }
 
+    suspend fun getCarById(id: String): CarModel? {
+
+        val cars = (ownCars() as ApiResponse.Success<OwnResponse>).data.cars
+
+        val searchedCar = cars.find{car -> car.id == id}!!
+
+        return searchedCar
+    }
 }
