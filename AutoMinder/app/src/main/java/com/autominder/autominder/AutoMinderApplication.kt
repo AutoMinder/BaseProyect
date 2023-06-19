@@ -3,14 +3,13 @@ package com.autominder.autominder
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import com.autominder.autominder.data.DataStoreManager
 
 import com.autominder.autominder.ui.addcar.data.AddCarRepository
-import com.autominder.autominder.ui.addcar.data.carsDummy
 import com.autominder.autominder.ui.addcar.data.brands
 import com.autominder.autominder.ui.addcar.data.models
 
 import com.autominder.autominder.ui.carinfo.data.CarMaintenanceRepository
-import com.autominder.autominder.ui.carinfo.data.dummyCarMaintenanceData
 import com.autominder.autominder.data.database.AutominderDatabase
 import com.autominder.autominder.data.database.repository.CarRepository
 import com.autominder.autominder.data.database.repository.UserRepository
@@ -56,24 +55,26 @@ class AutoMinderApplication : Application() {
     //RETROFIT
 
     private val prefs: SharedPreferences by lazy{
-        getSharedPreferences(USER_TOKEN, Context.MODE_PRIVATE)
+        getSharedPreferences("Retrofit", Context.MODE_PRIVATE)
     }
 
     private fun getAPIService() = with(RetrofitInstance){
         setToken(getToken())
         getLoginService()
+        getOwnCarsService()
     }
 
     fun getToken():String = prefs.getString(USER_TOKEN, "")!!
 
     val credentialsRepository: CredentialsRepository by lazy {
-        CredentialsRepository(getAPIService())
+        CredentialsRepository(getAPIService(), DataStoreManager(this))
     }
 
     fun saveAuthToken(token: String){
         val editor = prefs.edit()
         editor.putString(USER_TOKEN, token)
         editor.apply()
+        RetrofitInstance.setToken(token)
     }
 
     companion object{

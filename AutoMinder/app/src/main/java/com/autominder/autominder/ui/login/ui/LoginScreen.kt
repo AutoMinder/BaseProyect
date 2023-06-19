@@ -46,21 +46,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
-/*fun LoginScreenPreview() {        //TODO(): Cambiar ruta de navegacion
-
-
-    val viewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory)
-
-    val navController = rememberNavController()
-    LoginScreen(viewModel, navController)
-}*/
-
-
 @Composable
 fun LoginScreen(
     navController: NavHostController,
-    viewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory),
-    application: AutoMinderApplication = AutoMinderApplication()
+    viewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory)
 ) {
     Box(
         Modifier
@@ -86,7 +75,8 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
     val isLoading: Boolean by viewModel.isLoading.observeAsState(initial = false)
     val status by viewModel.status.observeAsState(initial = LoginUiStatus.Resume)
     val coroutineScope = rememberCoroutineScope()
-    val application: AutoMinderApplication = LocalContext.current.applicationContext as AutoMinderApplication
+    val application: AutoMinderApplication =
+        LocalContext.current.applicationContext as AutoMinderApplication
 
     if (isLoading) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -100,8 +90,9 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
                     is LoginUiStatus.Success -> {
                         val token = status.token
                         viewModel.updateToken(token)
-                        Log.d("LoginScreen", "token: $token")
                         application.saveAuthToken(token)
+                        viewModel.saveUserData(token)
+                        Log.d("LoginScreen", "token: ${application.getToken()}")
 
                         navController.navigate("principal_menu")
                     }
@@ -126,7 +117,16 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
             HeaderTitle()
             Spacer(modifier = Modifier.padding(40.dp))
 
-            LoginBox(email, viewModel, password, loginEnable, coroutineScope, navController, status)
+            LoginBox(
+                email,
+                viewModel,
+                password,
+                loginEnable,
+                coroutineScope,
+                navController,
+                status,
+                application
+            )
 
             Spacer(modifier = Modifier.padding(40.dp))
             RegisterBox(navController)
@@ -164,6 +164,8 @@ fun LoginBox(
     coroutineScope: CoroutineScope,
     navController: NavHostController,
     status: LoginUiStatus,
+    application: AutoMinderApplication
+
 
 ) {
 
@@ -191,18 +193,12 @@ fun LoginBox(
             ForgotPassword(navController)
             Spacer(modifier = Modifier.padding(8.dp))
 
-            val lifecycle = LocalLifecycleOwner.current
             LoginButton(loginEnable) {
                 coroutineScope.launch {
-                    viewModel.login(email, password)
-
                     Log.d("LoginScreen", "email: $email, password: $password")
-                    coroutineScope.launch {
-                        delay(1000)
-                        viewModel.login(email, password)
-                    }
+                    delay(1000)
+                    viewModel.login(email, password)
                 }
-
             }
         }
     }

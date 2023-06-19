@@ -27,8 +27,8 @@ class LoginViewModel(private val repository: CredentialsRepository) : ViewModel(
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
-    private val _token = MutableLiveData<String>()
-    val token: LiveData<String> = _token
+    private val _token = MutableLiveData<String?>()
+    val token: LiveData<String?> = _token
 
 
     private val _status = MutableLiveData<LoginUiStatus>(LoginUiStatus.Resume)
@@ -42,13 +42,22 @@ class LoginViewModel(private val repository: CredentialsRepository) : ViewModel(
                 when (val response = repository.login(email, password)) {
                     is ApiResponse.Error -> LoginUiStatus.Error(response.exception)
                     is ApiResponse.ErrorWithMessage -> LoginUiStatus.ErrorWithMessage(response.message)
-                    is ApiResponse.Success -> LoginUiStatus.Success(response.data)
+                    is ApiResponse.Success -> {
+                        LoginUiStatus.Success(response.data)
+                    }
                 }
             )
             _isLoading.value = false
         }
     }
 
+    fun saveUserData (token: String) {
+        viewModelScope.launch {
+            repository.saveUserData(token)
+        }
+    }
+
+    /*
     suspend fun onLogin() {
         if (!validateData()) {
             _status.value = LoginUiStatus.ErrorWithMessage("Invalid data")
@@ -57,8 +66,7 @@ class LoginViewModel(private val repository: CredentialsRepository) : ViewModel(
         Log.d("LoginViewModel", "onLogin: ${_email.value} ${_password.value}")
         login(_email.value!!, _password.value!!)
         repository.login(_email.value!!, _password.value!!)
-
-    }
+    }*/
 
     private fun validateData(): Boolean {
         when {
@@ -90,11 +98,11 @@ class LoginViewModel(private val repository: CredentialsRepository) : ViewModel(
     private fun isValidPassword(password: String): Boolean = password.length >= 8
 
     private fun isValidEmail(email: String): Boolean = email.contains("@") && email.contains(".")
+    /*
+        suspend fun OnLoginSelected(email: String, password: String) {
+            login(email, password)
 
-    suspend fun OnLoginSelected(email: String, password: String) {
-        login(email, password)
-
-    }
+        } */
 
     fun updateToken(token: String) {
         _token.value = token
