@@ -10,7 +10,6 @@ data class CreateResponse(
     @SerializedName("model") val model: String,
     @SerializedName("year") val year: Int,
     @SerializedName("kilometers") val kilometers: String,
-    @SerializedName("kilometersDate") val kilometersDate: String,
     @SerializedName("lastMaintenance") val lastMaintenance: String,
     @SerializedName("mayorTuning") val mayorTuning: String?,
     @SerializedName("minorTuning") val minorTuning: String?,
