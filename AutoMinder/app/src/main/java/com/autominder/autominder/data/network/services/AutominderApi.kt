@@ -7,6 +7,8 @@ import com.autominder.autominder.data.network.dto.login.LoginResponse
 import com.autominder.autominder.data.network.dto.ownCars.OwnResponse
 import com.autominder.autominder.data.network.dto.register.RegisterRequest
 import com.autominder.autominder.data.network.dto.register.RegisterResponse
+import com.autominder.autominder.data.network.dto.update.UpdateRequest
+import com.autominder.autominder.data.network.dto.update.UpdateResponse
 import com.autominder.autominder.data.network.dto.visibility.VisibilityResponse
 
 import retrofit2.Call
@@ -36,6 +38,12 @@ interface AutominderApi {
         @Header("Authorization") token: String,
         @Body credentials: CreateRequest
     ): CreateResponse
+
+    @POST("post/update/{post_id}")
+    suspend fun update(
+        @Header("Authorization") token: String,
+        @Body credentials: UpdateRequest
+    ): UpdateResponse
 
     // TODO() Desarrollar pedir carros propios
 
