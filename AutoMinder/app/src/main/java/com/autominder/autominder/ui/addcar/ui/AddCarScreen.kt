@@ -20,7 +20,10 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -79,7 +83,6 @@ fun AddCarForm(viewModel: AddCarViewModel, navController: NavController) {
 @Composable
 fun FieldsWrapper(viewModel: AddCarViewModel, navController: NavController) {
     val context = LocalContext.current
-    //TODO(): Hacer con la API
     val carBrandList by remember { viewModel.carBrandsList }.collectAsState()
     val carModelList by remember { viewModel.carModelsList }.collectAsState()
 
@@ -214,10 +217,16 @@ fun CarName(profileCarName: String, onAddCarChange: (String) -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         OutlinedTextField(
+            textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface),
+            shape = MaterialTheme.shapes.small,
             value = profileCarName,
             onValueChange = {
                 onAddCarChange(it)
             },
+            colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.onSurface
+            ),
             label = { Text(text = "Nombre del perfil del automovil") }
         )
     }
@@ -246,6 +255,13 @@ fun CarBrandMenu(
             }
         ) {
             OutlinedTextField(
+                textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface),
+                colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
+                    cursorColor = MaterialTheme.colorScheme.primary
+                ),
+                shape = MaterialTheme.shapes.small,
                 value = selectedText,
                 onValueChange = {},
                 readOnly = true,
@@ -297,6 +313,12 @@ fun CarModelMenu(
             }
         ) {
             OutlinedTextField(
+                textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface),
+                colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurface
+                ),
+                shape = MaterialTheme.shapes.small,
                 value = selectedText,
                 onValueChange = {},
                 readOnly = true,
@@ -335,6 +357,13 @@ fun CarYear(carYear: String, onAddCarChange: (String) -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         OutlinedTextField(
+            textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface),
+            colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
+                cursorColor = MaterialTheme.colorScheme.primary
+            ),
+            shape = MaterialTheme.shapes.small,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             value = carYear,
             onValueChange = { newValue ->
@@ -356,6 +385,14 @@ fun CarDistance(carKilometers: String, onAddCarChange: (String) -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         OutlinedTextField(
+            textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface),
+            colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
+                cursorColor = MaterialTheme.colorScheme.primary
+            ),
+
+            shape = MaterialTheme.shapes.small,
             value = carKilometers,
             onValueChange = { newValue ->
                 val numericValue = newValue.filter { it.isDigit() }
@@ -370,7 +407,6 @@ fun CarDistance(carKilometers: String, onAddCarChange: (String) -> Unit) {
 
 @Composable
 fun CarLastMaintenance(carLastMaintenance: String, onAddCarChange: (String) -> Unit) {
-    //TODO(): Hacer con dummydata y luego con la API
 
     val openDialog = remember { mutableStateOf(false) }
     var date by remember { mutableStateOf(carLastMaintenance) }
@@ -425,9 +461,15 @@ fun CarLastMaintenance(carLastMaintenance: String, onAddCarChange: (String) -> U
 
         ) {
         OutlinedTextField(
+
+            colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.onSurface
+            ),
+            shape = MaterialTheme.shapes.small,
             value = date,
             onValueChange = {},
-
+            textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface),
             label = { Text(text = "Ultimo mantenimiendo") },
             modifier = Modifier
                 .pointerInput(Unit) {}
@@ -451,7 +493,6 @@ fun CarLastMaintenance(carLastMaintenance: String, onAddCarChange: (String) -> U
 
 @Composable
 fun CarLastOilChange(carLastOilChange: String, onAddCarChange: (String) -> Unit) {
-    //TODO(): Hacer con dummydata y luego con la API
     val openDialog = remember { mutableStateOf(false) }
     var date by remember { mutableStateOf(carLastOilChange) }
     val datePickerState =
@@ -506,6 +547,11 @@ fun CarLastOilChange(carLastOilChange: String, onAddCarChange: (String) -> Unit)
 
         ) {
         OutlinedTextField(
+            colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.onSurface
+            ),
+            shape = MaterialTheme.shapes.small,
             value = date,
             onValueChange = {},
 
@@ -532,7 +578,7 @@ fun CarLastOilChange(carLastOilChange: String, onAddCarChange: (String) -> Unit)
 
 @Composable
 fun CarLastCoolant(carLastCoolant: String, onAddCarChange: (String) -> Unit) {
-    //TODO(): Hacer con dummydata y luego con la API
+
     val openDialog = remember { mutableStateOf(false) }
     var date by remember { mutableStateOf(carLastCoolant) }
     val datePickerState =
@@ -587,6 +633,11 @@ fun CarLastCoolant(carLastCoolant: String, onAddCarChange: (String) -> Unit) {
 
         ) {
         OutlinedTextField(
+            colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.onSurface
+            ),
+            shape = MaterialTheme.shapes.small,
             value = date,
             onValueChange = {},
 
@@ -605,6 +656,7 @@ fun CarLastCoolant(carLastCoolant: String, onAddCarChange: (String) -> Unit) {
                     contentDescription = ""
                 )
             }
+
         )
 
 
