@@ -14,8 +14,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.mutableStateListOf
 import com.autominder.autominder.obdApiSensor.ui.ObdSensorViewModel
-import com.github.eltonvs.obd.command.control.VINCommand
-import com.github.eltonvs.obd.connection.ObdDeviceConnection
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -310,7 +308,13 @@ class BluetoothConnections(
                 sendCommand("0105\r", outputStream, inputStream)
                 delay(1000)
                 val response = sendCommand("0105\r", outputStream, inputStream)
-                Toast.makeText(context, "Tu VIN es $response", Toast.LENGTH_LONG).show()
+                val temperature = translateTemperature(response)
+
+                Toast.makeText(
+                    context,
+                    "La temperatura del refrigerante es: $temperature",
+                    Toast.LENGTH_LONG
+                ).show()
 
                 delay(1000)
                 bluetoothSocket.close()
@@ -319,6 +323,13 @@ class BluetoothConnections(
                 Log.e("bluele", "Socket connection failed: ${e.message}")
             }
         }
+    }
+
+    private fun translateTemperature(response: String): Int {
+        val hexValue =
+            response.replace(" ", "").substring(6, 8) // Remove spaces and extract the hex value
+        val decimalValue = hexValue.toInt(16) // Convert the hex value to decimal
+        return decimalValue - 40
     }
 
     private fun sendCommand(
@@ -357,18 +368,5 @@ class BluetoothConnections(
             scanning = true
             bluetoothLeScanner.stopScan(leScanCallback)
         }
-    }
-}
-
-fun convertHexToRpm(hexValue: String): Int {
-    try {
-        val rpmHex =
-            hexValue.substring(4) // Extract the relevant part of the response (exclude the mode and PID)
-        val rpmDec = Integer.parseInt(rpmHex, 16)
-        return rpmDec / 4 // Divide by 4 to get the actual RPM value
-    } catch (e: NumberFormatException) {
-        // Handle invalid input or empty string
-        e.printStackTrace()
-        return -1 // or any other appropriate default value
     }
 }
