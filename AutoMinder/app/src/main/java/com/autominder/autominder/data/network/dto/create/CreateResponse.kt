@@ -19,5 +19,4 @@ data class CreateResponse(
     @SerializedName("hidden") val hidden: Boolean,
     @SerializedName("_id") val id: String,
     @SerializedName("user") val user: String,
-
-    )
+)

@@ -36,24 +36,17 @@ interface AutominderApi {
         @Header("Authorization") token: String,
     ): WhoamiResponse
 
-    //TODO(): Revisar enrutado para inclusión de token dinamicamente
+    //Create car service
     @POST("post")
-    suspend fun create(
-        @Header("Authorization") token: String,
-        @Body credentials: CreateRequest
-    ): CreateResponse
+    suspend fun create(@Body credentials: CreateRequest): CreateResponse
 
+    //Update car info service
     @POST("post/update/{post_id}")
-    suspend fun update(
-        @Header("Authorization") token: String,
-        @Body credentials: UpdateRequest
-    ): UpdateResponse
-
-    // TODO() Desarrollar pedir carros propios
+    suspend fun update(@Body credentials: UpdateRequest): UpdateResponse
 
     //OwnCarsService
     @GET("post/own")
-    suspend fun ownCars(): Response<OwnResponse> //TODO(): Considerar cambiar a OwnResponse
+    suspend fun ownCars(): Response<OwnResponse>
 
 
     @PATCH("post/visibility/{post_id}")

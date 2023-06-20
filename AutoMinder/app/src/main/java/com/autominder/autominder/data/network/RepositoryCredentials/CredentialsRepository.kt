@@ -68,7 +68,6 @@ class CredentialsRepository(
 
     //fun getUserData() = userDataManager.getUserData()
 
-    //TODO(): Check function parameters and token sent to the API
     //Adding a new car function
     suspend fun addCar(
         car_name: String,
@@ -93,11 +92,8 @@ class CredentialsRepository(
 
         //create a val to get the current date in string format
 
-
-
         return try {
             val response: CreateResponse = api.create( //Sending car parameters so it can be added to online database
-                token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDhhODM2ZjJmMTI5ZGIxNzUzMjU4ODEiLCJpYXQiOjE2ODY4MDA5MDEsImV4cCI6MTY4OTM5MjkwMX0.e8CxQV6BhnzxNGFrqQvYRlzmV8tz7KsZ9aCLCIEcSuI",
                 CreateRequest(
                     vin,
                     car_name,
@@ -112,13 +108,18 @@ class CredentialsRepository(
                     lastCoolantChange,
                 )
             )
+
+            Log.d("CAR CREATED", "Car created succesfully")
+
             return ApiResponse.Success(response.id) //Return the id (will only happen once the car has been created successfully)
         } catch (e: HttpException) {
             if (e.code() == 400) {
-             //TODO()
+                Log.d("CAR NOT CREATED", "ERROR 400")
             }
+            Log.d("CAR NOT CREATED", "HTTP EXCEPTION")
             return ApiResponse.Error(e)
         } catch (e: IOException) {
+            Log.d("CAR NOT CREATED", "IO EXCEPTION")
             return ApiResponse.Error(e)
         }
     }
@@ -172,7 +173,6 @@ class CredentialsRepository(
     ): ApiResponse<String> {
         return try {
             val response: UpdateResponse = api.update(
-                token = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDhhODM2ZjJmMTI5ZGIxNzUzMjU4ODEiLCJpYXQiOjE2ODY4MDA5MDEsImV4cCI6MTY4OTM5MjkwMX0.e8CxQV6BhnzxNGFrqQvYRlzmV8tz7KsZ9aCLCIEcSuI",
                 UpdateRequest(
                 car_name,
                 kilometers,
@@ -183,13 +183,25 @@ class CredentialsRepository(
                 lastCoolantChange
                 )
             )
+
+            Log.d("CAR UPDATED", "Car updated succesfully")
+
             return ApiResponse.Success(response.message)
         } catch (e: HttpException) {
             if (e.code() == 404) {
+
+                Log.d("CAR NOT UPDATED", "ERROR 400")
+
                 return ApiResponse.ErrorWithMessage("Post no encontrado")
             }
+
+            Log.d("CAR NOT UPDATED", "ERROR HTTP EXCEPTION")
+
             return ApiResponse.Error(e)
         } catch (e: IOException) {
+
+            Log.d("CAR NOT UPDATED", "ERROR IO EXCEPTION")
+
             return ApiResponse.Error(e)
         }
     }
