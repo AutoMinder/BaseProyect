@@ -135,12 +135,11 @@ class CredentialsRepository(
                 val carsResponse = response.body() //Get the body of the response
                 val carsList = carsResponse?.cars //Get the list of cars
 
-                //TODO(): Once function is complete, remove this next section
-
+                //TODO(): Once function with CarInfoVM is complete, remove this next section
 //                // Process the list of cars
-//                carsList?.forEach { car -> //For each car in the list
-//                    Log.d("I GOT THE CARS", car.name) //Log the name of the car (testing purposes)
-//                }
+                carsList?.forEach { car -> //For each car in the list
+                    Log.d("I GOT THE CARS", car.name) //Log the name of the car (testing purposes)
+                }
 
                 return ApiResponse.Success(response.body()!!) //Return the body of the response
             }
@@ -194,7 +193,7 @@ class CredentialsRepository(
         }
     }
 
-    suspend fun getCarById(id: String): CarModel? {
+    suspend fun getCarById(id: String): CarModel {
 
         val cars = (ownCars() as ApiResponse.Success<OwnResponse>).data.cars
 
