@@ -76,6 +76,8 @@ class AutoMinderApplication : Application() {
         setToken(getToken()) //setToken es una funcion de RetrofitInstance que permite guardar el token en la clase RetrofitInstance
         getLoginService() //getLoginService es una funcion de RetrofitInstance que permite obtener el servicio de login
         getOwnCarsService() //getOwnCarsService es una funcion de RetrofitInstance que permite obtener el servicio de los autos del usuario
+        createCarService() //createCarService es una funcion de RetrofitInstance que permite obtener el servicio de crear un auto
+        updateCarService() //updateCarService es una funcion de RetrofitInstance que permite obtener el servicio de actualizar un auto
     }
 
     //getToken es una funcion que permite obtener el token guardado en el dispositivo

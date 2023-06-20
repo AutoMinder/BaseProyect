@@ -14,5 +14,4 @@ data class CreateRequest(
     val minorTuning: String?,
     val lastOilChange: String,
     val lastCoolantChange: String,
-
 )

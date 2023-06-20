@@ -48,5 +48,13 @@ object RetrofitInstance {
         return retrofit.create(AutominderApi::class.java)
     }
 
-    //TODO(): Add the NewCarService
+    //Create car service
+    fun createCarService(): AutominderApi{
+        return retrofit.create(AutominderApi::class.java)
+    }
+
+    //Update car info service
+    fun updateCarService(): AutominderApi{
+        return retrofit.create(AutominderApi::class.java)
+    }
 }
