@@ -252,6 +252,7 @@ class BluetoothConnections(
 
             } catch (e: IOException) {
                 Log.e("bluele", "Socket connection failed: ${e.message}")
+                obdSensorViewModel.setIsLoading(false)
             }
         }
     }
