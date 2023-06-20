@@ -43,7 +43,6 @@ class AutoMinderApplication : Application() {
 
     }
 
-
 //TODO(): REVISAR SI EL SIGUIENTE FRAGMENTO ES NECESITADO EN ALGUNA PARTE DEL PROYECTO
 
 //    val CarMaintenanceRepository: CarMaintenanceRepository by lazy {
@@ -69,7 +68,6 @@ class AutoMinderApplication : Application() {
     /*
     *   RETROFIT SECTION
      */
-
     private val prefs: SharedPreferences by lazy{ //SharedPreferences es una clase de Android que permite guardar datos en el dispositivo
         getSharedPreferences("Retrofit", Context.MODE_PRIVATE) //MODE_PRIVATE es el modo de acceso a los datos, en este caso solo la app puede acceder a los datos
     }
