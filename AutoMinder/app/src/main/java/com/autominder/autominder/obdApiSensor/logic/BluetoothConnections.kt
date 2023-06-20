@@ -60,10 +60,15 @@ class BluetoothConnections(
         }
     }
 
-    //**********************************************
-    // gattCallback, used to get the services and characteristics of the bluetooth device
-    // also to check if the device is successfully connected to the phone.
-    // *********************************************//
+    /**
+     * Callback invoked when the connection state of the Bluetooth GATT changes.
+     *
+     * @param gatt The BluetoothGatt object associated with the connection.
+     * @param status The status of the GATT connection operation.
+     * @param newState The new connection state. Can be one of [BluetoothProfile.STATE_CONNECTED]
+     *                 or [BluetoothProfile.STATE_DISCONNECTED].
+     */
+
     private val gattCallback: BluetoothGattCallback = object : BluetoothGattCallback() {
         @SuppressLint("MissingPermission")
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
@@ -72,10 +77,6 @@ class BluetoothConnections(
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 if (newState == BluetoothProfile.STATE_CONNECTED) {
                     Log.w("bluele", "Successfully connected to $deviceAddress")
-                    // TODO: Store a reference to BluetoothGatt
-                    val obdDevice = gatt.device
-                    //get InputOutputStream
-                    val gattService = gatt.services
                     gatt.discoverServices()
                     validator = true
 
@@ -161,10 +162,13 @@ class BluetoothConnections(
         }
     }
 
-    //**********************************************
-    // LeScanCallback, used to scan for bluetooth devices le, called in the startLeDevices
-    // If a device named OBD2 is found, the connection is established
-    // *********************************************//
+    /**
+     * Callback invoked when a BLE scan result is found.
+     *
+     * @param callbackType The callback type.
+     * @param result The scan result containing the Bluetooth device information.
+     */
+
     private val leScanCallback = object : android.bluetooth.le.ScanCallback() {
         @SuppressLint("MissingPermission")
         override fun onScanResult(callbackType: Int, result: android.bluetooth.le.ScanResult?) {
@@ -178,14 +182,7 @@ class BluetoothConnections(
                         Log.d("bluele", "conectando")
 
                         val gatt = device.connectGatt(context, true, gattCallback)
-                        //gatt.connect()
                         gatt.discoverServices()
-
-                        //val socket = gatt.device.createRfcommSocketToServiceRecord(UUID.fromString("00002a00-0000-1000-8000-00805f9b34fb"))
-                        //socket.connect()
-                        //val obdDeviceConnection = ObdDeviceConnection(socket.inputStream, socket.outputStream)
-                        //Log.d("bluele", "conectado AL SOCKET")
-                        //device.connectGatt(context, true, gattCallback)
 
                     }
 
@@ -194,6 +191,12 @@ class BluetoothConnections(
         }
     }
 
+    /**
+     * Sends a VIN command to the car via Bluetooth and retrieves the VIN number.
+     *
+     * @param uuidSended The UUID string used for Bluetooth communication.
+     * @param context The context of the application.
+     */
     @SuppressLint("MissingPermission")
     fun sendVinCommandToCar(uuidSended: String, context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -272,6 +275,12 @@ class BluetoothConnections(
         return vin.toString()
     }
 
+    /**
+     * Sends a temperature command to the car via Bluetooth and retrieves the coolant temperature.
+     *
+     * @param uuidSended The UUID string used for Bluetooth communication.
+     * @param context The context of the application.
+     */
     @SuppressLint("MissingPermission")
     fun sendTemperatureCommandToCar(uuidSended: String, context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -283,8 +292,6 @@ class BluetoothConnections(
 
             try {
                 bluetoothSocket.connect()
-
-                // Socket connection successful, proceed with communication
                 val inputStream = bluetoothSocket.inputStream
                 val outputStream = bluetoothSocket.outputStream
 
@@ -350,9 +357,11 @@ class BluetoothConnections(
         return response
     }
 
-    //**********************************************
-    // Scanning function, find bluetooth le devices
-    // *********************************************//
+    /**
+     * Scans for nearby Bluetooth Low Energy (BLE) devices.
+     * If scanning is not already in progress, starts the scan and sets a timeout.
+     * If scanning is already in progress, stops the scan.
+     */
     @SuppressLint("MissingPermission")
     fun scanLeDevice() {
         if (!scanning) {
