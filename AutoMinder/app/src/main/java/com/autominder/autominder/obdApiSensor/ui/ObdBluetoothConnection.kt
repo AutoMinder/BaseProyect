@@ -13,14 +13,10 @@ import android.os.Build.VERSION
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.Text
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -31,6 +27,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.autominder.autominder.obdApiSensor.logic.BluetoothConnections
+import com.autominder.autominder.ui.components.LoadingScreen
 
 
 @SuppressLint("MissingPermission")
@@ -53,9 +50,7 @@ fun ObdSensorConnectScreen(
         BluetoothConnections(bluetoothAdapter!!, bluetoothManager, context, obdSensorViewModel)
     }
 
-
     val isLoading by obdSensorViewModel.isLoading.collectAsState()
-
 
     Column(
         modifier = Modifier
@@ -71,7 +66,6 @@ fun ObdSensorConnectScreen(
                     val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
                     bluetoothConnection.scanLeDevice()
                     context.registerReceiver(reciever, filter)
-                    obdSensorViewModel.setIsLoading(true)
                 }
 
             }) {
@@ -79,13 +73,27 @@ fun ObdSensorConnectScreen(
         }
         Button(
             shape = MaterialTheme.shapes.small,
-            onClick = { bluetoothConnection.sendVinCommandToCar("00001101-0000-1000-8000-00805f9b34fb", context) }) {
+            onClick = {
+                bluetoothConnection.sendVinCommandToCar(
+                    "00001101-0000-1000-8000-00805f9b34fb",
+                    context,
+                    obdSensorViewModel
+                )
+            }) {
             Text(text = "Obtener VIN de mi carro")
         }
         Button(
             shape = MaterialTheme.shapes.small,
-            onClick = { bluetoothConnection.sendTemperatureCommandToCar("00001101-0000-1000-8000-00805f9b34fb", context) }) {
+            onClick = {
+                bluetoothConnection.sendTemperatureCommandToCar(
+                    "00001101-0000-1000-8000-00805f9b34fb",
+                    context
+                )
+            }) {
             Text(text = "Obtener temperatura del refrigerante de de mi carro")
+        }
+        if (isLoading){
+            LoadingScreen()
         }
     }
 

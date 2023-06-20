@@ -198,7 +198,11 @@ class BluetoothConnections(
      * @param context The context of the application.
      */
     @SuppressLint("MissingPermission")
-    fun sendVinCommandToCar(uuidSended: String, context: Context) {
+    fun sendVinCommandToCar(
+        uuidSended: String,
+        context: Context,
+        obdSensorViewModel: ObdSensorViewModel
+    ) {
         CoroutineScope(Dispatchers.IO).launch {
             val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
             val bluetoothDevice = bluetoothAdapter.getRemoteDevice("00:10:CC:4F:36:03")
@@ -207,6 +211,7 @@ class BluetoothConnections(
             val bluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord(uuid)
 
             try {
+                obdSensorViewModel.setIsLoading(true)
                 bluetoothSocket.connect()
 
                 // Socket connection successful, proceed with communication
@@ -242,7 +247,7 @@ class BluetoothConnections(
                 }
                 Log.d("bluele", "VIN: $vin")
 
-
+                obdSensorViewModel.setIsLoading(false)
                 bluetoothSocket.close()
 
             } catch (e: IOException) {
