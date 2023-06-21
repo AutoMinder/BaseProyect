@@ -196,6 +196,7 @@ class BluetoothConnections(
      *
      * @param uuidSended The UUID string used for Bluetooth communication.
      * @param context The context of the application.
+     * @param obdSensorViewModel The view model used to update the UI.
      */
     @SuppressLint("MissingPermission")
     fun sendVinCommandToCar(
@@ -246,7 +247,7 @@ class BluetoothConnections(
                     Toast.makeText(context, "VIN: $vin", Toast.LENGTH_LONG).show()
                 }
                 Log.d("bluele", "VIN: $vin")
-
+                obdSensorViewModel.setVin(vin)
                 obdSensorViewModel.setIsLoading(false)
                 bluetoothSocket.close()
 
@@ -286,9 +287,14 @@ class BluetoothConnections(
      *
      * @param uuidSended The UUID string used for Bluetooth communication.
      * @param context The context of the application.
+     * @param obdSensorViewModel The view model used to store the retrieved temperature.
      */
     @SuppressLint("MissingPermission")
-    fun sendTemperatureCommandToCar(uuidSended: String, context: Context) {
+    fun sendTemperatureCommandToCar(
+        uuidSended: String,
+        context: Context,
+        obdSensorViewModel: ObdSensorViewModel
+    ) {
         CoroutineScope(Dispatchers.IO).launch {
             val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
             val bluetoothDevice = bluetoothAdapter.getRemoteDevice("00:10:CC:4F:36:03")
@@ -297,6 +303,7 @@ class BluetoothConnections(
             val bluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord(uuid)
 
             try {
+                obdSensorViewModel.setIsLoading(true)
                 bluetoothSocket.connect()
                 val inputStream = bluetoothSocket.inputStream
                 val outputStream = bluetoothSocket.outputStream
@@ -321,13 +328,10 @@ class BluetoothConnections(
                 sendCommand("0105\r", outputStream, inputStream)
                 delay(1000)
                 val response = sendCommand("0105\r", outputStream, inputStream)
-                val temperature = translateTemperature(response)
-
-                Toast.makeText(
-                    context,
-                    "La temperatura del refrigerante es: $temperature",
-                    Toast.LENGTH_LONG
-                ).show()
+                val temperature = translateCoolantTemperature(response)
+                Log.d("bluele", "Temperature: $temperature")
+                obdSensorViewModel.setTemperature(temperature.toString())
+                obdSensorViewModel.setIsLoading(false)
 
                 delay(1000)
                 bluetoothSocket.close()
@@ -338,11 +342,16 @@ class BluetoothConnections(
         }
     }
 
-    private fun translateTemperature(response: String): Int {
-        val hexValue =
-            response.replace(" ", "").substring(6, 8) // Remove spaces and extract the hex value
-        val decimalValue = hexValue.toInt(16) // Convert the hex value to decimal
-        return decimalValue - 40
+    fun translateCoolantTemperature(response: String): Int? {
+        val hexValues = response.trim().split(" ")
+        if (hexValues.size >= 2) {
+            val hexPair = hexValues[hexValues.size - 2] // Get the last two digits in hex
+            val decimalValue = hexPair.toIntOrNull(16) // Convert hex to decimal
+            if (decimalValue != null) {
+                return decimalValue - 40
+            } // Subtract 40 to get the temperature in Celsius
+        }
+        return null
     }
 
     private fun sendCommand(

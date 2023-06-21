@@ -17,9 +17,20 @@ class ObdSensorViewModel() : ViewModel() {
     val bluetoothDevice: MutableState<BluetoothDevice?> = mutableStateOf(null)
     private val _isLoading = MutableStateFlow<Boolean>(false)
     val isLoading: StateFlow<Boolean> = _isLoading
+    private val _carVin = MutableStateFlow<String>("")
+    val carVin: StateFlow<String> = _carVin
+    private val _carTemperature = MutableStateFlow<String>("")
+    val carTemperature: StateFlow<String> = _carTemperature
 
     fun setIsLoading(loading: Boolean) {
         _isLoading.value = loading
+    }
+    fun setVin(vin: String) {
+        _carVin.value = vin
+    }
+
+    fun setTemperature(temperature: String) {
+        _carTemperature.value = temperature
     }
 
     companion object {

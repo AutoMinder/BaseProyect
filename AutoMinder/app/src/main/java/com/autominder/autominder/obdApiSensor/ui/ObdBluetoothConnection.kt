@@ -51,6 +51,8 @@ fun ObdSensorConnectScreen(
     }
 
     val isLoading by obdSensorViewModel.isLoading.collectAsState()
+    val carVin by obdSensorViewModel.carVin.collectAsState()
+    val carTemperature by obdSensorViewModel.carTemperature.collectAsState()
 
     Column(
         modifier = Modifier
@@ -87,13 +89,21 @@ fun ObdSensorConnectScreen(
             onClick = {
                 bluetoothConnection.sendTemperatureCommandToCar(
                     "00001101-0000-1000-8000-00805f9b34fb",
-                    context
+                    context,
+                    obdSensorViewModel
                 )
             }) {
             Text(text = "Obtener temperatura del refrigerante de de mi carro")
         }
-        if (isLoading){
+        if (isLoading) {
             LoadingScreen()
+        } else {
+            Text(text = "VIN de tu carro: $carVin", color = MaterialTheme.colorScheme.onSurface)
+            Text(
+                text = "Temperatura del refrigerante de tu carro: $carTemperature",
+                color = MaterialTheme.colorScheme.onSurface
+            )
+
         }
     }
 
