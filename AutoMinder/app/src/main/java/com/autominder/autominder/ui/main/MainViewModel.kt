@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class MainViewModel: ViewModel() {
-    private val _startDestination = MutableStateFlow(Destinations.Login.route)
+    private val _startDestination = MutableStateFlow(Destinations.WelcomeScreen1.route)
     val startDestination: StateFlow<String> = _startDestination
 
     fun setStartDestination(destination: String){

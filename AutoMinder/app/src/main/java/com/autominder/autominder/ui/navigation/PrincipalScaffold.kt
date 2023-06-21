@@ -39,6 +39,18 @@ fun PrincipalScaffold() {
             bottomBarState.value = false
             topAppBarState.value = false
         }
+        "welcome1" -> {
+            bottomBarState.value = false
+            topAppBarState.value = false
+        }
+        "welcome2" -> {
+            bottomBarState.value = false
+            topAppBarState.value = false
+        }
+        "welcome3" -> {
+            bottomBarState.value = false
+            topAppBarState.value = false
+        }
 
         "principal_menu" -> {
             bottomBarState.value = true
