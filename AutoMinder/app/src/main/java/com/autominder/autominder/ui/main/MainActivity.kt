@@ -35,7 +35,7 @@ import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
-    @RequiresApi(Build.VERSION_CODES.S)
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
 
@@ -49,13 +49,15 @@ class MainActivity : ComponentActivity() {
                     val user = dataStoreManager.getUserData()
                     user.collect { token ->
                         Log.d("NavigationHost", "NavigationHost: $token")
-                        when{
+                        when {
                             token == "" -> {
                                 mainViewModel.setStartDestination("welcome1")
                             }
+
                             token != "" -> {
                                 mainViewModel.setStartDestination("principal_menu")
                             }
+
                             else -> {
                                 mainViewModel.setStartDestination("welcome1")
                             }
@@ -68,16 +70,26 @@ class MainActivity : ComponentActivity() {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     PrincipalScaffold()
                     promptEnableBluetooth()
+
                     requestPermissionLauncher.launch(
                         arrayOf(
                             Manifest.permission.ACCESS_FINE_LOCATION,
                             Manifest.permission.ACCESS_COARSE_LOCATION,
                             Manifest.permission.BLUETOOTH,
                             Manifest.permission.BLUETOOTH_ADMIN,
-                            Manifest.permission.BLUETOOTH_CONNECT,
-                            Manifest.permission.BLUETOOTH_SCAN
                         )
                     )
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        requestPermissionLauncher.launch(
+                            arrayOf(
+                                Manifest.permission.BLUETOOTH_CONNECT,
+                                Manifest.permission.BLUETOOTH_SCAN
+                            )
+                        )
+                    } else {
+                        val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+                        requestBluetoothEnable.launch(enableBtIntent)
+                    }
                 }
             }
         }

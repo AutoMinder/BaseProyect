@@ -39,21 +39,19 @@ fun ObdSensorConnectScreen(
 ) {
 
     val context = LocalContext.current
-
     val bluetoothManager = remember {
         context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager?
     }
-
     val bluetoothAdapter: BluetoothAdapter? = remember {
         bluetoothManager!!.adapter
     }
     val bluetoothConnection = remember {
         BluetoothConnections(bluetoothAdapter!!, bluetoothManager, context, obdSensorViewModel)
     }
-
     val isLoading by obdSensorViewModel.isLoading.collectAsState()
     val carVin by obdSensorViewModel.carVin.collectAsState()
     val carTemperature by obdSensorViewModel.carTemperature.collectAsState()
+
 
     Column(
         modifier = Modifier
@@ -62,6 +60,10 @@ fun ObdSensorConnectScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
     ) {
+        Text(
+            text = "Esta pantalla es experimental, si sufres muchos errores, te agradeceriamos que nos los reportaras",
+            color = MaterialTheme.colorScheme.onSurface
+        )
         Button(
             shape = MaterialTheme.shapes.small,
             onClick = {
@@ -112,13 +114,6 @@ fun ObdSensorConnectScreen(
             )
 
         }
-    }
-
-
-
-
-    if (!isLoading) {
-        Text(text = "NO CARGO")
     }
 
 }

@@ -25,6 +25,7 @@ class ObdSensorViewModel() : ViewModel() {
     fun setIsLoading(loading: Boolean) {
         _isLoading.value = loading
     }
+
     fun setVin(vin: String) {
         _carVin.value = vin
     }
@@ -34,7 +35,6 @@ class ObdSensorViewModel() : ViewModel() {
     }
 
     companion object {
-        private const val PERMISSION_REQUEST_CODE = 200
         val Factory = viewModelFactory {
             initializer {
                 val app = this[APPLICATION_KEY] as Application
