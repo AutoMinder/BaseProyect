@@ -22,7 +22,7 @@ import com.autominder.autominder.ui.forgotPassword.ForgotPasswordScreen
 import com.autominder.autominder.ui.login.ui.LoginScreen
 import com.autominder.autominder.ui.myCars.ui.MyCarsScreen
 import com.autominder.autominder.ui.myCars.ui.MyCarsViewModel
-import com.autominder.autominder.obdApiSensor.ui.ObdReader
+
 import com.autominder.autominder.obdApiSensor.ui.ObdSensorConnectScreen
 import com.autominder.autominder.obdApiSensor.ui.ObdSensorViewModel
 import com.autominder.autominder.ui.main.MainViewModel
@@ -116,13 +116,6 @@ fun NavigationHost(
         }
         composable("obd_sensor") {
             ObdSensorConnectScreen(obdSensorViewModel, navController)
-        }
-        composable("obd_reader") {
-            ObdReader(
-                obdSensorViewModel = obdSensorViewModel,
-                bluetoothDevice = obdSensorViewModel.bluetoothDevice
-            )
-
         }
     }
 }
