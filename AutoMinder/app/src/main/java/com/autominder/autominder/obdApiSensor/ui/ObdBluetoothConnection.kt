@@ -119,30 +119,19 @@ fun ObdSensorConnectScreen(
         if (isLoading) {
             LoadingScreen()
         } else {
-            if (carVin != "" && carTemperature != "") {
-                Text(
-                    text = "VIN de tu carro: $carVin",
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 16.sp
-                )
-                Text(
-                    text = "Temperatura del refrigerante de tu carro: $carTemperature",
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 16.sp
-                )
-            } else {
-                Text(
-                    text = "No has obtenido el VIN de tu carro",
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 16.sp
-                )
-                Text(
-                    text = "No has obtenido la temperatura del refrigerante de tu carro",
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 16.sp
-                )
-            }
+
+            Text(
+                text = "VIN de tu carro: $carVin",
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 16.sp
+            )
+            Text(
+                text = "Temperatura del refrigerante de tu carro: $carTemperature",
+                color = MaterialTheme.colorScheme.onSurface,
+                fontSize = 16.sp
+            )
         }
+
     }
 }
 
