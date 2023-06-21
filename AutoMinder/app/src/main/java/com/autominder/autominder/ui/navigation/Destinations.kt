@@ -17,6 +17,10 @@ sealed class Destinations(
     val title: String,
     val icon: ImageVector,
 ) {
+
+    object WelcomeScreen1 : Destinations("welcome1", "Welcome1", Icons.Filled.Home)
+    object WelcomeScreen2 : Destinations("welcome2", "Welcome2", Icons.Filled.Home)
+    object WelcomeScreen3 : Destinations("welcome3", "Welcome3", Icons.Filled.Home)
     object Login : Destinations("login", "Login", Icons.Filled.Home)
     object MyCars : Destinations("my_cars", "My Cars", Icons.Filled.Add)
     object UserInfo : Destinations("user_info", "User info", Icons.Filled.Person)

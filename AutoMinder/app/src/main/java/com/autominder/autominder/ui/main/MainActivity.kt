@@ -49,10 +49,16 @@ class MainActivity : ComponentActivity() {
                     val user = dataStoreManager.getUserData()
                     user.collect { token ->
                         Log.d("NavigationHost", "NavigationHost: $token")
-                        if (token != "") {
-                            mainViewModel.setStartDestination("principal_menu")
-                        } else {
-                            mainViewModel.setStartDestination("login")
+                        when{
+                            token == "" -> {
+                                mainViewModel.setStartDestination("welcome1")
+                            }
+                            token != "" -> {
+                                mainViewModel.setStartDestination("principal_menu")
+                            }
+                            else -> {
+                                mainViewModel.setStartDestination("welcome1")
+                            }
                         }
                     }
                 }

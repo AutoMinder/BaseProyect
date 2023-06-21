@@ -32,6 +32,10 @@ import com.autominder.autominder.ui.userInfo.UserInfoScreen
 import com.autominder.autominder.ui.userInfo.UserInfoViewModel
 import com.autominder.autominder.ui.userInfo.changePassword.ChangePasswordScreen
 import com.autominder.autominder.ui.userInfo.changePassword.ChangePasswordViewModel
+import com.autominder.autominder.ui.welcomeScreens.FirstScreen
+import com.autominder.autominder.ui.welcomeScreens.SecondScreen
+import com.autominder.autominder.ui.welcomeScreens.Third
+import com.autominder.autominder.ui.welcomeScreens.ThirdScreen
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collect
 
@@ -59,6 +63,15 @@ fun NavigationHost(
         modifier = Modifier.padding(8.dp),
         startDestination = startDestination.value
     ) {
+        composable("welcome1"){
+            FirstScreen(navController = navController)
+        }
+        composable("welcome2"){
+            SecondScreen(navController = navController)
+        }
+        composable("welcome3"){
+            ThirdScreen(navController = navController)
+        }
         composable("login") {
             LoginScreen(navController = navController)
         }
