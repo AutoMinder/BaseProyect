@@ -24,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.autominder.autominder.obdApiSensor.logic.BluetoothConnections
@@ -59,6 +60,7 @@ fun ObdSensorConnectScreen(
             .padding(10.dp)
             .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
+        horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
     ) {
         Button(
             shape = MaterialTheme.shapes.small,
@@ -75,6 +77,7 @@ fun ObdSensorConnectScreen(
         }
         Button(
             shape = MaterialTheme.shapes.small,
+            colors = androidx.compose.material.ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colorScheme.primary),
             onClick = {
                 bluetoothConnection.sendVinCommandToCar(
                     "00001101-0000-1000-8000-00805f9b34fb",
@@ -82,10 +85,11 @@ fun ObdSensorConnectScreen(
                     obdSensorViewModel
                 )
             }) {
-            Text(text = "Obtener VIN de mi carro")
+            Text(text = "Obtener VIN de mi carro", color = MaterialTheme.colorScheme.onPrimary)
         }
         Button(
             shape = MaterialTheme.shapes.small,
+            colors = androidx.compose.material.ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colorScheme.primary),
             onClick = {
                 bluetoothConnection.sendTemperatureCommandToCar(
                     "00001101-0000-1000-8000-00805f9b34fb",
@@ -93,7 +97,10 @@ fun ObdSensorConnectScreen(
                     obdSensorViewModel
                 )
             }) {
-            Text(text = "Obtener temperatura del refrigerante de de mi carro")
+            Text(
+                text = "Obtener temperatura del refrigerante de de mi carro",
+                color = MaterialTheme.colorScheme.onPrimary
+            )
         }
         if (isLoading) {
             LoadingScreen()
