@@ -14,6 +14,7 @@ import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -26,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.autominder.autominder.obdApiSensor.logic.BluetoothConnections
 import com.autominder.autominder.ui.components.LoadingScreen
@@ -52,7 +54,6 @@ fun ObdSensorConnectScreen(
     val carVin by obdSensorViewModel.carVin.collectAsState()
     val carTemperature by obdSensorViewModel.carTemperature.collectAsState()
 
-
     Column(
         modifier = Modifier
             .padding(10.dp)
@@ -62,10 +63,16 @@ fun ObdSensorConnectScreen(
     ) {
         Text(
             text = "Esta pantalla es experimental, si sufres muchos errores, te agradeceriamos que nos los reportaras",
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.onSurface,
+            fontSize = 16.sp,
+            modifier = Modifier.padding(10.dp)
         )
         Button(
             shape = MaterialTheme.shapes.small,
+            colors = androidx.compose.material.ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colorScheme.primary),
+            modifier = Modifier
+                .padding(10.dp)
+                .fillMaxWidth(),
             onClick = {
                 if (bluetoothAdapter?.isEnabled == true) {
                     val reciever = onBluetoothEnable(context)
@@ -75,11 +82,14 @@ fun ObdSensorConnectScreen(
                 }
 
             }) {
-            Text(text = "Enable Bluetooth")
+            Text(text = "Enable Bluetooth", color = MaterialTheme.colorScheme.onPrimary)
         }
         Button(
             shape = MaterialTheme.shapes.small,
             colors = androidx.compose.material.ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colorScheme.primary),
+            modifier = Modifier
+                .padding(10.dp)
+                .fillMaxWidth(),
             onClick = {
                 bluetoothConnection.sendVinCommandToCar(
                     "00001101-0000-1000-8000-00805f9b34fb",
@@ -92,6 +102,9 @@ fun ObdSensorConnectScreen(
         Button(
             shape = MaterialTheme.shapes.small,
             colors = androidx.compose.material.ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colorScheme.primary),
+            modifier = Modifier
+                .padding(10.dp)
+                .fillMaxWidth(),
             onClick = {
                 bluetoothConnection.sendTemperatureCommandToCar(
                     "00001101-0000-1000-8000-00805f9b34fb",
@@ -107,15 +120,31 @@ fun ObdSensorConnectScreen(
         if (isLoading) {
             LoadingScreen()
         } else {
-            Text(text = "VIN de tu carro: $carVin", color = MaterialTheme.colorScheme.onSurface)
-            Text(
-                text = "Temperatura del refrigerante de tu carro: $carTemperature",
-                color = MaterialTheme.colorScheme.onSurface
-            )
-
+            if (carVin != "" && carTemperature != "") {
+                Text(
+                    text = "VIN de tu carro: $carVin",
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontSize = 16.sp
+                )
+                Text(
+                    text = "Temperatura del refrigerante de tu carro: $carTemperature",
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontSize = 16.sp
+                )
+            } else {
+                Text(
+                    text = "No has obtenido el VIN de tu carro",
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontSize = 16.sp
+                )
+                Text(
+                    text = "No has obtenido la temperatura del refrigerante de tu carro",
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontSize = 16.sp
+                )
+            }
         }
     }
-
 }
 
 
