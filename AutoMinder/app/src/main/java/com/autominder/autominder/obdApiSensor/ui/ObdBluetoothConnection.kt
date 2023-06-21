@@ -37,7 +37,6 @@ import com.autominder.autominder.ui.components.LoadingScreen
 @Composable
 fun ObdSensorConnectScreen(
     obdSensorViewModel: ObdSensorViewModel,
-    navController: NavHostController
 ) {
 
     val context = LocalContext.current

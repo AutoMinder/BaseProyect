@@ -115,7 +115,7 @@ fun NavigationHost(
             AddCarScreen(viewModel = addCarViewModel, navController = navController)
         }
         composable("obd_sensor") {
-            ObdSensorConnectScreen(obdSensorViewModel, navController)
+            ObdSensorConnectScreen(obdSensorViewModel)
         }
     }
 }
