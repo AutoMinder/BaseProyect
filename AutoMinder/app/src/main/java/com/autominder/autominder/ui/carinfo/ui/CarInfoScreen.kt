@@ -1,12 +1,16 @@
 package com.autominder.autominder.ui.carinfo.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -20,6 +24,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.autominder.autominder.R
 import com.autominder.autominder.data.database.models.CarModel
 import com.autominder.autominder.ui.components.LoadingScreen
 import com.autominder.autominder.ui.myCars.data.myCarsdummy
@@ -69,13 +76,13 @@ fun CarInfoScreen(
 @Composable
 fun CarInfoMainScreen(car: CarModel, navController: NavController) {
     Card(
-        modifier = Modifier.padding(16.dp),
+        modifier = Modifier.padding(0.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface),
     ) {
         LazyColumn(
             modifier = Modifier
-                .padding(16.dp)
                 .fillMaxSize()
+                .padding(8.dp)
         ) {
             item {
                 CarNameHeader(car)
@@ -94,13 +101,35 @@ fun CarInfoMainScreen(car: CarModel, navController: NavController) {
 
 @Composable
 fun CarNameHeader(car: CarModel) {
-    Text(
-        text = car.car_name,
-        modifier = Modifier.fillMaxWidth(),
-        textAlign = TextAlign.Center,
-        fontSize = 32.sp,
-        fontWeight = FontWeight(600),
-    )
+    Card(
+        modifier = Modifier
+            .padding(20.dp),
+        colors = CardDefaults.cardColors(Color(0xFF006496)),
+        shape = MaterialTheme.shapes.small
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        )
+        {
+            Text(
+                text = car.car_name,
+                fontWeight = FontWeight(600),
+                fontSize = 18.sp,
+                color = Color(0xFFFFFFFF)
+            )
+            Image(
+                painter = painterResource(id = R.drawable.editar2),
+                contentDescription = "Editar nombre",
+                modifier = Modifier
+                    .padding(start = 24.dp)
+                    .wrapContentSize(Alignment.CenterStart)
+                    .size(20.dp)
+            )
+        }
+    }
 }
 
 @Composable
@@ -108,7 +137,7 @@ fun CarBrand(car: CarModel) {
     Card(
         modifier = Modifier
             .padding(20.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer),
+        colors = CardDefaults.cardColors(Color(0xFF006496)),
         shape = MaterialTheme.shapes.small
 
     ) {
@@ -122,15 +151,15 @@ fun CarBrand(car: CarModel) {
             Text(
                 text = "Marca",
                 fontWeight = FontWeight(600),
-                fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                fontSize = 18.sp,
+                color = Color(0xFFFFFFFF)
             )
 
             Text(
                 text = car.brand,
                 fontWeight = FontWeight(600),
-                fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                fontSize = 18.sp,
+                color = Color(0xFFFFFFFF)
             )
         }
     }
@@ -141,7 +170,7 @@ fun CarModel(car: CarModel) {
     Card(
         modifier = Modifier
             .padding(20.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer),
+        colors = CardDefaults.cardColors(Color(0xFF006496)),
         shape = MaterialTheme.shapes.small
     ) {
         Row(
@@ -154,15 +183,15 @@ fun CarModel(car: CarModel) {
             Text(
                 text = "Modelo",
                 fontWeight = FontWeight(600),
-                fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                fontSize = 18.sp,
+                color = Color(0xFFFFFFFF)
             )
 
             Text(
                 text = car.model,
                 fontWeight = FontWeight(600),
-                fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                fontSize = 18.sp,
+                color = Color(0xFFFFFFFF)
             )
         }
     }
@@ -174,7 +203,7 @@ fun CarYearCard(car: CarModel) {
         modifier = Modifier
             .padding(20.dp),
         shape = MaterialTheme.shapes.small,
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer)
+        colors = CardDefaults.cardColors(Color(0xFF006496))
     ) {
         Row(
             modifier = Modifier
@@ -186,15 +215,15 @@ fun CarYearCard(car: CarModel) {
             Text(
                 text = "Año",
                 fontWeight = FontWeight(600),
-                fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                fontSize = 18.sp,
+                color = Color(0xFFFFFFFF)
             )
 
             Text(
                 text = car.year.toString(),
                 fontWeight = FontWeight(600),
-                fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                fontSize = 18.sp,
+                color = Color(0xFFFFFFFF)
             )
         }
     }
@@ -205,7 +234,7 @@ fun CarMileage(carInfo: CarModel) {
     Card(
         modifier = Modifier
             .padding(20.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer),
+        colors = CardDefaults.cardColors(Color(0xFF006496)),
         shape = MaterialTheme.shapes.small
     ) {
         Column(
@@ -219,18 +248,31 @@ fun CarMileage(carInfo: CarModel) {
             Text(
                 text = "Kilometraje",
                 fontWeight = FontWeight(600),
-                fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                textAlign = TextAlign.Center
+                fontSize = 18.sp,
+                color = Color(0xFFFFFFFF),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = 16.dp)
             )
+            Row() {
+                Text(
+                    text = carInfo.kilometers.toString(),
+                    fontWeight = FontWeight(600),
+                    fontSize = 18.sp,
+                    color = Color(0xFFFFFFFF),
+                    textAlign = TextAlign.Center
+                )
 
-            Text(
-                text = carInfo.kilometers.toString(),
-                fontWeight = FontWeight(600),
-                fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                textAlign = TextAlign.Center
-            )
+                Image(
+                    painter = painterResource(id = R.drawable.editar2),
+                    contentDescription = "Editar fecha de cambio de kilometraje",
+                    modifier = Modifier
+                        .padding(start = 96.dp)
+                        .wrapContentSize(Alignment.CenterStart)
+                        .size(20.dp)
+                )
+            }
+
+
         }
     }
 }
@@ -240,7 +282,7 @@ fun CarLastMaintenanceDate(car: CarModel) {
     Card(
         modifier = Modifier
             .padding(20.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer),
+        colors = CardDefaults.cardColors(Color(0xFF006496)),
         shape = MaterialTheme.shapes.small
     ) {
         Column(
@@ -254,18 +296,30 @@ fun CarLastMaintenanceDate(car: CarModel) {
             Text(
                 text = "Último mantenimiento",
                 fontWeight = FontWeight(600),
-                fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                textAlign = TextAlign.Center
+                fontSize = 18.sp,
+                color = Color(0xFFFFFFFF),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = 16.dp)
             )
+            Row() {
+                Text(
+                    text = car.last_maintenance,
+                    fontWeight = FontWeight(600),
+                    fontSize = 18.sp,
+                    color = Color(0xFFFFFFFF),
+                    textAlign = TextAlign.Center
+                )
 
-            Text(
-                text = car.last_maintenance,
-                fontWeight = FontWeight(600),
-                fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                textAlign = TextAlign.Center
-            )
+                Image(
+                    painter = painterResource(id = R.drawable.editar2),
+                    contentDescription = "Editar fecha de ultimo mantenimiento",
+                    modifier = Modifier
+                        .padding(start = 64.dp)
+                        .wrapContentSize(Alignment.CenterStart)
+                        .size(20.dp)
+                )
+            }
+
         }
     }
 }
@@ -275,7 +329,7 @@ fun LastOilChange(car: CarModel) {
     Card(
         modifier = Modifier
             .padding(20.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer),
+        colors = CardDefaults.cardColors(Color(0xFF006496)),
         shape = MaterialTheme.shapes.small
     ) {
         Column(
@@ -289,18 +343,30 @@ fun LastOilChange(car: CarModel) {
             Text(
                 text = "Último cambio de aceite",
                 fontWeight = FontWeight(600),
-                fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                textAlign = TextAlign.Center
+                fontSize = 18.sp,
+                color = Color(0xFFFFFFFF),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = 16.dp)
             )
+            Row() {
+                Text(
+                    text = car.last_oil_change,
+                    fontWeight = FontWeight(600),
+                    fontSize = 18.sp,
+                    color = Color(0xFFFFFFFF),
+                    textAlign = TextAlign.Center
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.editar2),
+                    contentDescription = "Editar fecha de cambio de aceite",
+                    modifier = Modifier
+                        .padding(start = 64.dp)
+                        .wrapContentSize(Alignment.CenterStart)
+                        .size(20.dp)
+                )
+            }
 
-            Text(
-                text = car.last_oil_change,
-                fontWeight = FontWeight(600),
-                fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                textAlign = TextAlign.Center
-            )
+
         }
     }
 }
@@ -310,7 +376,7 @@ fun LastCoolantChange(car: CarModel) {
     Card(
         modifier = Modifier
             .padding(20.dp),
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer),
+        colors = CardDefaults.cardColors(Color(0xFF006496)),
         shape = MaterialTheme.shapes.small
     ) {
         Column(
@@ -324,18 +390,30 @@ fun LastCoolantChange(car: CarModel) {
             Text(
                 text = "Último cambio de refigerante",
                 fontWeight = FontWeight(600),
-                fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                textAlign = TextAlign.Center
+                fontSize = 18.sp,
+                color = Color(0xFFFFFFFF),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = 16.dp)
             )
+            Row() {
+                Text(
+                    text = car.last_coolant_change,
+                    fontWeight = FontWeight(600),
+                    fontSize = 18.sp,
+                    color = Color(0xFFFFFFFF),
+                    textAlign = TextAlign.Center
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.editar2),
+                    contentDescription = "Editar fecha de cambio de refrigerante",
+                    modifier = Modifier
+                        .padding(start = 64.dp)
+                        .wrapContentSize(Alignment.CenterStart)
+                        .size(20.dp)
+                )
+            }
 
-            Text(
-                text = car.last_coolant_change,
-                fontWeight = FontWeight(600),
-                fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                textAlign = TextAlign.Center
-            )
+
         }
     }
 }
@@ -347,12 +425,13 @@ fun ConnectObd(navController: NavController) {
             .padding(25.dp)
             .fillMaxWidth(),
         shape = MaterialTheme.shapes.small,
-        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-
+        colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
         onClick = { navController.navigate("obd_sensor") }) {
         Text(
             text = "Conectar OBD",
-            color = MaterialTheme.colorScheme.onPrimaryContainer
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color(0xFFFFFFFF)
         )
     }
 }
