@@ -151,7 +151,7 @@ fun AlertCard(alert: Alerts) {
                         .wrapContentSize(Alignment.Center),
                     textAlign = TextAlign.Justify,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 10.sp,
+                    fontSize = 14.sp,
                     color = Color.White,
 
                     )
