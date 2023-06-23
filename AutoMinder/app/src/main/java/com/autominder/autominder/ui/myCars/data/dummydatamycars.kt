@@ -1,25 +1,6 @@
 package com.autominder.autominder.ui.myCars.data
 
-import java.text.SimpleDateFormat
 
-val formatter = SimpleDateFormat("yyyy-MM-dd")
-
-/*@SerializedName("_id") val id: String,
-    @SerializedName("vin") val vin: String?,
-    @SerializedName("car_name") val name: String,
-    @SerializedName("brand") val brand: String,
-    @SerializedName("model") val model: String,
-    @SerializedName("year") val year: Int?,
-    @SerializedName("kilometers") val kilometers: Int?,
-    @SerializedName("kilometersDate") val kilometersDate: String?,
-    @SerializedName("lastMaintenance") val lastMaintenance: String,
-    val nextMaintenances: String?,
-    @SerializedName("lastOilChange") val lastOilChange: String,
-    @SerializedName("lastCoolantChange") val lastCoolantDate: String?,
-    @SerializedName("mayorTuning") val lastMayorTuning: String?,
-    @SerializedName("minorTuning") val lastMinorTuning: String?,
-    val hidden: Boolean?,
-    @SerializedName("errorRecord") val errorModel: MutableList<String>?,*/
 val myCarsdummy = mutableListOf(
     com.autominder.autominder.data.database.models.CarModel(
         vin = "1G1JC5444R7252367",
