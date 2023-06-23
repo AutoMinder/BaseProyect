@@ -1,6 +1,5 @@
 package com.autominder.autominder.ui.myCars.data
 
-import com.autominder.autominder.data.models_dummy.CarModel
 import java.text.SimpleDateFormat
 
 val formatter = SimpleDateFormat("yyyy-MM-dd")

@@ -1,9 +1,5 @@
 package com.autominder.autominder.ui.myCars.ui
 
-import android.util.Log
-import android.widget.Toast
-import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -12,15 +8,9 @@ import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.autominder.autominder.AutoMinderApplication
-import com.autominder.autominder.data.models_dummy.CarModel
 import com.autominder.autominder.data.network.ApiResponse
 import com.autominder.autominder.data.network.RepositoryCredentials.CredentialsRepository
-import com.autominder.autominder.data.network.dto.ownCars.OwnResponse
-import com.autominder.autominder.ui.login.ui.LoginUiStatus
 import com.autominder.autominder.ui.myCars.data.MyCarsRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

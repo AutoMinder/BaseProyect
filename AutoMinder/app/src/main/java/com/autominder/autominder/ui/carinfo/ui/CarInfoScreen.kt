@@ -15,7 +15,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -27,8 +26,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.autominder.autominder.data.database.models.CarModel
 import com.autominder.autominder.ui.components.LoadingScreen
-import com.autominder.autominder.data.models_dummy.CarModel
 import com.autominder.autominder.ui.myCars.ui.MyCarsViewModel
 
 //
@@ -94,7 +93,7 @@ fun CarInfoMainScreen(car: com.autominder.autominder.data.database.models.CarMod
 @Composable
 fun CarNameHeader(car: CarModel) {
     Text(
-        text = car.name,
+        text = car.car_name,
         modifier = Modifier.fillMaxWidth(),
         textAlign = TextAlign.Center,
         fontSize = 32.sp,

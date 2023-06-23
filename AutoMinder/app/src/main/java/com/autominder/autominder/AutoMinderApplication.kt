@@ -35,12 +35,6 @@ class AutoMinderApplication : Application() {
 
     }
 
-//TODO(): REVISAR SI EL SIGUIENTE FRAGMENTO ES NECESITADO EN ALGUNA PARTE DEL PROYECTO
-
-//    val CarMaintenanceRepository: CarMaintenanceRepository by lazy {
-////        CarMaintenanceRepository(dummyCarMaintenanceData) -   CHEQUEAR ESTE CAMPO, DA ERROR
-//    }
-
     /*
     *   DATABASE SECTION
      */
