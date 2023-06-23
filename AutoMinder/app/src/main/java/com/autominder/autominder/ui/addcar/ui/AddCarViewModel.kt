@@ -219,7 +219,7 @@ class AddCarViewModel(
                     mutableListOf("")
                 )
 
-            repository.addCar(newCar)
+            //repository.addCar(newCar)
             //addCarToDatabase(newCar)
             Log.d("APP TAG", getCars().toString())
 

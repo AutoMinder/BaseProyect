@@ -9,24 +9,16 @@ import com.autominder.autominder.ui.addcar.data.AddCarRepository
 import com.autominder.autominder.ui.addcar.data.brands
 import com.autominder.autominder.ui.addcar.data.models
 
-import com.autominder.autominder.ui.carinfo.data.CarMaintenanceRepository
 import com.autominder.autominder.data.database.AutominderDatabase
 import com.autominder.autominder.data.database.repository.CarRepository
 import com.autominder.autominder.data.database.repository.UserRepository
-import com.autominder.autominder.data.network.ApiResponse
 
 import com.autominder.autominder.ui.myCars.data.MyCarsRepository
 import com.autominder.autominder.ui.myCars.data.myCarsdummy
 import com.autominder.autominder.data.network.RepositoryCredentials.CredentialsRepository
-import com.autominder.autominder.data.network.dto.ownCars.OwnResponse
 import com.autominder.autominder.data.network.retrofit.RetrofitInstance
 import com.autominder.autominder.ui.principalMenu.data.AlertsRepository
 import com.autominder.autominder.ui.principalMenu.data.dummyAlerts
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 
 class AutoMinderApplication : Application() {
 

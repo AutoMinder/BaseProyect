@@ -51,7 +51,7 @@ class CarInfoViewModel(
     private val _isLoading = MutableStateFlow<Boolean>(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
-    fun fetchCarMaintenanceInfoByCarId(carId: String) {
+    /*fun fetchCarMaintenanceInfoByCarId(carId: String) {
         viewModelScope.launch {
             try {
                 setLoading(true)
@@ -68,7 +68,7 @@ class CarInfoViewModel(
                 setLoading(false)
             }
         }
-    }
+    }*/
 
     private fun setLoading(loading: Boolean) {
         _isLoading.value = loading

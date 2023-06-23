@@ -37,7 +37,7 @@ class MyCarsViewModel(
     *   Variable declaration section
      */
     var loadedCars = false
-    val myCarsList = MutableLiveData<List<CarModel>>()
+    val myCarsList = MutableLiveData<List<com.autominder.autominder.data.database.models.CarModel>>()
     private val _isLoading = MutableStateFlow<Boolean>(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
@@ -50,9 +50,9 @@ class MyCarsViewModel(
     }
 
     //fetchCarById searches for a car by its id
-    fun fetchCarById(id: String): CarModel? {
+    /*fun fetchCarById(id: String): CarModel? {
 
-        return repository.getCarById(id)
+        //return repository.getCarById(id)
 
         //TODO(): Descomentar cuando se pueda implementar correctamente junto con el CarInfoViewModel:
 //        var car: CarModel? = null
@@ -62,7 +62,7 @@ class MyCarsViewModel(
 //        }
 //
 //        return car
-    }
+    }*/
 
     //fetchMyCars fetches the cars owned by the user
     private fun fetchMyCars() {

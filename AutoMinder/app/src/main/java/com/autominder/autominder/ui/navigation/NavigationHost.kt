@@ -1,20 +1,15 @@
 package com.autominder.autominder.ui.navigation
 
-import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
-import com.autominder.autominder.data.DataStoreManager
+import com.autominder.autominder.data.database.models.CarModel
 import com.autominder.autominder.ui.addcar.ui.AddCarScreen
 import com.autominder.autominder.ui.addcar.ui.AddCarViewModel
 import com.autominder.autominder.ui.carinfo.ui.CarInfoScreen
@@ -34,10 +29,7 @@ import com.autominder.autominder.ui.userInfo.changePassword.ChangePasswordScreen
 import com.autominder.autominder.ui.userInfo.changePassword.ChangePasswordViewModel
 import com.autominder.autominder.ui.welcomeScreens.FirstScreen
 import com.autominder.autominder.ui.welcomeScreens.SecondScreen
-import com.autominder.autominder.ui.welcomeScreens.Third
 import com.autominder.autominder.ui.welcomeScreens.ThirdScreen
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.collect
 
 
 @Composable
@@ -63,13 +55,13 @@ fun NavigationHost(
         modifier = Modifier.padding(8.dp),
         startDestination = startDestination.value
     ) {
-        composable("welcome1"){
+        composable("welcome1") {
             FirstScreen(navController = navController)
         }
-        composable("welcome2"){
+        composable("welcome2") {
             SecondScreen(navController = navController)
         }
-        composable("welcome3"){
+        composable("welcome3") {
             ThirdScreen(navController = navController)
         }
         composable("login") {
@@ -94,7 +86,7 @@ fun NavigationHost(
         composable("change_password") {
             ChangePasswordScreen(ChangePasswordViewModel())
         }
-        composable("car_info/{carId}",
+        /*composable("car_info/{carId}",
             arguments = listOf(
                 navArgument("carId") {
                     type = NavType.StringType
@@ -110,6 +102,13 @@ fun NavigationHost(
             }
 
 
+        }*/
+        composable("car_info") {
+            val result =
+                navController.previousBackStackEntry?.savedStateHandle?.get<CarModel>("car")
+            if (result != null) {
+                CarInfoScreen(car = result, navController = navController)
+            }
         }
         composable("add_car") {
             AddCarScreen(viewModel = addCarViewModel, navController = navController)

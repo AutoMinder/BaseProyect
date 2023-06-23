@@ -38,16 +38,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.core.content.ContentProviderCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.autominder.autominder.R
 import com.autominder.autominder.ui.carinfo.ui.CarInfoViewModel
 import com.autominder.autominder.ui.components.LoadingScreen
-import com.autominder.autominder.data.models_dummy.CarModel
 import kotlinx.coroutines.launch
 
 
@@ -151,7 +148,7 @@ fun MainScreenCars(viewModel: MyCarsViewModel, navController: NavController?) {
 
 @Composable
 fun MyCarSection(
-    myCarListState: State<List<CarModel>>,
+    myCarListState: State<List<com.autominder.autominder.data.database.models.CarModel>>,
     navController: NavController?,
 
     ) {
@@ -191,7 +188,7 @@ fun MyCarSection(
 
 @Composable
 fun CardCar(
-    car: CarModel, navController: NavController,
+    car: com.autominder.autominder.data.database.models.CarModel, navController: NavController,
     infoViewModel: CarInfoViewModel = viewModel(
         factory = CarInfoViewModel.Factory
     )
@@ -207,8 +204,13 @@ fun CardCar(
 
             //* If clicked, it will navigate to the details of the specific car with the id*//
             .clickable {
-                navController.navigate("car_info/${car.id}")
-                infoViewModel.fetchCarMaintenanceInfoByCarId(car.id)
+                val CarSend = car
+                navController.currentBackStackEntry?.savedStateHandle?.set(
+                    "car",
+                    CarSend
+                )
+                navController.navigate("car_info")
+                //infoViewModel.fetchCarMaintenanceInfoByCarId(car.id)
             },
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer),
 
@@ -222,7 +224,7 @@ fun CardCar(
 
         ) {
             Text(
-                text = car.name,
+                text = car.car_name,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),

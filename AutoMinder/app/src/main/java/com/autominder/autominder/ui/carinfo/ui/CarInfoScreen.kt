@@ -39,7 +39,7 @@ import com.autominder.autominder.ui.myCars.ui.MyCarsViewModel
 //
 @Composable
 fun CarInfoScreen(
-    car: CarModel,
+    car: com.autominder.autominder.data.database.models.CarModel,
     viewModel: MyCarsViewModel = viewModel(
         factory = MyCarsViewModel.Factory,
     ),
@@ -49,14 +49,11 @@ fun CarInfoScreen(
     navController: NavController
 ) {
     val isLoading by infoViewModel.isLoading.collectAsState(false)
-    LaunchedEffect(key1 = car.id) {
-        infoViewModel.fetchCarMaintenanceInfoByCarId(car.id)
-    }
+    /*LaunchedEffect(key1 = car.carId) {
+        infoViewModel.fetchCarMaintenanceInfoByCarId(car.carId)
+    }*/
 
     Scaffold(
-        bottomBar = {
-            //TODO: Call the BottomNavigationForCarInfo
-        },
     ) {
         Box(modifier = Modifier.padding(it)) {
 
@@ -70,7 +67,7 @@ fun CarInfoScreen(
 }
 
 @Composable
-fun CarInfoMainScreen(car: CarModel, navController: NavController) {
+fun CarInfoMainScreen(car: com.autominder.autominder.data.database.models.CarModel, navController: NavController) {
     Card(
         modifier = Modifier.padding(16.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface),
@@ -81,13 +78,13 @@ fun CarInfoMainScreen(car: CarModel, navController: NavController) {
                 .fillMaxSize()
         ) {
             item {
-
+                Text(text = "Nombre del vehiculo: ${car.car_name}" )
                 //Calling all the cards of individual information
-                CarNameHeader(car)
+                /*CarNameHeader(car)
                 CarBrand(car)
                 CarModel(car)
                 CarYearCard(car)
-                CarMileage(car)
+                CarMileage(car)*/
                 ConnectObd(navController)
             }
         }
