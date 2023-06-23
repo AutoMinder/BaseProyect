@@ -32,7 +32,6 @@ class AutoMinderApplication : Application() {
 
     val addCarRepository: AddCarRepository by lazy {
         AddCarRepository(myCarsdummy, brands, models)
-
     }
 
     /*
@@ -79,6 +78,14 @@ class AutoMinderApplication : Application() {
         editor.putString(USER_TOKEN, token)
         editor.apply()
         RetrofitInstance.setToken(token) //setToken es una funcion de RetrofitInstance que permite guardar el token en la clase RetrofitInstance
+    }
+
+    //saveAuthToken es una funcion que permite guardar el token en el dispositivo
+    fun clearAuthToken(){
+        val editor = prefs.edit() //editor es una variable que permite editar los datos guardados en el dispositivo
+        editor.putString(USER_TOKEN, "")
+        editor.apply()
+        RetrofitInstance.setToken("") //setToken es una funcion de RetrofitInstance que permite guardar el token en la clase RetrofitInstance
     }
 
     //USER_TOKEN es una constante que permite acceder al token guardado en el dispositivo

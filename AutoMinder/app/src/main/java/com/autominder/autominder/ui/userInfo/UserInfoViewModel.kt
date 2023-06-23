@@ -5,9 +5,18 @@ import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.autominder.autominder.AutoMinderApplication
+import com.autominder.autominder.data.network.RepositoryCredentials.CredentialsRepository
+import com.autominder.autominder.ui.login.ui.LoginViewModel
 
-class UserInfoViewModel : ViewModel() {
+class UserInfoViewModel(private val repository: CredentialsRepository) : ViewModel() {
+
+    private val application = AutoMinderApplication()
 
     fun onBuyLinkClicked(context: Context) {
         val url =
@@ -25,5 +34,20 @@ class UserInfoViewModel : ViewModel() {
             putExtra(Intent.EXTRA_TEXT, "")
         }
         context.startActivity(intent)
+    }
+
+    suspend fun onLogoutClicked(){
+        //application.clearAuthToken()
+        repository.logout()
+    }
+
+    companion object {
+        val Factory = viewModelFactory {
+            initializer {
+                val app = this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as AutoMinderApplication
+                UserInfoViewModel(app.credentialsRepository)
+            }
+        }
+
     }
 }
