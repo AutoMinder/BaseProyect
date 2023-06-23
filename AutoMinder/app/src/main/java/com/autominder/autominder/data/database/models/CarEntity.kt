@@ -8,7 +8,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @Entity(tableName = "car_table")
-data class CarModel(
+data class CarEntity(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "car_id") val carId: Long,
     @ColumnInfo(name = "vin") val vin : String,
     @ColumnInfo(name = "car_name") val car_name : String,
@@ -21,8 +21,8 @@ data class CarModel(
     @ColumnInfo(name = "mayorTuning") val mayor_tuning : String,
     @ColumnInfo(name = "minorTuning") val minor_tuning : String,
     @ColumnInfo(name = "lastOilChange") val last_oil_change : String,
-    @ColumnInfo(name = "lastCoolantChange") val last_coolant_change : String,
-//    @ColumnInfo(name = "errorRecord") val error_record : MutableList<String>,
-    @ColumnInfo(name = "hidden") val hidden : Boolean,
-    @ColumnInfo(name = "owner_id") val owner : Long
+    @ColumnInfo(name = "lastCoolantChange") val last_coolant_change : String
 ) : Parcelable
+
+// Implement if possible
+// @ColumnInfo(name = "errorRecord") val error_record : MutableList<String>

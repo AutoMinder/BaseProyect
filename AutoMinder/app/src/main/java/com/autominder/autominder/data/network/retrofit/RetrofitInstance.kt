@@ -44,9 +44,8 @@ object RetrofitInstance {
     }
 
     // Get the own cars service
-    fun getOwnCarsService(): AutominderApi{
-        return retrofit.create(AutominderApi::class.java)
-    }
+    suspend fun getOwnCarsService(page: Int, limit: Int)
+    = retrofit.create(AutominderApi::class.java).getOwnCars(page, limit)
 
     //Create car service
     fun createCarService(): AutominderApi{

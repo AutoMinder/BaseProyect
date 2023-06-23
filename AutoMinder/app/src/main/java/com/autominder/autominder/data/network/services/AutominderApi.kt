@@ -4,7 +4,7 @@ import com.autominder.autominder.data.network.dto.create.CreateRequest
 import com.autominder.autominder.data.network.dto.create.CreateResponse
 import com.autominder.autominder.data.network.dto.login.LoginRequest
 import com.autominder.autominder.data.network.dto.login.LoginResponse
-import com.autominder.autominder.data.network.dto.ownCars.OwnResponse
+import com.autominder.autominder.data.network.dto.ownCars.OwnCarsListResponse
 import com.autominder.autominder.data.network.dto.register.RegisterRequest
 import com.autominder.autominder.data.network.dto.register.RegisterResponse
 import com.autominder.autominder.data.network.dto.update.UpdateRequest
@@ -12,8 +12,6 @@ import com.autominder.autominder.data.network.dto.update.UpdateResponse
 import com.autominder.autominder.data.network.dto.visibility.VisibilityResponse
 import com.autominder.autominder.data.network.dto.whoami.WhoamiResponse
 
-import retrofit2.Call
-import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -44,10 +42,15 @@ interface AutominderApi {
     @POST("post/update/{post_id}")
     suspend fun update(@Body credentials: UpdateRequest): UpdateResponse
 
-    //OwnCarsService
-    @GET("post/own")
-    suspend fun ownCars(): Response<OwnResponse>
+    //OwnCarsService FUNCTIONAL WITHOUT PAGINATION
+//    @GET("post/own")
+//    suspend fun getOwnCars(): Response<OwnCarListResponseDTO>
 
+    @GET("post/own")
+    suspend fun getOwnCars(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int
+    ): OwnCarsListResponse
 
     @PATCH("post/visibility/{post_id}")
     suspend fun visibility(@Path("post_id") post_id: String): VisibilityResponse

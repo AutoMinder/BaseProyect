@@ -148,7 +148,7 @@ fun MainScreenCars(viewModel: MyCarsViewModel, navController: NavController?) {
 
 @Composable
 fun MyCarSection(
-    myCarListState: State<List<com.autominder.autominder.data.database.models.CarModel>>,
+    myCarListState: State<List<com.autominder.autominder.data.database.models.CarEntity>>,
     navController: NavController?,
 
     ) {
@@ -188,7 +188,7 @@ fun MyCarSection(
 
 @Composable
 fun CardCar(
-    car: com.autominder.autominder.data.database.models.CarModel, navController: NavController,
+    car: com.autominder.autominder.data.database.models.CarEntity, navController: NavController,
     infoViewModel: CarInfoViewModel = viewModel(
         factory = CarInfoViewModel.Factory
     )

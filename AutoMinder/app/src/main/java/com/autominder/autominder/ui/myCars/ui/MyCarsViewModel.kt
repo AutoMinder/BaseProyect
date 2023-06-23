@@ -27,7 +27,7 @@ class MyCarsViewModel(
     *   Variable declaration section
      */
     var loadedCars = false
-    val myCarsList = MutableLiveData<List<com.autominder.autominder.data.database.models.CarModel>>()
+    val myCarsList = MutableLiveData<List<com.autominder.autominder.data.database.models.CarEntity>>()
     private val _isLoading = MutableStateFlow<Boolean>(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 

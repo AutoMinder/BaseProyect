@@ -9,7 +9,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.autominder.autominder.data.database.models.CarModel
+import com.autominder.autominder.data.database.models.CarEntity
 import com.autominder.autominder.ui.addcar.ui.AddCarScreen
 import com.autominder.autominder.ui.addcar.ui.AddCarViewModel
 import com.autominder.autominder.ui.carinfo.ui.CarInfoScreen
@@ -105,7 +105,7 @@ fun NavigationHost(
         }*/
         composable("car_info") {
             val result =
-                navController.previousBackStackEntry?.savedStateHandle?.get<CarModel>("car")
+                navController.previousBackStackEntry?.savedStateHandle?.get<CarEntity>("car")
             if (result != null) {
                 CarInfoScreen(car = result, navController = navController)
             }

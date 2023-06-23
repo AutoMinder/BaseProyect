@@ -1,4 +1,4 @@
-package com.autominder.autominder.data.models_dummy
+package com.autominder.autominder.data.domain
 
 data class ErrorModel(
     val id: Int,

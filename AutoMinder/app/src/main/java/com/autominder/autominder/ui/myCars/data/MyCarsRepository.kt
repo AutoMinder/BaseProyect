@@ -1,6 +1,6 @@
 package com.autominder.autominder.ui.myCars.data
 
-class MyCarsRepository(private val myCars: List<com.autominder.autominder.data.database.models.CarModel>) {
+class MyCarsRepository(private val myCars: List<com.autominder.autominder.data.database.models.CarEntity>) {
 
     fun getMyCars() = myCarsdummy
 

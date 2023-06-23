@@ -22,15 +22,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.autominder.autominder.data.database.models.CarModel
+import com.autominder.autominder.data.database.models.CarEntity
 import com.autominder.autominder.ui.components.LoadingScreen
-import com.autominder.autominder.ui.myCars.data.myCarsdummy
 import com.autominder.autominder.ui.myCars.ui.MyCarsViewModel
 
 //
@@ -41,7 +38,7 @@ import com.autominder.autominder.ui.myCars.ui.MyCarsViewModel
 //
 @Composable
 fun CarInfoScreen(
-    car: CarModel,
+    car: CarEntity,
     viewModel: MyCarsViewModel = viewModel(
         factory = MyCarsViewModel.Factory,
     ),
@@ -67,7 +64,7 @@ fun CarInfoScreen(
 }
 
 @Composable
-fun CarInfoMainScreen(car: CarModel, navController: NavController) {
+fun CarInfoMainScreen(car: CarEntity, navController: NavController) {
     Card(
         modifier = Modifier.padding(16.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface),
@@ -93,7 +90,7 @@ fun CarInfoMainScreen(car: CarModel, navController: NavController) {
 }
 
 @Composable
-fun CarNameHeader(car: CarModel) {
+fun CarNameHeader(car: CarEntity) {
     Text(
         text = car.car_name,
         modifier = Modifier.fillMaxWidth(),
@@ -104,7 +101,7 @@ fun CarNameHeader(car: CarModel) {
 }
 
 @Composable
-fun CarBrand(car: CarModel) {
+fun CarBrand(car: CarEntity) {
     Card(
         modifier = Modifier
             .padding(20.dp),
@@ -137,7 +134,7 @@ fun CarBrand(car: CarModel) {
 }
 
 @Composable
-fun CarModel(car: CarModel) {
+fun CarModel(car: CarEntity) {
     Card(
         modifier = Modifier
             .padding(20.dp),
@@ -169,7 +166,7 @@ fun CarModel(car: CarModel) {
 }
 
 @Composable
-fun CarYearCard(car: CarModel) {
+fun CarYearCard(car: CarEntity) {
     Card(
         modifier = Modifier
             .padding(20.dp),
@@ -201,7 +198,7 @@ fun CarYearCard(car: CarModel) {
 }
 
 @Composable
-fun CarMileage(carInfo: CarModel) {
+fun CarMileage(carInfo: CarEntity) {
     Card(
         modifier = Modifier
             .padding(20.dp),
@@ -236,7 +233,7 @@ fun CarMileage(carInfo: CarModel) {
 }
 
 @Composable
-fun CarLastMaintenanceDate(car: CarModel) {
+fun CarLastMaintenanceDate(car: CarEntity) {
     Card(
         modifier = Modifier
             .padding(20.dp),
@@ -271,7 +268,7 @@ fun CarLastMaintenanceDate(car: CarModel) {
 }
 
 @Composable
-fun LastOilChange(car: CarModel) {
+fun LastOilChange(car: CarEntity) {
     Card(
         modifier = Modifier
             .padding(20.dp),
@@ -306,7 +303,7 @@ fun LastOilChange(car: CarModel) {
 }
 
 @Composable
-fun LastCoolantChange(car: CarModel) {
+fun LastCoolantChange(car: CarEntity) {
     Card(
         modifier = Modifier
             .padding(20.dp),

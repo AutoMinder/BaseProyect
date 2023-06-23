@@ -1,15 +1,13 @@
 package com.autominder.autominder.data.network.RepositoryCredentials
 
 import android.util.Log
-import androidx.datastore.preferences.protobuf.Api
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.autominder.autominder.data.DataStoreManager
 import com.autominder.autominder.data.network.ApiResponse
 import com.autominder.autominder.data.network.dto.create.CreateRequest
 import com.autominder.autominder.data.network.dto.create.CreateResponse
 import com.autominder.autominder.data.network.dto.login.LoginRequest
 import com.autominder.autominder.data.network.dto.login.LoginResponse
-import com.autominder.autominder.data.network.dto.ownCars.OwnResponse
+import com.autominder.autominder.data.network.dto.ownCars.OwnCarsListResponse
 import com.autominder.autominder.data.network.dto.register.RegisterRequest
 import com.autominder.autominder.data.network.dto.register.RegisterResponse
 import com.autominder.autominder.data.network.dto.update.UpdateRequest
@@ -124,25 +122,25 @@ class CredentialsRepository(
     }
 
     //Get own cars function
-    suspend fun ownCars(): ApiResponse<OwnResponse> {
+    suspend fun ownCars(): ApiResponse<OwnCarsListResponse> {
 
         // Section to try getting vehicles
         try {
-            val response = api.ownCars() //Get the response from the api
+            val response = api.getOwnCars(1,1) //Get the response from the api
 
-            if (response.isSuccessful) { //If the response is successful
-
-                val carsResponse = response.body() //Get the body of the response
-                val carsList = carsResponse?.cars //Get the list of cars
-
-                //TODO(): Once function with CarInfoVM is complete, remove this next section
-//                // Process the list of cars
-                carsList?.forEach { car -> //For each car in the list
-                    Log.d("I GOT THE CARS", car.car_name) //Log the name of the car (testing purposes)
-                }
-
-                return ApiResponse.Success(response.body()!!) //Return the body of the response
-            }
+//            if (response) { //If the response is successful
+//
+//                val carsResponse = response.body() //Get the body of the response
+//                val carsList = carsResponse?.cars //Get the list of cars
+//
+//                //TODO(): Once function with CarInfoVM is complete, remove this next section
+////                // Process the list of cars
+//                carsList?.forEach { car -> //For each car in the list
+//                    Log.d("I GOT THE CARS", car.car_name) //Log the name of the car (testing purposes)
+//                }
+//
+//                return ApiResponse.Success(response.body()!!) //Return the body of the response
+//            }
 
             //If the response is not successful
             return ApiResponse.ErrorWithMessage("Error al obtener los autos")
