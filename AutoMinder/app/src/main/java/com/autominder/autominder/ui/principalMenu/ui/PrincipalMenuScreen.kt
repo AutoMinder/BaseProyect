@@ -1,5 +1,6 @@
 package com.autominder.autominder.ui.principalMenu.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,6 +30,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.autominder.autominder.ui.components.LoadingScreen
 import com.autominder.autominder.ui.principalMenu.data.Alerts
+import com.autominder.autominder.ui.theme.md_theme_light_error
+import kotlinx.coroutines.delay
 
 @Composable
 fun PrincipalMenuScreen(
@@ -39,7 +43,7 @@ fun PrincipalMenuScreen(
     Box(
         Modifier
             .fillMaxSize()
-            .padding(16.dp)
+
     ) {
         if (isLoading) {
             LoadingScreen()
@@ -77,18 +81,22 @@ fun AlertsSection(alerts: State<List<Alerts>>) {
         modifier = Modifier
             .fillMaxWidth()
     ) {
+
         if (alerts.value.isEmpty()) {
             item {
                 Text(
-                    text = "No alerts found",
+                    text = "NO HAY ALERTAS",
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp,
                     )
             }
         }
         items(alerts.value) { alert ->
+
             AlertCard(alert)
         }
     }
@@ -104,25 +112,64 @@ fun AlertCard(alert: Alerts) {
             .fillMaxWidth()
             .padding(16.dp)
             .height(200.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+        colors = CardDefaults.cardColors(
+            containerColor =
+                when (alert.alertType) {
+                    "SEGURIDAD" -> Color(0xFF006496)
+                    "RECOMENDACION" -> Color(0xFF4CAF50)
+                    "PRECAUCION" -> Color(0xFF03A9F4)
+                    else -> Color(0xFF006496)
+        }),
 
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(200.dp)
+
         ) {
-            Text(
-                text = alert.alertName,
+            Column(
                 modifier = Modifier
+                    .wrapContentSize(Alignment.Center)
                     .padding(16.dp)
-                    .fillMaxSize()
-                    .wrapContentSize(Alignment.Center),
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                fontSize = 24.sp,
+            ) {
+                Text(
+                    text = alert.alertName,
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .wrapContentSize(Alignment.Center),
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp,
+                    color = Color.White,
 
                 )
+                Text(
+                    text = alert.alertDescription,
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .wrapContentSize(Alignment.Center),
+                    textAlign = TextAlign.Justify,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 10.sp,
+                    color = Color.White,
+
+                    )
+                Text(
+                    text = alert.alertType,
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxSize()
+                        .wrapContentSize(Alignment.Center),
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                    color = Color.White,
+
+                    )
+
+            }
+
         }
 
     }
@@ -136,9 +183,6 @@ fun AlertCardPreview() {
             "Alert 1",
             "This is the description of the alert",
             "This is the action to be taken",
-            "This is the action to be taken",
-            "",
-            ""
         )
     )
 }
