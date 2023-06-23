@@ -2,6 +2,7 @@ package com.autominder.autominder.ui.carinfo.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,9 +16,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -27,8 +28,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.autominder.autominder.data.database.models.CarModel
 import com.autominder.autominder.ui.components.LoadingScreen
-import com.autominder.autominder.data.models_dummy.CarModel
+import com.autominder.autominder.ui.myCars.data.myCarsdummy
 import com.autominder.autominder.ui.myCars.ui.MyCarsViewModel
 
 //
@@ -49,14 +51,9 @@ fun CarInfoScreen(
     navController: NavController
 ) {
     val isLoading by infoViewModel.isLoading.collectAsState(false)
-    LaunchedEffect(key1 = car.id) {
-        infoViewModel.fetchCarMaintenanceInfoByCarId(car.id)
-    }
+
 
     Scaffold(
-        bottomBar = {
-            //TODO: Call the BottomNavigationForCarInfo
-        },
     ) {
         Box(modifier = Modifier.padding(it)) {
 
@@ -81,13 +78,14 @@ fun CarInfoMainScreen(car: CarModel, navController: NavController) {
                 .fillMaxSize()
         ) {
             item {
-
-                //Calling all the cards of individual information
                 CarNameHeader(car)
                 CarBrand(car)
                 CarModel(car)
                 CarYearCard(car)
                 CarMileage(car)
+                CarLastMaintenanceDate(car)
+                LastOilChange(car)
+                LastCoolantChange(car)
                 ConnectObd(navController)
             }
         }
@@ -97,7 +95,7 @@ fun CarInfoMainScreen(car: CarModel, navController: NavController) {
 @Composable
 fun CarNameHeader(car: CarModel) {
     Text(
-        text = car.name,
+        text = car.car_name,
         modifier = Modifier.fillMaxWidth(),
         textAlign = TextAlign.Center,
         fontSize = 32.sp,
@@ -210,25 +208,133 @@ fun CarMileage(carInfo: CarModel) {
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer),
         shape = MaterialTheme.shapes.small
     ) {
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
         )
         {
             Text(
                 text = "Kilometraje",
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                textAlign = TextAlign.Center
             )
 
             Text(
                 text = carInfo.kilometers.toString(),
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
+
+@Composable
+fun CarLastMaintenanceDate(car: CarModel) {
+    Card(
+        modifier = Modifier
+            .padding(20.dp),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer),
+        shape = MaterialTheme.shapes.small
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
+        )
+        {
+            Text(
+                text = "Último mantenimiento",
+                fontWeight = FontWeight(600),
+                fontSize = 24.sp,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                textAlign = TextAlign.Center
+            )
+
+            Text(
+                text = car.last_maintenance,
+                fontWeight = FontWeight(600),
+                fontSize = 24.sp,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
+
+@Composable
+fun LastOilChange(car: CarModel) {
+    Card(
+        modifier = Modifier
+            .padding(20.dp),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer),
+        shape = MaterialTheme.shapes.small
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
+        )
+        {
+            Text(
+                text = "Último cambio de aceite",
+                fontWeight = FontWeight(600),
+                fontSize = 24.sp,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                textAlign = TextAlign.Center
+            )
+
+            Text(
+                text = car.last_oil_change,
+                fontWeight = FontWeight(600),
+                fontSize = 24.sp,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
+}
+
+@Composable
+fun LastCoolantChange(car: CarModel) {
+    Card(
+        modifier = Modifier
+            .padding(20.dp),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer),
+        shape = MaterialTheme.shapes.small
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
+        )
+        {
+            Text(
+                text = "Último cambio de refigerante",
+                fontWeight = FontWeight(600),
+                fontSize = 24.sp,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                textAlign = TextAlign.Center
+            )
+
+            Text(
+                text = car.last_coolant_change,
+                fontWeight = FontWeight(600),
+                fontSize = 24.sp,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                textAlign = TextAlign.Center
             )
         }
     }
@@ -249,10 +355,4 @@ fun ConnectObd(navController: NavController) {
             color = MaterialTheme.colorScheme.onPrimaryContainer
         )
     }
-}
-
-@Preview
-@Composable
-fun btnPreview() {
-    ConnectObd(rememberNavController())
 }

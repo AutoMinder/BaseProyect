@@ -1,9 +1,5 @@
 package com.autominder.autominder.ui.myCars.ui
 
-import android.util.Log
-import android.widget.Toast
-import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -12,15 +8,9 @@ import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.autominder.autominder.AutoMinderApplication
-import com.autominder.autominder.data.models_dummy.CarModel
 import com.autominder.autominder.data.network.ApiResponse
 import com.autominder.autominder.data.network.RepositoryCredentials.CredentialsRepository
-import com.autominder.autominder.data.network.dto.ownCars.OwnResponse
-import com.autominder.autominder.ui.login.ui.LoginUiStatus
 import com.autominder.autominder.ui.myCars.data.MyCarsRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -37,7 +27,7 @@ class MyCarsViewModel(
     *   Variable declaration section
      */
     var loadedCars = false
-    val myCarsList = MutableLiveData<List<CarModel>>()
+    val myCarsList = MutableLiveData<List<com.autominder.autominder.data.database.models.CarModel>>()
     private val _isLoading = MutableStateFlow<Boolean>(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
@@ -50,9 +40,9 @@ class MyCarsViewModel(
     }
 
     //fetchCarById searches for a car by its id
-    fun fetchCarById(id: String): CarModel? {
+    /*fun fetchCarById(id: String): CarModel? {
 
-        return repository.getCarById(id)
+        //return repository.getCarById(id)
 
         //TODO(): Descomentar cuando se pueda implementar correctamente junto con el CarInfoViewModel:
 //        var car: CarModel? = null
@@ -62,7 +52,7 @@ class MyCarsViewModel(
 //        }
 //
 //        return car
-    }
+    }*/
 
     //fetchMyCars fetches the cars owned by the user
     private fun fetchMyCars() {

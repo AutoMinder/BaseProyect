@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.datastore.preferences.protobuf.Api
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.autominder.autominder.data.DataStoreManager
-import com.autominder.autominder.data.models_dummy.CarModel
 import com.autominder.autominder.data.network.ApiResponse
 import com.autominder.autominder.data.network.dto.create.CreateRequest
 import com.autominder.autominder.data.network.dto.create.CreateResponse
@@ -139,7 +138,7 @@ class CredentialsRepository(
                 //TODO(): Once function with CarInfoVM is complete, remove this next section
 //                // Process the list of cars
                 carsList?.forEach { car -> //For each car in the list
-                    Log.d("I GOT THE CARS", car.name) //Log the name of the car (testing purposes)
+                    Log.d("I GOT THE CARS", car.car_name) //Log the name of the car (testing purposes)
                 }
 
                 return ApiResponse.Success(response.body()!!) //Return the body of the response
@@ -203,14 +202,5 @@ class CredentialsRepository(
 
             return ApiResponse.Error(e)
         }
-    }
-
-    suspend fun getCarById(id: String): CarModel {
-
-        val cars = (ownCars() as ApiResponse.Success<OwnResponse>).data.cars
-
-        val searchedCar = cars.find{car -> car.id == id}!!
-
-        return searchedCar
     }
 }

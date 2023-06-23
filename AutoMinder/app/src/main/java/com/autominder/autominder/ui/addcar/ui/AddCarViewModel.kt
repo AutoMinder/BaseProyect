@@ -11,7 +11,6 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.autominder.autominder.AutoMinderApplication
 import com.autominder.autominder.ui.addcar.data.AddCarRepository
-import com.autominder.autominder.data.models_dummy.CarModel
 import com.autominder.autominder.data.network.ApiResponse
 import com.autominder.autominder.data.network.RepositoryCredentials.CredentialsRepository
 import com.autominder.autominder.data.network.dto.create.CreateRequest
@@ -27,8 +26,6 @@ class AddCarViewModel(
     private val credentialsRepository: CredentialsRepository
 ) : ViewModel() {
 
-
-    //TODO() : Autogenerar id
     private val _carId = MutableStateFlow("")
     val carId: StateFlow<String> = _carId
 
@@ -198,28 +195,7 @@ class AddCarViewModel(
 
             val carYearParsed = carYear.toInt()
             val carKilometersParsed = carKilometers.toInt()
-
-            val newCar =
-                CarModel(
-                    "",
-                    "",
-                    profileCarName,
-                    carBrand,
-                    carModel,
-                    carYearParsed,
-                    carKilometersParsed,
-                    null,
-                    carLastMaintenance,
-                    null,
-                    carLastOilChange,
-                    carLastCoolantDate,
-                    null,
-                    null,
-                    false,
-                    mutableListOf("")
-                )
-
-            repository.addCar(newCar)
+            //repository.addCar(newCar)
             //addCarToDatabase(newCar)
             Log.d("APP TAG", getCars().toString())
 

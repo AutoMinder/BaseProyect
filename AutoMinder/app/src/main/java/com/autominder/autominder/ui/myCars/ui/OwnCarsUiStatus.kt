@@ -1,6 +1,6 @@
 package com.autominder.autominder.ui.myCars.ui
 
-import com.autominder.autominder.data.models_dummy.CarModel
+import com.autominder.autominder.data.database.models.CarModel
 
 sealed class OwnCarsUiStatus {
         object Resume : OwnCarsUiStatus()
