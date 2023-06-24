@@ -124,7 +124,7 @@ fun CarBrand(car: CarEntity) {
             )
 
             Text(
-                text = car.brand,
+                text = car.brand?: "No especificado",
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
                 color = MaterialTheme.colorScheme.onSecondaryContainer
@@ -156,7 +156,7 @@ fun CarModel(car: CarEntity) {
             )
 
             Text(
-                text = car.model,
+                text = car.model?: "No especificado",
                 fontWeight = FontWeight(600),
                 fontSize = 24.sp,
                 color = MaterialTheme.colorScheme.onSecondaryContainer

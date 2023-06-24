@@ -29,10 +29,11 @@ import com.autominder.autominder.data.DataStoreManager
 import com.autominder.autominder.ui.navigation.Destinations
 import com.autominder.autominder.ui.navigation.PrincipalScaffold
 import com.autominder.autominder.ui.theme.AutoMinderTheme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
-
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
 

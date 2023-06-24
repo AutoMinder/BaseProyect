@@ -3,6 +3,9 @@ package com.autominder.autominder
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import com.autominder.autominder.data.DataStoreManager
 
 import com.autominder.autominder.ui.addcar.data.AddCarRepository
@@ -10,16 +13,22 @@ import com.autominder.autominder.ui.addcar.data.brands
 import com.autominder.autominder.ui.addcar.data.models
 
 import com.autominder.autominder.data.database.AutominderDatabase
+import com.autominder.autominder.data.database.models.CarEntity
 import com.autominder.autominder.data.database.repository.CarRepository
 import com.autominder.autominder.data.database.repository.UserRepository
+import com.autominder.autominder.data.network.RemoteMediator.CarRemoteMediator
 
 import com.autominder.autominder.ui.myCars.data.MyCarsRepository
 import com.autominder.autominder.ui.myCars.data.myCarsdummy
 import com.autominder.autominder.data.network.RepositoryCredentials.CredentialsRepository
 import com.autominder.autominder.data.network.retrofit.RetrofitInstance
+import com.autominder.autominder.data.network.services.AutominderApi
 import com.autominder.autominder.ui.principalMenu.data.AlertsRepository
 import com.autominder.autominder.ui.principalMenu.data.dummyAlerts
+import dagger.Provides
+import javax.inject.Singleton
 
+@OptIn(ExperimentalPagingApi::class)
 class AutoMinderApplication : Application() {
 
     val alertsRepository: AlertsRepository by lazy {
@@ -27,7 +36,7 @@ class AutoMinderApplication : Application() {
     }
 
     val myCarsRepository: MyCarsRepository by lazy {
-        MyCarsRepository(myCarsdummy)
+        MyCarsRepository(database, getAPIService())
     }
 
     val addCarRepository: AddCarRepository by lazy {
@@ -64,6 +73,16 @@ class AutoMinderApplication : Application() {
         getOwnCarsService() //getOwnCarsService es una funcion de RetrofitInstance que permite obtener el servicio de los autos del usuario
         createCarService() //createCarService es una funcion de RetrofitInstance que permite obtener el servicio de crear un auto
         updateCarService() //updateCarService es una funcion de RetrofitInstance que permite obtener el servicio de actualizar un auto
+    }
+
+    private fun providePager(carDb: AutominderDatabase, carApi: AutominderApi): Pager<Int, CarEntity>{
+        return Pager(
+            config = PagingConfig(pageSize = 2),
+            remoteMediator = CarRemoteMediator(carDb=carDb, carApi=carApi),
+            pagingSourceFactory = {
+                carDb.carDao().pagingSource()
+            }
+        )
     }
 
     //getToken es una funcion que permite obtener el token guardado en el dispositivo

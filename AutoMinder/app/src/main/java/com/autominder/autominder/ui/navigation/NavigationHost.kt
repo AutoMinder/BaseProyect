@@ -5,10 +5,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.autominder.autominder.data.database.models.CarEntity
 import com.autominder.autominder.ui.addcar.ui.AddCarScreen
 import com.autominder.autominder.ui.addcar.ui.AddCarViewModel
@@ -50,6 +52,9 @@ fun NavigationHost(
 ) {
     val startDestination = mainViewModel.startDestination.collectAsState()
 
+    val viewModel = hiltViewModel<MyCarsViewModel>()
+    val cars = viewModel.cars.collectAsLazyPagingItems()
+
     NavHost(
         navController = navController,
         modifier = Modifier.padding(8.dp),
@@ -78,7 +83,7 @@ fun NavigationHost(
             PrincipalMenuScreen()
         }
         composable("my_cars") {
-            MyCarsScreen(navController)
+            MyCarsScreen(navController=navController, viewModel=viewModel, cars=cars)
         }
         composable("user_info") {
             UserInfoScreen(navController, UserInfoViewModel())

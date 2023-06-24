@@ -23,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -40,9 +41,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.items
 import com.autominder.autominder.R
+import com.autominder.autominder.data.domain.CarModel
 import com.autominder.autominder.ui.carinfo.ui.CarInfoViewModel
 import com.autominder.autominder.ui.components.LoadingScreen
 import kotlinx.coroutines.launch
@@ -56,11 +63,13 @@ fun MyCarsScreen(
     navController: NavController,
     viewModel: MyCarsViewModel = viewModel(
         factory = MyCarsViewModel.Factory,
-    )
-
+    ),
+    cars: LazyPagingItems<CarModel>
 ) {
     val isLoading by viewModel.isLoading.collectAsState(false)
+
     val context = LocalContext.current
+
     val lifecycleOwner = LocalLifecycleOwner.current
     val coroutineScope = rememberCoroutineScope()
 
@@ -94,28 +103,28 @@ fun MyCarsScreen(
                 .padding(contentPadding)
                 .background(MaterialTheme.colorScheme.surface),
         ) {
-    
-            LaunchedEffect(coroutineScope){ //This is a coroutine that will be launched when the screen is created
 
-                //Coroutine that will observe the status of the view model
-                coroutineScope.launch {
-                    viewModel.status.observe(lifecycleOwner) { status -> //This is the observer of the status
-                        handleUiStatus(status) //This function will handle the status
-                    }
+            LaunchedEffect(key1 = cars.loadState){
+                if(cars.loadState.refresh is LoadState.Error) {
+                    Toast.makeText(
+                        context,
+                        "Error en el fetcheo de carros: " + (cars.loadState.refresh as LoadState.Error).error.message,
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
 
-
             //Checks if is loading, if it is, it will display the loading screen, if not, it will display the main screen
-            if (isLoading) {
+            if (cars.loadState.refresh is LoadState.Loading) {
                 LoadingScreen()
 
             } else {
                 MainScreenCars(viewModel, navController)
-
             }
         }
     }
+
+
 }
 
 
@@ -148,7 +157,7 @@ fun MainScreenCars(viewModel: MyCarsViewModel, navController: NavController?) {
 
 @Composable
 fun MyCarSection(
-    myCarListState: State<List<com.autominder.autominder.data.database.models.CarEntity>>,
+    myCarListState: State<List<CarModel>>,
     navController: NavController?,
 
     ) {
@@ -173,12 +182,8 @@ fun MyCarSection(
                 )
             }
         } else {
-
-            //* Renders the card car *//
             items(myCarListState.value) { car ->
-                if (navController != null) {
-                    CardCar(car, navController)
-                }
+                CardCar(car, navController!!)
             }
         }
     }
@@ -188,12 +193,12 @@ fun MyCarSection(
 
 @Composable
 fun CardCar(
-    car: com.autominder.autominder.data.database.models.CarEntity, navController: NavController,
-    infoViewModel: CarInfoViewModel = viewModel(
-        factory = CarInfoViewModel.Factory
-    )
+    car: CarModel,
+    navController: NavController
+//    infoViewModel: CarInfoViewModel = viewModel(
+//        factory = CarInfoViewModel.Factory
+//    )
 ) {
-
     Card(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 12.dp,
@@ -249,7 +254,7 @@ fun CardCar(
                     .padding(end = 64.dp)
             ) {
                 Text(text = car.brand, color = MaterialTheme.colorScheme.onPrimaryContainer, style = MaterialTheme.typography.headlineMedium)
-                Text(text = car.year.toString(), color = MaterialTheme.colorScheme.onPrimaryContainer, style = MaterialTheme.typography.headlineSmall)
+                Text(text = car.year, color = MaterialTheme.colorScheme.onPrimaryContainer, style = MaterialTheme.typography.headlineSmall)
             }
             Text(
                 text = "Presiona para ver más",

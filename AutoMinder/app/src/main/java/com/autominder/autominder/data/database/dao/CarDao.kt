@@ -14,8 +14,11 @@ interface CarDao {
 //    @Query("SELECT * FROM car_table WHERE owner_id = :userId")
 //    suspend fun getMyCars(userId: Long): List<CarEntity>
 
+    /*
+    * Upsert is a combination of insert and update
+     */
     @Upsert
-    suspend fun upsertCar(cars: List<CarEntity>)
+    suspend fun upsertCars(cars: List<CarEntity>)
 
     @Query("SELECT * FROM car_table")
     fun pagingSource(): PagingSource<Int, CarEntity>

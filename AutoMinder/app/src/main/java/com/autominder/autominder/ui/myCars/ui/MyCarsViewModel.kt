@@ -7,37 +7,54 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.cachedIn
+import androidx.paging.map
 import com.autominder.autominder.AutoMinderApplication
+import com.autominder.autominder.data.database.models.CarEntity
+import com.autominder.autominder.data.domain.CarModel
+import com.autominder.autominder.data.mappers.toCarModel
 import com.autominder.autominder.data.network.ApiResponse
 import com.autominder.autominder.data.network.RepositoryCredentials.CredentialsRepository
 import com.autominder.autominder.ui.myCars.data.MyCarsRepository
+import dagger.hilt.android.HiltAndroidApp
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-
-class MyCarsViewModel(
-    private val repository: MyCarsRepository,
-    //TODO(): Revisar implementación correcta junto con el CarInfoViewModel:
-    private val credentialsRepository: CredentialsRepository,
-    private val savedStateHandle: SavedStateHandle
+@HiltViewModel
+class MyCarsViewModel @Inject constructor(
+    private val repository: MyCarsRepository
 ) : ViewModel() {
 
     /*
     *   Variable declaration section
      */
     var loadedCars = false
-    val myCarsList = MutableLiveData<List<com.autominder.autominder.data.database.models.CarEntity>>()
+    val myCarsList = MutableLiveData<List<CarModel>>()
     private val _isLoading = MutableStateFlow<Boolean>(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
     private val _status = MutableLiveData<OwnCarsUiStatus>(OwnCarsUiStatus.Resume)
     val status: MutableLiveData<OwnCarsUiStatus> = _status
 
+    @OptIn(ExperimentalPagingApi::class)
+    val cars = repository.getCarPage(2).map { pagingData ->
+        pagingData.map {
+            it.toCarModel()
+        }
+    }.cachedIn(viewModelScope)
+
     //init is called when the class is instantiated
     init {
-            fetchMyCars() //fetchMyCars is called when the class is instantiated
+
     }
+
+
 
     //fetchCarById searches for a car by its id
     /*fun fetchCarById(id: String): CarModel? {
@@ -55,49 +72,49 @@ class MyCarsViewModel(
     }*/
 
     //fetchMyCars fetches the cars owned by the user
-    private fun fetchMyCars() {
-
-            //Launching a coroutine
-            viewModelScope.launch {
-
-                //Loading starts
-                setLoading(true)
-
-                //response is the result of the request to the server
-                val response = credentialsRepository.ownCars()
-
-                //postValue is used to update the value of a MutableLiveData object from a background thread
-                _status.postValue(
-                    //Checking the type of response
-                    when (response) {
-                        is ApiResponse.Error ->
-
-                            //If the response is an error, the status is set to Error
-                            OwnCarsUiStatus.Error(response.exception)
-
-                        is ApiResponse.ErrorWithMessage ->
-
-                            //If the response is an error with message, the status is set to ErrorWithMessage
-                            OwnCarsUiStatus.ErrorWithMessage(response.message)
-
-                        is ApiResponse.Success ->
-
-                            //If the response is a success, the status is set to Success
-                            OwnCarsUiStatus.Success(response.data.cars)
-                    }
-                )
-
-                //Loading ends
-                setLoading(false)
-
-                myCarsList.value = repository.getMyCars()
-
-                //TODO(): Descomentar cuando se pueda implementar correctamente junto con el CarInfoViewModel:
-                //myCarsList is set to the list of cars so it can be rendered in the screen
-                //myCarsList.value = (credentialsRepository.ownCars() as ApiResponse.Success<OwnResponse>).data.cars
-            }
-
-    }
+//    private fun fetchMyCars() {
+//
+//            Launching a coroutine
+//            viewModelScope.launch {
+//
+//                //Loading starts
+//                setLoading(true)
+//
+//                //response is the result of the request to the server
+//                val response = credentialsRepository.ownCars()
+//
+//                //postValue is used to update the value of a MutableLiveData object from a background thread
+//                _status.postValue(
+//                    //Checking the type of response
+//                    when (response) {
+//                        is ApiResponse.Error ->
+//
+//                            //If the response is an error, the status is set to Error
+//                            OwnCarsUiStatus.Error(response.exception)
+//
+//                        is ApiResponse.ErrorWithMessage ->
+//
+//                            //If the response is an error with message, the status is set to ErrorWithMessage
+//                            OwnCarsUiStatus.ErrorWithMessage(response.message)
+//
+//                        is ApiResponse.Success ->
+//
+//                            //If the response is a success, the status is set to Success
+//                            OwnCarsUiStatus.Success(response.data.cars)
+//                    }
+//                )
+//
+//                //Loading ends
+//                setLoading(false)
+//
+//                myCarsList.value = repository.getMyCars()
+//
+//                //TODO(): Descomentar cuando se pueda implementar correctamente junto con el CarInfoViewModel:
+//                //myCarsList is set to the list of cars so it can be rendered in the screen
+//                //myCarsList.value = (credentialsRepository.ownCars() as ApiResponse.Success<OwnResponse>).data.cars
+//            }
+//
+//    }
 
     //Sets the loading state
     private fun setLoading(loading: Boolean) {
@@ -116,19 +133,10 @@ class MyCarsViewModel(
                 val application =
                     checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
 
-                //Creates a SavedStateHandle
-                val savedStateHandle = extras.createSavedStateHandle()
-
                 //Returns a MyCarsViewModel
                 return MyCarsViewModel(
                     //repository is the repository of the application
-                    (application as AutoMinderApplication).myCarsRepository,
-
-                    //credentialsRepository is the credentialsRepository of the application
-                    (application as AutoMinderApplication).credentialsRepository,
-
-                    //savedStateHandle is the savedStateHandle of the application
-                    savedStateHandle
+                    (application as AutoMinderApplication).myCarsRepository
                 ) as T
             }
         }

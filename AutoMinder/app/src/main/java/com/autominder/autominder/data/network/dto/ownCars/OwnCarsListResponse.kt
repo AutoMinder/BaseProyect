@@ -6,6 +6,6 @@ import com.google.gson.annotations.SerializedName
 
 data class OwnCarsListResponse(
     @SerializedName("posts") val cars: List<CarEntity>,
-    @SerializedName("currentPage") val page: Int,
-    @SerializedName("totalPages") val limit: Int
+    @SerializedName("currentPage") val currentPage: Int,
+    @SerializedName("totalPages") val totalPages: Int
 )

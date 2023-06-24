@@ -9,7 +9,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @Entity(tableName = "car_table")
 data class CarEntity(
-    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "car_id") val carId: Long,
+    @PrimaryKey @ColumnInfo(name = "car_id") val carId: Long,
     @ColumnInfo(name = "vin") val vin : String,
     @ColumnInfo(name = "car_name") val car_name : String,
     @ColumnInfo(name = "brand") val brand : String,
@@ -26,3 +26,5 @@ data class CarEntity(
 
 // Implement if possible
 // @ColumnInfo(name = "errorRecord") val error_record : MutableList<String>
+
+// Id autogeneration has been removed, as Retrofit fetching from database will assign the id
