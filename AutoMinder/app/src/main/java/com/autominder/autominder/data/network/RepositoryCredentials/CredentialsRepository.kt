@@ -57,6 +57,11 @@ class CredentialsRepository(
         }
     }
 
+    //logout function
+    suspend fun logout(){
+        userDataManager.clearUserData()
+    }
+
     //Save the user data
     suspend fun saveUserData(token: String) {
         userDataManager.saveUserData(//Save the user data

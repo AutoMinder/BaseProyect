@@ -16,6 +16,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -26,14 +27,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.autominder.autominder.AutoMinderApplication
 import com.autominder.autominder.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 @Preview(showBackground = true)
 @Composable
 fun UserInfoScreenPreview() {
-    val viewModel = UserInfoViewModel()
+    val viewModel: UserInfoViewModel = viewModel(factory = UserInfoViewModel.Factory)
     val navController = rememberNavController()
     UserInfoScreen(navController, viewModel)
 }
@@ -53,13 +59,15 @@ fun UserInfoScreen(navController: NavController, viewModel: UserInfoViewModel) {
 
 @Composable
 fun UserInfo(navController: NavController, viewModel: UserInfoViewModel) {
+    val coroutineScope = rememberCoroutineScope()
+    val application = LocalContext.current.applicationContext as AutoMinderApplication
     LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
         item {
             TitleBar("Usuario") // TODO(): Dato quemado cambiar cuando se tengan los users
             Spacer(modifier = Modifier.padding(15.dp))
             UserImage()
             Spacer(modifier = Modifier.padding(30.dp))
-            ButtonWrapper(navController, viewModel)
+            ButtonWrapper(navController, coroutineScope, application, viewModel)
         }
     }
 
@@ -94,7 +102,7 @@ fun UserImage() {
 
 
 @Composable
-fun ButtonWrapper(navController: NavController, viewModel: UserInfoViewModel) {
+fun ButtonWrapper(navController: NavController, coroutineScope: CoroutineScope, application: AutoMinderApplication, viewModel: UserInfoViewModel) {
     val context = LocalContext.current
     Column(
         modifier = Modifier
@@ -113,6 +121,12 @@ fun ButtonWrapper(navController: NavController, viewModel: UserInfoViewModel) {
 
         //TODO: AGREGAR PERMISO PARA ABRIR LINKS EXTERNOS (Biblioteca Accompanist)
         ObdBuyLinkButton(modifier) { viewModel.onBuyLinkClicked(context) }
+        Logout(modifier) {
+            coroutineScope.launch {
+                viewModel.onLogoutClicked()
+                application.clearAuthToken()
+            }
+        }
     }
 }
 
@@ -144,5 +158,14 @@ fun ObdBuyLinkButton(modifier: Modifier, onBuyLinkClicked: () -> Unit) {
         onClick = { onBuyLinkClicked() }, modifier
     ) {
         Text(text = "LINK DE COMPRA DE OBD", color = MaterialTheme.colorScheme.onPrimary)
+    }
+}
+
+@Composable
+fun Logout(modifier: Modifier, onLogoutClicked: () -> Unit) {
+    Button(
+        onClick = { onLogoutClicked() }, modifier
+    ) {
+        Text(text = "CERRAR SESION", color = MaterialTheme.colorScheme.onPrimary)
     }
 }

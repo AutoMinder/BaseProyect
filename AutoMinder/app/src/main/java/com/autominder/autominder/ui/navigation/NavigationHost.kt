@@ -47,6 +47,9 @@ fun NavigationHost(
     obdSensorViewModel: ObdSensorViewModel = viewModel(
         factory = ObdSensorViewModel.Factory
     ),
+    userInfoViewModel: UserInfoViewModel = viewModel(
+        factory = UserInfoViewModel.Factory
+    ),
 ) {
     val startDestination = mainViewModel.startDestination.collectAsState()
 
@@ -81,7 +84,7 @@ fun NavigationHost(
             MyCarsScreen(navController)
         }
         composable("user_info") {
-            UserInfoScreen(navController, UserInfoViewModel())
+            UserInfoScreen(navController, userInfoViewModel)
         }
         composable("change_password") {
             ChangePasswordScreen(ChangePasswordViewModel())

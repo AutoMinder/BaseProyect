@@ -24,7 +24,7 @@ class DataStoreManager(val context: Context) {
         it[TOKEN] ?: ""
     }
 
-    suspend fun deleteUserData() {
+    suspend fun clearUserData() {
         context.dataStore.edit { preferences ->
             preferences.clear()
         }
