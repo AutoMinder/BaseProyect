@@ -40,7 +40,7 @@ class MyCarsViewModel(
     }
 
 
-    fun getCars() = repository.getCarsPage(2)
+    fun getCars() = repository.getCarsPage(8)
 
 
     //fetchMyCars fetches the cars owned by the user

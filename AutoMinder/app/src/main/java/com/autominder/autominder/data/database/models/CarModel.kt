@@ -10,7 +10,7 @@ import kotlinx.parcelize.Parcelize
 @Entity(tableName = "car_table")
 data class CarModel(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "car_id") val carId: Long,
-    @ColumnInfo(name = "vin") val vin : String,
+    @ColumnInfo(name = "vin") val vin : String?,
     @ColumnInfo(name = "car_name") val car_name : String,
     @ColumnInfo(name = "brand") val brand : String,
     @ColumnInfo(name = "model") val model : String,
