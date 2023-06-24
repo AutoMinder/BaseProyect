@@ -125,7 +125,6 @@ fun ButtonWrapper(navController: NavController, coroutineScope: CoroutineScope, 
             coroutineScope.launch {
                 viewModel.onLogoutClicked()
                 application.clearAuthToken()
-                navController.navigate("login")
             }
         }
     }
