@@ -4,6 +4,7 @@ import com.autominder.autominder.data.network.dto.create.CreateRequest
 import com.autominder.autominder.data.network.dto.create.CreateResponse
 import com.autominder.autominder.data.network.dto.login.LoginRequest
 import com.autominder.autominder.data.network.dto.login.LoginResponse
+import com.autominder.autominder.data.network.dto.ownCars.OwnCarsListResponse
 import com.autominder.autominder.data.network.dto.ownCars.OwnResponse
 import com.autominder.autominder.data.network.dto.register.RegisterRequest
 import com.autominder.autominder.data.network.dto.register.RegisterResponse
@@ -48,6 +49,11 @@ interface AutominderApi {
     @GET("post/own")
     suspend fun ownCars(): Response<OwnResponse>
 
+    @GET("post/own")
+    suspend fun getOwnCars(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int
+    ): OwnCarsListResponse
 
     @PATCH("post/visibility/{post_id}")
     suspend fun visibility(@Path("post_id") post_id: String): VisibilityResponse

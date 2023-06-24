@@ -4,7 +4,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +16,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
@@ -33,6 +35,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,10 +49,13 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.autominder.autominder.R
+import com.autominder.autominder.data.database.models.CarModel
 import com.autominder.autominder.ui.carinfo.ui.CarInfoViewModel
 import com.autominder.autominder.ui.components.LoadingScreen
-import com.google.android.material.color.utilities.MaterialDynamicColors.background
 import kotlinx.coroutines.launch
 
 
@@ -75,15 +81,24 @@ fun MyCarsScreen(
                 Toast.makeText(context, "Info obtained succesfully!", Toast.LENGTH_SHORT).show()
                 println("Success: ${status.cars}")
             }
+
             is OwnCarsUiStatus.Error -> {
                 Toast.makeText(context, "Error en el fetcheo de carros", Toast.LENGTH_SHORT).show()
                 Log.d("MyCarsViewModel", "Error: ${status.exception}")
             }
+
             is OwnCarsUiStatus.ErrorWithMessage -> {
-                Toast.makeText(context, "Error con mensaje en el fetcheo de carros", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    "Error con mensaje en el fetcheo de carros",
+                    Toast.LENGTH_SHORT
+                ).show()
                 Log.d("MyCarsViewModel", "ErrorWithMessage: ${status.message}")
             }
-            else -> {Toast.makeText(context, "Loading...", Toast.LENGTH_SHORT).show()}
+
+            else -> {
+                Toast.makeText(context, "Loading...", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -99,8 +114,8 @@ fun MyCarsScreen(
                 .padding(contentPadding)
                 .background(MaterialTheme.colorScheme.surface),
         ) {
-    
-            LaunchedEffect(coroutineScope){ //This is a coroutine that will be launched when the screen is created
+
+            LaunchedEffect(coroutineScope) { //This is a coroutine that will be launched when the screen is created
 
                 //Coroutine that will observe the status of the view model
                 coroutineScope.launch {
@@ -151,9 +166,44 @@ fun MainScreenCars(viewModel: MyCarsViewModel, navController: NavController?) {
     //* This val is containing the list of the view model *//
     val myCarListState = viewModel.myCarsList.observeAsState(emptyList())
 
+    val car2 = remember {
+        viewModel.getCars()
+    }
+
+    val cars = car2.collectAsLazyPagingItems()
+
+    PagingMyCars(cars, navController)
     //Call to the function that will display the list of cars, it recieves the list and the nav controller
-    MyCarSection(myCarListState, navController)
+    /*MyCarSection(myCarListState, navController)*/
 }
+
+@Composable
+fun PagingMyCars(cars: LazyPagingItems<CarModel>, navController: NavController?) {
+
+    val scrollState = rememberLazyGridState(0)
+    LazyVerticalGrid(columns = GridCells.Adaptive(minSize = 350.dp)) {
+        cars.apply {
+            when {
+                loadState.refresh is LoadState.Loading -> println("Se esta recargando")
+                loadState.append is LoadState.Loading -> println("Estoy cargando en append")
+                loadState.append is LoadState.Error -> println(" Estoy en error")
+            }
+        }
+        items(
+            cars.itemCount,
+            key = { index -> cars[index]?.carId ?: index }
+        ) {
+            val car = cars[it]
+            if (car != null) {
+                Log.d("MyCarsScreen", "Car: $car, name ${car.car_name}, id ${car.carId}, year ${car.year}, coolant ${car.last_coolant_change} ")
+                if (navController != null) {
+                    CardCar(car, navController)
+                }
+            }
+        }
+    }
+}
+
 
 @Composable
 fun MyCarSection(
@@ -268,8 +318,18 @@ fun CardCar(
                     .wrapContentSize(Alignment.CenterEnd)
                     .padding(end = 64.dp)
             ) {
-                Text(text = car.brand, color = Color(0xFF72787E), style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-                Text(text = car.year, color = Color(0xFF72787E), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                Text(
+                    text = car.brand,
+                    color = Color(0xFF72787E),
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = car.year,
+                    color = Color(0xFF72787E),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
+                )
             }
             Text(
                 text = "Presiona para ver más",
