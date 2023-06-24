@@ -90,10 +90,10 @@ fun CarInfoMainScreen(car: CarModel, navController: NavController) {
                 CarModel(car)
                 CarYearCard(car)
                 CarMileage(car)
-                /*
-                CarLastMaintenanceDate(car)
-                LastOilChange(car)
-                LastCoolantChange(car)*/
+
+                /*CarLastMaintenanceDate(car)*/
+                /*LastOilChange(car)*/
+                /*LastCoolantChange(car)*/
                 ConnectObd(navController)
             }
         }
