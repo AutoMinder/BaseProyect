@@ -39,20 +39,9 @@ class MyCarsViewModel(
             fetchMyCars() //fetchMyCars is called when the class is instantiated
     }
 
-    //fetchCarById searches for a car by its id
-    /*fun fetchCarById(id: String): CarModel? {
 
-        //return repository.getCarById(id)
+    fun getCars() = repository.getCarsPage(2)
 
-        //TODO(): Descomentar cuando se pueda implementar correctamente junto con el CarInfoViewModel:
-//        var car: CarModel? = null
-//
-//        viewModelScope.launch {
-//            car = credentialsRepository.getCarById(id)
-//        }
-//
-//        return car
-    }*/
 
     //fetchMyCars fetches the cars owned by the user
     private fun fetchMyCars() {

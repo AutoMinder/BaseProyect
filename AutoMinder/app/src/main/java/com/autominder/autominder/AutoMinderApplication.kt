@@ -23,12 +23,20 @@ import com.autominder.autominder.ui.principalMenu.data.dummyAlerts
 
 class AutoMinderApplication : Application() {
 
+    private val database: AutominderDatabase by lazy {
+        AutominderDatabase.newInstance(this)
+    }
+    private val retrofitInstance by lazy {
+        RetrofitInstance
+    }
+
+
     val alertsRepository: AlertsRepository by lazy {
         AlertsRepository(dummyAlerts)
     }
 
     val myCarsRepository: MyCarsRepository by lazy {
-        MyCarsRepository(myCarsdummy)
+        MyCarsRepository(database, retrofitInstance.getOwnCarsService())
     }
 
     val addCarRepository: AddCarRepository by lazy {
@@ -38,9 +46,7 @@ class AutoMinderApplication : Application() {
     /*
     *   DATABASE SECTION
      */
-    private val database: AutominderDatabase by lazy {
-        AutominderDatabase.newInstance(this)
-    }
+
 
     val userRepository: UserRepository by lazy{
         UserRepository(database.ownerDao())

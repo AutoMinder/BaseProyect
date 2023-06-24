@@ -90,9 +90,10 @@ fun CarInfoMainScreen(car: CarModel, navController: NavController) {
                 CarModel(car)
                 CarYearCard(car)
                 CarMileage(car)
+                /*
                 CarLastMaintenanceDate(car)
                 LastOilChange(car)
-                LastCoolantChange(car)
+                LastCoolantChange(car)*/
                 ConnectObd(navController)
             }
         }
@@ -303,7 +304,7 @@ fun CarLastMaintenanceDate(car: CarModel) {
             )
             Row() {
                 Text(
-                    text = car.last_maintenance,
+                    text = car.last_maintenance!!,
                     fontWeight = FontWeight(600),
                     fontSize = 18.sp,
                     color = Color(0xFFFFFFFF),
@@ -350,7 +351,7 @@ fun LastOilChange(car: CarModel) {
             )
             Row() {
                 Text(
-                    text = car.last_oil_change,
+                    text = car.last_oil_change!!,
                     fontWeight = FontWeight(600),
                     fontSize = 18.sp,
                     color = Color(0xFFFFFFFF),
@@ -397,7 +398,7 @@ fun LastCoolantChange(car: CarModel) {
             )
             Row() {
                 Text(
-                    text = car.last_coolant_change,
+                    text = car.last_coolant_change!!,
                     fontWeight = FontWeight(600),
                     fontSize = 18.sp,
                     color = Color(0xFFFFFFFF),
