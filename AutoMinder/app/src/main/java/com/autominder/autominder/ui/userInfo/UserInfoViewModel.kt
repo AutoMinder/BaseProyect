@@ -16,8 +16,6 @@ import com.autominder.autominder.ui.login.ui.LoginViewModel
 
 class UserInfoViewModel(private val repository: CredentialsRepository) : ViewModel() {
 
-    private val application = AutoMinderApplication()
-
     fun onBuyLinkClicked(context: Context) {
         val url =
             "https://www.amazon.com/?&tag=googleglobalp-20&ref=pd_sl_7nnedyywlk_e&adgrpid=82342659060&hvpone=&hvptwo=&hvadid=585475370855&hvpos=&hvnetw=g&hvrand=8109794863544036515&hvqmt=e&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9069896&hvtargid=kwd-10573980&hydadcr=2246_13468515"
@@ -37,7 +35,6 @@ class UserInfoViewModel(private val repository: CredentialsRepository) : ViewMod
     }
 
     suspend fun onLogoutClicked(){
-        //application.clearAuthToken()
         repository.logout()
     }
 

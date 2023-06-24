@@ -1,5 +1,6 @@
 package com.autominder.autominder
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
@@ -80,12 +81,12 @@ class AutoMinderApplication : Application() {
         RetrofitInstance.setToken(token) //setToken es una funcion de RetrofitInstance que permite guardar el token en la clase RetrofitInstance
     }
 
-    //saveAuthToken es una funcion que permite guardar el token en el dispositivo
+    //clearAuthToek es una funcion que permite borrar el token en el dispositivo
     fun clearAuthToken(){
         val editor = prefs.edit() //editor es una variable que permite editar los datos guardados en el dispositivo
-        editor.putString(USER_TOKEN, "")
+        editor.clear() // limpiamos el token guardado en el dispositivo
         editor.apply()
-        RetrofitInstance.setToken("") //setToken es una funcion de RetrofitInstance que permite guardar el token en la clase RetrofitInstance
+        RetrofitInstance.setToken("") //limpiamos el token en la clase RetrofitInstance
     }
 
     //USER_TOKEN es una constante que permite acceder al token guardado en el dispositivo

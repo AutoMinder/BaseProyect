@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.autominder.autominder.AutoMinderApplication
 import com.autominder.autominder.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
@@ -59,13 +60,14 @@ fun UserInfoScreen(navController: NavController, viewModel: UserInfoViewModel) {
 @Composable
 fun UserInfo(navController: NavController, viewModel: UserInfoViewModel) {
     val coroutineScope = rememberCoroutineScope()
+    val application = LocalContext.current.applicationContext as AutoMinderApplication
     LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
         item {
             TitleBar("Usuario") // TODO(): Dato quemado cambiar cuando se tengan los users
             Spacer(modifier = Modifier.padding(15.dp))
             UserImage()
             Spacer(modifier = Modifier.padding(30.dp))
-            ButtonWrapper(navController, coroutineScope, viewModel)
+            ButtonWrapper(navController, coroutineScope, application, viewModel)
         }
     }
 
@@ -100,7 +102,7 @@ fun UserImage() {
 
 
 @Composable
-fun ButtonWrapper(navController: NavController, coroutineScope: CoroutineScope, viewModel: UserInfoViewModel) {
+fun ButtonWrapper(navController: NavController, coroutineScope: CoroutineScope, application: AutoMinderApplication, viewModel: UserInfoViewModel) {
     val context = LocalContext.current
     Column(
         modifier = Modifier
@@ -122,6 +124,7 @@ fun ButtonWrapper(navController: NavController, coroutineScope: CoroutineScope, 
         Logout(modifier) {
             coroutineScope.launch {
                 viewModel.onLogoutClicked()
+                application.clearAuthToken()
                 navController.navigate("login")
             }
         }
