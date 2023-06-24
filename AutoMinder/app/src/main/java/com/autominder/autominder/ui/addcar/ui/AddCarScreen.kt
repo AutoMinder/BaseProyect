@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextButton
@@ -40,6 +41,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -173,37 +175,33 @@ fun FieldsWrapper(viewModel: AddCarViewModel, navController: NavController) {
         )
     }
 
-    SaveCar(addCarEnable, navController, viewModel) {
-        viewModel.addCar(
-            profileCarName,
-            carBrand,
-            carModel,
-            carYear,
-            carKilometers,
-            carLastMaintenance,
-            carLastOilChange,
-            carLastCoolantDate
-        )
-    }
-    Button(onClick = {
-        coroutineScope.launch {
-            viewModel.addCarToDatabase(
-                name = profileCarName,
-                model = carModel,
-                brand = carBrand,
-                year = carYear,
-                kilometers = carKilometers,
-                kilometersDate = null,
-                lastMaintenance = carLastMaintenance,
-                lastOilChange = carLastOilChange,
-                lastCoolantChange = carLastCoolantDate,
-                mayorTuning = null,
-                minorTuning = null,
-                errorRecord = null,
-            )
-        }
-    }) {
-        Text(text = "Agregar a base")
+    Button(
+
+        enabled = addCarEnable,
+        onClick = {
+            coroutineScope.launch {
+                viewModel.addCarToDatabase(
+                    name = profileCarName,
+                    model = carModel,
+                    brand = carBrand,
+                    year = carYear,
+                    kilometers = carKilometers,
+                    kilometersDate = null,
+                    lastMaintenance = carLastMaintenance,
+                    lastOilChange = carLastOilChange,
+                    lastCoolantChange = carLastCoolantDate,
+                    mayorTuning = null,
+                    minorTuning = null,
+                    errorRecord = null,
+                )
+            }
+            navController.navigate("my_cars")
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Text(text = "Agregar Automovil")
     }
 }
 
@@ -220,14 +218,19 @@ fun CarName(profileCarName: String, onAddCarChange: (String) -> Unit) {
             textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface),
             shape = MaterialTheme.shapes.small,
             value = profileCarName,
+            singleLine = true,
             onValueChange = {
                 onAddCarChange(it)
             },
             colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.onSurface
+                unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
+                cursorColor = MaterialTheme.colorScheme.primary
             ),
-            label = { Text(text = "Nombre del perfil del automovil") }
+            label = { Text(text = "Nombre del perfil del automovil") },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+            ),
         )
     }
 }
@@ -385,13 +388,14 @@ fun CarDistance(carKilometers: String, onAddCarChange: (String) -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         OutlinedTextField(
+
             textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface),
             colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
                 unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
                 cursorColor = MaterialTheme.colorScheme.primary
             ),
-
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             shape = MaterialTheme.shapes.small,
             value = carKilometers,
             onValueChange = { newValue ->
@@ -554,7 +558,7 @@ fun CarLastOilChange(carLastOilChange: String, onAddCarChange: (String) -> Unit)
             shape = MaterialTheme.shapes.small,
             value = date,
             onValueChange = {},
-
+            textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface),
             label = { Text(text = "Ultimo cambio de aceite") },
             modifier = Modifier
                 .pointerInput(Unit) {}
@@ -640,7 +644,7 @@ fun CarLastCoolant(carLastCoolant: String, onAddCarChange: (String) -> Unit) {
             shape = MaterialTheme.shapes.small,
             value = date,
             onValueChange = {},
-
+            textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface),
             label = { Text(text = "Ultimo cambio de refrigerante") },
             modifier = Modifier
                 .pointerInput(Unit) {}
@@ -660,31 +664,5 @@ fun CarLastCoolant(carLastCoolant: String, onAddCarChange: (String) -> Unit) {
         )
 
 
-    }
-}
-
-
-@Composable
-fun SaveCar(
-    addCarEnable: Boolean,
-    navController: NavController,
-    viewModel: AddCarViewModel,
-    addCar: () -> Unit
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Button(onClick = {
-
-            addCar()
-
-            navController.navigateUp()
-        }, enabled = addCarEnable) {
-
-            Text(text = "Guardar Automovil")
-        }
     }
 }
