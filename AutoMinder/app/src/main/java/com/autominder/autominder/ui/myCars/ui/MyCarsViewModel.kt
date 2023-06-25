@@ -15,25 +15,39 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-
+/**
+ * ViewModel class for managing cars data and loading state.
+ *
+ * @property repository The repository for handling cars data operations.
+ */
 class MyCarsViewModel(
     private val repository: MyCarsRepository,
-    private val credentialsRepository: CredentialsRepository,
-    private val savedStateHandle: SavedStateHandle
+
 ) : ViewModel() {
 
     private val _isLoading = MutableStateFlow<Boolean>(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
-    private val _status = MutableLiveData<OwnCarsUiStatus>(OwnCarsUiStatus.Resume)
-    val status: MutableLiveData<OwnCarsUiStatus> = _status
-
+    /**
+     * Fetches cars data using the repository.
+     *
+     * @return The result of fetching cars data
+     */
     fun getCars() = repository.getCarsPage(8)
 
+    /**
+     * Updates the loading state of the ViewModel.
+     *
+     * @param loading The new loading state value.
+     */
     fun setLoading(loading: Boolean) {
         _isLoading.value = loading
     }
 
+
+    /**
+     * Companion object providing a ViewModelProvider.Factory implementation for creating instances of MyCarsViewModel.
+     */
     companion object {
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
@@ -43,12 +57,8 @@ class MyCarsViewModel(
             ): T {
                 val application =
                     checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
-                val savedStateHandle = extras.createSavedStateHandle()
                 return MyCarsViewModel(
                     (application as AutoMinderApplication).myCarsRepository,
-                    (application as AutoMinderApplication).credentialsRepository,
-
-                    savedStateHandle
                 ) as T
             }
         }

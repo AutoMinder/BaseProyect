@@ -53,7 +53,12 @@ import com.autominder.autominder.data.database.models.CarModel
 import com.autominder.autominder.ui.components.LoadingScreen
 import kotlinx.coroutines.launch
 
-
+/**
+ * Composable function representing the MyCars screen.
+ *
+ * @param navController The NavController for navigating between destinations.
+ * @param viewModel The instance of MyCarsViewModel to manage the data and state of the screen.
+ */
 @Composable
 fun MyCarsScreen(
     navController: NavController,
@@ -95,6 +100,18 @@ fun FloatingAddButtonCar(navController: NavController) {
     }
 }
 
+/**
+ * Composable function representing the floating action button for adding a car.
+ *
+ * @param navController The NavController for navigating to the "add_car" destination.
+ */
+
+/**
+ * Composable function representing the main screen for displaying cars.
+ *
+ * @param viewModel The instance of MyCarsViewModel to manage the data and state of the screen.
+ * @param navController The NavController for navigating between destinations.
+ */
 @Composable
 fun MainScreenCars(viewModel: MyCarsViewModel, navController: NavController?) {
     val car2 = remember {
@@ -105,6 +122,12 @@ fun MainScreenCars(viewModel: MyCarsViewModel, navController: NavController?) {
     PagingMyCars(cars, navController)
 }
 
+/**
+ * Composable function representing the paging list of cars.
+ *
+ * @param cars The LazyPagingItems representing the cars data.
+ * @param navController The NavController for navigating to the "car_info" destination.
+ */
 @Composable
 fun PagingMyCars(
     cars: LazyPagingItems<CarModel>,
@@ -143,6 +166,12 @@ fun PagingMyCars(
 
 }
 
+/**
+ * Composable function representing a card item displaying car details.
+ *
+ * @param car The CarModel representing the car data.
+ * @param navController The NavController for navigating to the "car_info" destination.
+ */
 @Composable
 fun CardCar(
     car: CarModel,
