@@ -15,11 +15,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -31,10 +29,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -47,7 +43,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.paging.LoadState
@@ -55,58 +50,19 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.autominder.autominder.R
 import com.autominder.autominder.data.database.models.CarModel
-import com.autominder.autominder.ui.carinfo.ui.CarInfoViewModel
 import com.autominder.autominder.ui.components.LoadingScreen
 import kotlinx.coroutines.launch
 
 
-//*
-// This function recieves the navController and the viewModel for my cars
-// *//
 @Composable
 fun MyCarsScreen(
     navController: NavController,
     viewModel: MyCarsViewModel = viewModel(
         factory = MyCarsViewModel.Factory,
     )
-
 ) {
     val isLoading by viewModel.isLoading.collectAsState(false)
-    val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val coroutineScope = rememberCoroutineScope()
 
-    fun handleUiStatus(status: OwnCarsUiStatus) { //This function will handle the status of the screen
-        when (status) {
-            is OwnCarsUiStatus.Success -> {
-                Toast.makeText(context, "Info obtained succesfully!", Toast.LENGTH_SHORT).show()
-                println("Success: ${status.cars}")
-            }
-
-            is OwnCarsUiStatus.Error -> {
-                Toast.makeText(context, "Error en el fetcheo de carros", Toast.LENGTH_SHORT).show()
-                Log.d("MyCarsViewModel", "Error: ${status.exception}")
-            }
-
-            is OwnCarsUiStatus.ErrorWithMessage -> {
-                Toast.makeText(
-                    context,
-                    "Error con mensaje en el fetcheo de carros",
-                    Toast.LENGTH_SHORT
-                ).show()
-                Log.d("MyCarsViewModel", "ErrorWithMessage: ${status.message}")
-            }
-
-            else -> {
-                Toast.makeText(context, "Loading...", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    //*
-    // The Scaffold is the one in charge to add the floating button
-    // and the content in { } is the one that will be displayed
-    // *//
     Scaffold(
         floatingActionButton = { FloatingAddButtonCar(navController) },
     ) { contentPadding ->
@@ -115,18 +71,6 @@ fun MyCarsScreen(
                 .padding(contentPadding)
                 .background(MaterialTheme.colorScheme.surface),
         ) {
-
-            LaunchedEffect(coroutineScope) { //This is a coroutine that will be launched when the screen is created
-
-                //Coroutine that will observe the status of the view model
-                coroutineScope.launch {
-                    viewModel.status.observe(lifecycleOwner) { status -> //This is the observer of the status
-                        handleUiStatus(status) //This function will handle the status
-                    }
-                }
-            }
-
-
             //Checks if is loading, if it is, it will display the loading screen, if not, it will display the main screen
             if (isLoading) {
                 LoadingScreen()
@@ -138,10 +82,6 @@ fun MyCarsScreen(
     }
 }
 
-
-//*
-//Floating button to add a new car, it will navigate to the add car screen
-// *//
 @Composable
 fun FloatingAddButtonCar(navController: NavController) {
     androidx.compose.material3.FloatingActionButton(
@@ -149,17 +89,12 @@ fun FloatingAddButtonCar(navController: NavController) {
             .padding(16.dp)
             .wrapContentSize(Alignment.BottomEnd),
         onClick = { navController.navigate("add_car") },
-        containerColor = Color(0xFF006496),
+        containerColor = MaterialTheme.colorScheme.primary,
     ) {
         Icon(imageVector = Icons.Default.Add, contentDescription = "Add button")
     }
 }
 
-
-//*
-//This two are the main screen of the cars, it will display all the cars
-// It receives the view model and nav controller
-// *//
 @Composable
 fun MainScreenCars(viewModel: MyCarsViewModel, navController: NavController?) {
     val car2 = remember {
@@ -171,7 +106,11 @@ fun MainScreenCars(viewModel: MyCarsViewModel, navController: NavController?) {
 }
 
 @Composable
-fun PagingMyCars(cars: LazyPagingItems<CarModel>, navController: NavController?) {
+fun PagingMyCars(
+    cars: LazyPagingItems<CarModel>,
+    navController: NavController?,
+
+    ) {
 
     val scrollState = rememberLazyGridState(0)
     LazyVerticalGrid(
@@ -180,7 +119,7 @@ fun PagingMyCars(cars: LazyPagingItems<CarModel>, navController: NavController?)
     ) {
         cars.apply {
             when {
-                loadState.refresh is LoadState.Loading -> println("Se esta recargando")
+                loadState.refresh is LoadState.Loading -> println("Estoy cargando en refresh")
                 loadState.append is LoadState.Loading -> println("Estoy cargando en append")
                 loadState.append is LoadState.Error -> println(" Estoy en error")
             }
@@ -201,15 +140,14 @@ fun PagingMyCars(cars: LazyPagingItems<CarModel>, navController: NavController?)
             }
         }
     }
-}
 
-//* This is the individual carCard for each of the cars*//
+}
 
 @Composable
 fun CardCar(
     car: CarModel,
     navController: NavController,
-    ) {
+) {
     Card(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 12.dp,

@@ -18,105 +18,36 @@ import kotlinx.coroutines.launch
 
 class MyCarsViewModel(
     private val repository: MyCarsRepository,
-    //TODO(): Revisar implementación correcta junto con el CarInfoViewModel:
     private val credentialsRepository: CredentialsRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    /*
-    *   Variable declaration section
-     */
-    var loadedCars = false
-    val myCarsList = MutableLiveData<List<com.autominder.autominder.data.database.models.CarModel>>()
     private val _isLoading = MutableStateFlow<Boolean>(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
     private val _status = MutableLiveData<OwnCarsUiStatus>(OwnCarsUiStatus.Resume)
     val status: MutableLiveData<OwnCarsUiStatus> = _status
 
-    //init is called when the class is instantiated
-    init {
-            fetchMyCars() //fetchMyCars is called when the class is instantiated
-    }
-
-
     fun getCars() = repository.getCarsPage(8)
 
-
-    //fetchMyCars fetches the cars owned by the user
-    private fun fetchMyCars() {
-
-            //Launching a coroutine
-            viewModelScope.launch {
-
-                //Loading starts
-                setLoading(true)
-
-                //response is the result of the request to the server
-                val response = credentialsRepository.ownCars()
-
-                //postValue is used to update the value of a MutableLiveData object from a background thread
-                _status.postValue(
-                    //Checking the type of response
-                    when (response) {
-                        is ApiResponse.Error ->
-
-                            //If the response is an error, the status is set to Error
-                            OwnCarsUiStatus.Error(response.exception)
-
-                        is ApiResponse.ErrorWithMessage ->
-
-                            //If the response is an error with message, the status is set to ErrorWithMessage
-                            OwnCarsUiStatus.ErrorWithMessage(response.message)
-
-                        is ApiResponse.Success ->
-
-                            //If the response is a success, the status is set to Success
-                            OwnCarsUiStatus.Success(response.data.cars)
-                    }
-                )
-
-                //Loading ends
-                setLoading(false)
-
-                myCarsList.value = repository.getMyCars()
-
-                //TODO(): Descomentar cuando se pueda implementar correctamente junto con el CarInfoViewModel:
-                //myCarsList is set to the list of cars so it can be rendered in the screen
-                //myCarsList.value = (credentialsRepository.ownCars() as ApiResponse.Success<OwnResponse>).data.cars
-            }
-
-    }
-
-    //Sets the loading state
-    private fun setLoading(loading: Boolean) {
+    fun setLoading(loading: Boolean) {
         _isLoading.value = loading
     }
 
-
-    //Factory pattern to create the ViewModel
     companion object {
-        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {//ViewModelProvider.Factory is an interface that creates ViewModels
-            @Suppress("UNCHECKED_CAST")//Suppresses the unchecked cast warning
+        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(
-                modelClass: Class<T>,//Class of the ViewModel
-                extras: CreationExtras//CreationExtras is a class that contains the extras passed to the ViewModelProvider
+                modelClass: Class<T>,
+                extras: CreationExtras
             ): T {
                 val application =
                     checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
-
-                //Creates a SavedStateHandle
                 val savedStateHandle = extras.createSavedStateHandle()
-
-                //Returns a MyCarsViewModel
                 return MyCarsViewModel(
-                    //repository is the repository of the application
                     (application as AutoMinderApplication).myCarsRepository,
-
-                    //credentialsRepository is the credentialsRepository of the application
                     (application as AutoMinderApplication).credentialsRepository,
 
-                    //savedStateHandle is the savedStateHandle of the application
                     savedStateHandle
                 ) as T
             }
