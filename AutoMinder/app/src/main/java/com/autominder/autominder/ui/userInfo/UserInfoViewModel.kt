@@ -3,17 +3,12 @@ package com.autominder.autominder.ui.userInfo
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.autominder.autominder.AutoMinderApplication
 import com.autominder.autominder.data.network.RepositoryCredentials.CredentialsRepository
-import com.autominder.autominder.ui.login.ui.LoginViewModel
-
 class UserInfoViewModel(private val repository: CredentialsRepository) : ViewModel() {
 
     fun onBuyLinkClicked(context: Context) {
@@ -25,7 +20,7 @@ class UserInfoViewModel(private val repository: CredentialsRepository) : ViewMod
     }
 
     fun onContactDevelopersClicked(context: Context){
-        val address = "mailto:00077321@uca.edu.sv" //TODO: Cambiar
+        val address = "mailto:proyectoprgmmovil@gmail.com"
         val intent = Intent(Intent.ACTION_SENDTO).apply {
             data = Uri.parse(address)
             putExtra(Intent.EXTRA_SUBJECT, "")
