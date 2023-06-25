@@ -70,6 +70,11 @@ class AutoMinderApplication : Application() {
         getOwnCarsService() //getOwnCarsService es una funcion de RetrofitInstance que permite obtener el servicio de los autos del usuario
         createCarService() //createCarService es una funcion de RetrofitInstance que permite obtener el servicio de crear un auto
         updateCarService() //updateCarService es una funcion de RetrofitInstance que permite obtener el servicio de actualizar un auto
+
+        /**
+         * whoAmIService es una funcion de RetrofitInstance que permite obtener el servicio de obtener los datos del usuario
+         */
+        whoAmIService()
     }
 
     //getToken es una funcion que permite obtener el token guardado en el dispositivo

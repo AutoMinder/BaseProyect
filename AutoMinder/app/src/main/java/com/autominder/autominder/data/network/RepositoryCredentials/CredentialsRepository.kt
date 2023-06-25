@@ -14,6 +14,7 @@ import com.autominder.autominder.data.network.dto.register.RegisterRequest
 import com.autominder.autominder.data.network.dto.register.RegisterResponse
 import com.autominder.autominder.data.network.dto.update.UpdateRequest
 import com.autominder.autominder.data.network.dto.update.UpdateResponse
+import com.autominder.autominder.data.network.dto.whoami.WhoamiResponse
 import com.autominder.autominder.data.network.services.AutominderApi
 import retrofit2.HttpException
 import java.io.IOException
@@ -67,6 +68,33 @@ class CredentialsRepository(
         userDataManager.saveUserData(//Save the user data
             token//Save the token
         )
+    }
+
+    suspend fun getUserData() = userDataManager.getUserData() //Get the user data
+
+    /**
+     * Who Am I function (get the user data)
+     */
+    suspend fun myInfo(): WhoamiResponse {
+
+        Log.d("CredentialsRepository", "Getting user info...")
+
+        return try { //Try to login
+            Log.d("Trying", "Getting user info into returning...")
+            val response = api.whoami() //Get the response from the api
+            Log.d("CredentialsRepository", "GOT THE INFO!")
+            return response //Return the token
+        } catch (e: HttpException) {//If there is an error
+            Log.d("CredentialsRepository", "FAILED")
+            if (e.code() == 400) {//If the error is 400
+                Log.d("CredentialsRepository", "FAILED 400")
+                return error("Error 400") //Return an error with a message
+            }
+            return error("httpError") //Return an error
+        } catch (e: IOException) { //If there is any other error
+            Log.d("CredentialsRepository", "FAILED IO")
+            return error("ioError")
+        }
     }
 
 

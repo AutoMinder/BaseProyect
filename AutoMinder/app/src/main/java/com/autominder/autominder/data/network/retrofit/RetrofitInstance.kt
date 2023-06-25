@@ -4,6 +4,7 @@ import com.autominder.autominder.data.network.services.AutominderApi
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Header
 
 // Base URL for the API
 const val BASE_URL = "https://autominder.tech/api/"
@@ -55,6 +56,13 @@ object RetrofitInstance {
 
     //Update car info service
     fun updateCarService(): AutominderApi{
+        return retrofit.create(AutominderApi::class.java)
+    }
+
+    /**
+     * "Who am I" service will return the information of the user that is currently logged in
+     */
+    fun whoAmIService(): AutominderApi {
         return retrofit.create(AutominderApi::class.java)
     }
 }
