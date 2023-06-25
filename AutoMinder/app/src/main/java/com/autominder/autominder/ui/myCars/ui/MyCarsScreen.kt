@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.paging.LoadState
@@ -161,26 +162,22 @@ fun FloatingAddButtonCar(navController: NavController) {
 // *//
 @Composable
 fun MainScreenCars(viewModel: MyCarsViewModel, navController: NavController?) {
-
-    //* This val is containing the list of the view model *//
-    val myCarListState = viewModel.myCarsList.observeAsState(emptyList())
-
     val car2 = remember {
         viewModel.getCars()
     }
-
     val cars = car2.collectAsLazyPagingItems()
 
     PagingMyCars(cars, navController)
-    //Call to the function that will display the list of cars, it recieves the list and the nav controller
-    /*MyCarSection(myCarListState, navController)*/
 }
 
 @Composable
 fun PagingMyCars(cars: LazyPagingItems<CarModel>, navController: NavController?) {
 
     val scrollState = rememberLazyGridState(0)
-    LazyVerticalGrid(columns = GridCells.Adaptive(minSize = 350.dp)) {
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize = 350.dp),
+        state = scrollState,
+    ) {
         cars.apply {
             when {
                 loadState.refresh is LoadState.Loading -> println("Se esta recargando")
@@ -194,46 +191,10 @@ fun PagingMyCars(cars: LazyPagingItems<CarModel>, navController: NavController?)
         ) {
             val car = cars[it]
             if (car != null) {
-                Log.d("MyCarsScreen", "Car: $car, name ${car.car_name}, id ${car.carId}, year ${car.year}, coolant ${car.last_coolant_change} ")
-                if (navController != null) {
-                    CardCar(car, navController)
-                }
-            }
-        }
-    }
-}
-
-
-@Composable
-fun MyCarSection(
-    myCarListState: State<List<CarModel>>,
-    navController: NavController?,
-
-    ) {
-
-    //* Lazy column to show the different cars (is like the RecyclerView)  *//
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(start = 24.dp, end = 24.dp, top = 16.dp)
-    )
-
-    {
-
-
-        //* Check if the list of cars is empty *//
-        if (myCarListState.value.isEmpty()) {
-            item {
-                Text(
-                    text = "No cars added yet",
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center
+                Log.d(
+                    "MyCarsScreen",
+                    "Car: $car, name ${car.car_name}, id ${car.carId}, year ${car.year}, coolant ${car.last_coolant_change} "
                 )
-            }
-        } else {
-
-            //* Renders the card car *//
-            items(myCarListState.value) { car ->
                 if (navController != null) {
                     CardCar(car, navController)
                 }
@@ -246,12 +207,9 @@ fun MyCarSection(
 
 @Composable
 fun CardCar(
-    car: CarModel, navController: NavController,
-    infoViewModel: CarInfoViewModel = viewModel(
-        factory = CarInfoViewModel.Factory
-    )
-) {
-
+    car: CarModel,
+    navController: NavController,
+    ) {
     Card(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 12.dp,
@@ -260,9 +218,6 @@ fun CardCar(
             .fillMaxWidth()
             .padding(8.dp)
             .clip(RoundedCornerShape(8.dp))
-
-
-            //* If clicked, it will navigate to the details of the specific car with the id*//
             .clickable {
                 val CarSend = car
                 navController.currentBackStackEntry?.savedStateHandle?.set(
@@ -270,9 +225,8 @@ fun CardCar(
                     CarSend
                 )
                 navController.navigate("car_info")
-                //infoViewModel.fetchCarMaintenanceInfoByCarId(car.id)
             },
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primaryContainer),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceVariant),
 
         ) {
         Box(
@@ -281,18 +235,7 @@ fun CardCar(
                 .height(200.dp)
                 .width(300.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .background(Color(android.graphics.Color.parseColor("#E6F5FF")))
-
         ) {
-
-            val gradientColors = listOf(
-                Color.Red,
-                Color.Magenta,
-                Color.Blue,
-                Color.Cyan,
-                Color.Green,
-                Color.Yellow
-            )
             Text(
                 text = car.car_name,
                 modifier = Modifier
