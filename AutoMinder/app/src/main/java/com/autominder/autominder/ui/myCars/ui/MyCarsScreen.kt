@@ -132,7 +132,6 @@ fun MyCarsScreen(
 
             } else {
                 MainScreenCars(viewModel, navController)
-
             }
         }
     }
@@ -207,7 +206,7 @@ fun PagingMyCars(cars: LazyPagingItems<CarModel>, navController: NavController?)
 
 @Composable
 fun MyCarSection(
-    myCarListState: State<List<com.autominder.autominder.data.database.models.CarModel>>,
+    myCarListState: State<List<CarModel>>,
     navController: NavController?,
 
     ) {
@@ -247,7 +246,7 @@ fun MyCarSection(
 
 @Composable
 fun CardCar(
-    car: com.autominder.autominder.data.database.models.CarModel, navController: NavController,
+    car: CarModel, navController: NavController,
     infoViewModel: CarInfoViewModel = viewModel(
         factory = CarInfoViewModel.Factory
     )
@@ -259,6 +258,8 @@ fun CardCar(
         ),
         modifier = Modifier
             .fillMaxWidth()
+            .padding(8.dp)
+            .clip(RoundedCornerShape(8.dp))
 
 
             //* If clicked, it will navigate to the details of the specific car with the id*//
@@ -280,7 +281,7 @@ fun CardCar(
                 .height(200.dp)
                 .width(300.dp)
                 .clip(RoundedCornerShape(8.dp))
-                .background(Color(0xFFFFFFFF))
+                .background(Color(android.graphics.Color.parseColor("#E6F5FF")))
 
         ) {
 
