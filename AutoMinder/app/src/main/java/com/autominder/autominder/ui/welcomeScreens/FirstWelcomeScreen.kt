@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -64,13 +65,11 @@ fun FirstScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        First(
-            Modifier
-                .align(Alignment.Center)
-
-                .fillMaxSize(),
-            navController
-        )
+        LazyColumn(content = {
+            item {
+                First(modifier = Modifier.fillMaxSize(), navController = navController)
+            }
+        })
     }
 }
 

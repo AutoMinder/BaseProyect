@@ -2,7 +2,6 @@ package com.autominder.autominder.ui.login.ui
 
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -28,7 +26,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
@@ -137,7 +134,7 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
 }
 
 @Composable
-fun showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
+fun ShowToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
     val context = LocalContext.current
     Toast.makeText(context, message, duration).show()
 }
@@ -174,7 +171,7 @@ fun LoginBox(
             defaultElevation = 12.dp,
         ),
         modifier = Modifier
-            .background(color = Color.White)
+//            .background(color = Color.White)
             .height(350.dp)
     ) {
         Column(
