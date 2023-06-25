@@ -23,8 +23,8 @@ fun PrincipalScaffold() {
     val navigationItem =
         listOf(Destinations.MyCars, Destinations.PrincipalMenu, Destinations.UserInfo)
     val navBackStackEntry = navController.currentBackStackEntryAsState()
-    val bottomBarState = rememberSaveable { (mutableStateOf(true)) }
-    val topAppBarState = rememberSaveable { (mutableStateOf(true)) }
+    val bottomBarState = rememberSaveable { (mutableStateOf(false)) }
+    val topAppBarState = rememberSaveable { (mutableStateOf(false)) }
 
     when (navBackStackEntry.value?.destination?.route) {
         "my_cars" -> {
@@ -62,7 +62,7 @@ fun PrincipalScaffold() {
             topAppBarState.value = true
         }
 
-        "car_info/{carId}" -> {
+        "car_info/" -> {
             bottomBarState.value = false
             topAppBarState.value = true
         }

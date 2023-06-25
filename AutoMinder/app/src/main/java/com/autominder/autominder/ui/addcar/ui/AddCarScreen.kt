@@ -195,7 +195,7 @@ fun FieldsWrapper(viewModel: AddCarViewModel, navController: NavController) {
                     errorRecord = null,
                 )
             }
-            navController.navigate("my_cars")
+            navController.popBackStack()
         },
         modifier = Modifier
             .fillMaxWidth()

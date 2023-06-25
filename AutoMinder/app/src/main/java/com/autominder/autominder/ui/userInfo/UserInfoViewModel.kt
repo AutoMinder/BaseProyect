@@ -47,8 +47,8 @@ class UserInfoViewModel(
         context.startActivity(intent)
     }
 
-    fun onContactDevelopersClicked(context: Context) {
-        val address = "mailto:00077321@uca.edu.sv" //TODO: Cambiar
+    fun onContactDevelopersClicked(context: Context){
+        val address = "mailto:proyectoprgmmovil@gmail.com"
         val intent = Intent(Intent.ACTION_SENDTO).apply {
             data = Uri.parse(address)
             putExtra(Intent.EXTRA_SUBJECT, "")

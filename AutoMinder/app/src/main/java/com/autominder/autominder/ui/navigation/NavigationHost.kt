@@ -89,23 +89,7 @@ fun NavigationHost(
         composable("change_password") {
             ChangePasswordScreen(ChangePasswordViewModel())
         }
-        /*composable("car_info/{carId}",
-            arguments = listOf(
-                navArgument("carId") {
-                    type = NavType.StringType
-                }
-            )
-        ) {
-            val carId = it.arguments?.getString("carId")
-            if (carId != null) {
-                val car = viewModel.fetchCarById(carId)
-                if (car != null) {
-                    CarInfoScreen(car, navController = navController)
-                }
-            }
 
-
-        }*/
         composable("car_info") {
             val result =
                 navController.previousBackStackEntry?.savedStateHandle?.get<CarModel>("car")
