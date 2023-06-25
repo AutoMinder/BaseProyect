@@ -25,15 +25,19 @@ class UserInfoViewModel(
     private val repository: CredentialsRepository)
     : ViewModel()
 {
+    /*
     init{
-        fetchUserName()
-    }
+        viewModelScope.launch {
+            fetchUserName()
+        }
+    }*/
 
-    private val _apiData = MutableLiveData<String>()
-    val apiData: LiveData<String> get() = _apiData
+    private val _apiData = MutableStateFlow("")
+    val apiData: StateFlow<String> = _apiData
 
+    /*
     private val _status = MutableLiveData<UserInfoUiStatus>(UserInfoUiStatus.Resume)
-    val status: MutableLiveData<UserInfoUiStatus> get() = _status
+    val status: MutableLiveData<UserInfoUiStatus> get() = _status*/
 
     fun onBuyLinkClicked(context: Context) {
         val url =
@@ -53,12 +57,11 @@ class UserInfoViewModel(
         context.startActivity(intent)
     }
 
-    fun fetchUserName() {
+    suspend fun fetchUserName() {
         viewModelScope.launch {
             try {
                 val response = repository.myInfo() // Replace with your API call
                 _apiData.value = response.username
-
 //                _status.postValue(
 //                    when (response) {
 //                        is ApiResponse.Error -> UserInfoUiStatus.Error(response.exception)

@@ -58,6 +58,9 @@ fun UserInfoScreenPreview() {
 
 @Composable
 fun UserInfoScreen(navController: NavController, viewModel: UserInfoViewModel) {
+    LaunchedEffect(Unit){
+        viewModel.fetchUserName()
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -73,7 +76,7 @@ fun UserInfoScreen(navController: NavController, viewModel: UserInfoViewModel) {
 fun UserInfo(navController: NavController, viewModel: UserInfoViewModel) {
     val coroutineScope = rememberCoroutineScope()
     val application = LocalContext.current.applicationContext as AutoMinderApplication
-    val apiData: State<String?> = viewModel.apiData.asStateFlow().collectAsState(initial = "usuario")
+    val apiData: State<String> = viewModel.apiData.collectAsState("")
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
 
@@ -123,7 +126,7 @@ fun UserInfo(navController: NavController, viewModel: UserInfoViewModel) {
 //                }
 //            }
 
-            apiData.value?.let { data ->
+            apiData.value.let { data ->
                 TitleBar(data)
                 Spacer(modifier = Modifier.padding(15.dp))
                 UserImage()
