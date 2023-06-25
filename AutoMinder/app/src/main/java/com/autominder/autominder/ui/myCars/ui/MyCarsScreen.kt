@@ -244,7 +244,7 @@ fun CardCar(
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF000000)
+                color = MaterialTheme.colorScheme.onSurfaceVariant
 
             )
             Image(
@@ -264,13 +264,13 @@ fun CardCar(
             ) {
                 Text(
                     text = car.brand,
-                    color = Color(0xFF72787E),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = car.year,
-                    color = Color(0xFF72787E),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold
                 )
@@ -280,10 +280,10 @@ fun CardCar(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
-                    .background(Color(0xFF006496))
+                    .background(MaterialTheme.colorScheme.onSurfaceVariant)
                     .padding(10.dp),
                 textAlign = TextAlign.Center,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.surfaceVariant,
                 style = MaterialTheme.typography.bodyMedium
             )
         }
