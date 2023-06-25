@@ -1,19 +1,14 @@
 package com.autominder.autominder.ui.myCars.ui
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.createSavedStateHandle
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.autominder.autominder.AutoMinderApplication
-import com.autominder.autominder.data.network.ApiResponse
-import com.autominder.autominder.data.network.RepositoryCredentials.CredentialsRepository
 import com.autominder.autominder.ui.myCars.data.MyCarsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
+
 
 /**
  * ViewModel class for managing cars data and loading state.
