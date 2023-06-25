@@ -12,7 +12,7 @@ import com.autominder.autominder.data.database.models.RemoteKey
 import com.autominder.autominder.data.database.models.UserWithCars
 import com.autominder.autominder.data.database.models.UserModel
 
-@Database(entities = [CarModel::class, UserModel::class, RemoteKey::class], version = 7, exportSchema = false)
+@Database(entities = [CarModel::class, UserModel::class, RemoteKey::class], version = 8, exportSchema = false)
 abstract class AutominderDatabase: RoomDatabase() {
 
     //  DAOs declaration
