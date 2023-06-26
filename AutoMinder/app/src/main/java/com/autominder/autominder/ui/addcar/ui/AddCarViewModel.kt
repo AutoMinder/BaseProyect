@@ -13,8 +13,6 @@ import com.autominder.autominder.AutoMinderApplication
 import com.autominder.autominder.ui.addcar.data.AddCarRepository
 import com.autominder.autominder.data.network.ApiResponse
 import com.autominder.autominder.data.network.RepositoryCredentials.CredentialsRepository
-import com.autominder.autominder.data.network.dto.create.CreateRequest
-import com.autominder.autominder.ui.register.RegisterUiStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -71,7 +69,6 @@ class AddCarViewModel(
 
 
     init {
-        fetchCarModels()
         fetchBrands()
     }
 
@@ -116,11 +113,27 @@ class AddCarViewModel(
     }
 
 
-    fun fetchCarModels() {
+    fun fetchCarModels(brand: String){
         viewModelScope.launch {
             try {
                 setLoading(true)
-                _carModelsList.value = repository.getCarModels()
+
+                fun models(brand: String): MutableList<String>{
+                    when(brand){
+                        "Toyota" -> return mutableListOf("Yaris", "Corolla", "Camry", "RAV4", "Prius", "Supra")
+                        "Nissan" -> return mutableListOf("Versa", "Sentra", "Altima", "Maxima", "Rogue", "Pathfinder")
+                        "Honda" -> return mutableListOf("Civic", "Accord", "CR-V", "Pilot", "Odyssey", "Fit")
+                        "Hyundai" -> return mutableListOf("Accent", "Elantra", "Sonata", "Tucson", "Santa Fe", "Palisade")
+                        "Kia" -> return mutableListOf("Rio", "Forte", "Optima", "Soul", "Seltos", "Sorento")
+                        "Mazda" -> return mutableListOf("Mazda3", "Mazda6", "CX-3", "CX-30", "CX-5", "CX-9")
+                        "Mitsubishi" -> return mutableListOf("Mirage", "Attrage", "Lancer", "Outlander", "Montero", "Eclipse")
+                        else -> return mutableListOf("Lamborghini", "Ferrari", "Porsche", "Audi", "BMW", "Mercedes-Benz")
+                    }
+                }
+
+                _carModelsList.value = models(brand)
+
+                Log.d("fetchCarModels", "fetchCarModels: ${_carModelsList.value}")
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {

@@ -1,6 +1,4 @@
 package com.autominder.autominder
-
-import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
@@ -8,7 +6,6 @@ import com.autominder.autominder.data.DataStoreManager
 
 import com.autominder.autominder.ui.addcar.data.AddCarRepository
 import com.autominder.autominder.ui.addcar.data.brands
-import com.autominder.autominder.ui.addcar.data.models
 
 import com.autominder.autominder.data.database.AutominderDatabase
 import com.autominder.autominder.data.database.repository.CarRepository
@@ -40,7 +37,7 @@ class AutoMinderApplication : Application() {
     }
 
     val addCarRepository: AddCarRepository by lazy {
-        AddCarRepository(myCarsdummy, brands, models)
+        AddCarRepository(myCarsdummy, brands)
     }
 
     /*
