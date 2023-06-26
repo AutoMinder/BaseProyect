@@ -31,11 +31,9 @@ interface AutominderApi {
     suspend fun register(@Body credentials: RegisterRequest): RegisterResponse
 
 
-    // TODO() Desarrollar pedir informacion de usuario
+
     @GET("auth/whoami")
-    suspend fun whoami(
-        @Header("Authorization") token: String,
-    ): WhoamiResponse
+    suspend fun whoami(): WhoamiResponse
 
     //Create car service
     @POST("post")
