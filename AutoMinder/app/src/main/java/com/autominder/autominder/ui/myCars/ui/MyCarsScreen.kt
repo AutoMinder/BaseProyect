@@ -37,6 +37,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.paging.LoadState
@@ -125,7 +126,6 @@ fun MainScreenCars(viewModel: MyCarsViewModel, navController: NavController?) {
 fun PagingMyCars(
     cars: LazyPagingItems<CarModel>,
     navController: NavController?,
-
     ) {
 
     val scrollState = rememberLazyGridState(0)
@@ -140,19 +140,37 @@ fun PagingMyCars(
                 loadState.append is LoadState.Error -> println(" Estoy en error")
             }
         }
-        items(
-            cars.itemCount,
-            key = { index -> cars[index]?.carId ?: index }
-        ) {
-            val car = cars[it]
-            if (car != null) {
-                Log.d(
-                    "MyCarsScreen",
-                    "Car: $car, name ${car.car_name}, id ${car.carId}, year ${car.year}, coolant ${car.last_coolant_change} "
-                )
-                if (navController != null) {
-                    CardCar(car, navController)
+
+        if(cars.itemCount != 0) {
+            items(
+                cars.itemCount,
+                key = { index -> cars[index]?.carId ?: index }
+            ) {
+                val car = cars[it]
+                if (car != null) {
+                    Log.d(
+                        "MyCarsScreen",
+                        "Car: $car, name ${car.car_name}, id ${car.carId}, year ${car.year}, coolant ${car.last_coolant_change} "
+                    )
+                    if (navController != null) {
+                        CardCar(car, navController)
+                    }
                 }
+            }
+        } else {
+            item {
+
+                Text(
+                    text = "No cars added yet",
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp),
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize = 32.sp
+                )
+
             }
         }
     }
