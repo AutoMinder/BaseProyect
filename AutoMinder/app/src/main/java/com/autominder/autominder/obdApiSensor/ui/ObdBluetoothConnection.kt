@@ -152,7 +152,7 @@ fun ObdSensorConnectScreen(
                 elevation = CardDefaults.cardElevation(
                     defaultElevation = 12.dp,
                 ),
-                colors = CardDefaults.cardColors(Color(0xFF000000)),
+                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondary),
                 modifier = Modifier
                     .wrapContentSize(Alignment.Center)
                     .fillMaxWidth()
@@ -161,7 +161,7 @@ fun ObdSensorConnectScreen(
             ) {
                 Text(
                     text = "VIN de tu carro: $carVin",
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = MaterialTheme.colorScheme.onSecondary,
                     fontSize = 16.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(16.dp)
@@ -173,7 +173,7 @@ fun ObdSensorConnectScreen(
                 elevation = CardDefaults.cardElevation(
                     defaultElevation = 12.dp,
                 ),
-                colors = CardDefaults.cardColors(Color(0xFF000000)),
+                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondary),
                 modifier = Modifier
                     .wrapContentSize(Alignment.Center)
                     .fillMaxWidth()
@@ -182,7 +182,7 @@ fun ObdSensorConnectScreen(
             ) {
                 Text(
                     text = "Temperatura del refrigerante: $carTemperature",
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = MaterialTheme.colorScheme.onSecondary,
                     fontSize = 16.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(16.dp)
@@ -193,7 +193,7 @@ fun ObdSensorConnectScreen(
                 elevation = CardDefaults.cardElevation(
                     defaultElevation = 12.dp,
                 ),
-                colors = CardDefaults.cardColors(Color(0xFF000000)),
+                colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondary),
                 modifier = Modifier
                     .wrapContentSize(Alignment.Center)
                     .fillMaxWidth()
@@ -202,7 +202,7 @@ fun ObdSensorConnectScreen(
             ) {
                 Text(
                     text = "Temperatura del aceite: $carTemperature",
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = MaterialTheme.colorScheme.onSecondary,
                     fontSize = 16.sp,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(16.dp)
