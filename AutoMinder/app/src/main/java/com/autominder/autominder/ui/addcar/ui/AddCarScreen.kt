@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextButton
@@ -22,9 +21,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,7 +38,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -124,8 +120,9 @@ fun FieldsWrapper(viewModel: AddCarViewModel, navController: NavController) {
             carLastMaintenance,
             carLastCoolantDate
         )
+        viewModel.fetchCarModels(it)
     }
-    CarModelMenu(context, carModelList, carModel) {
+    CarModelMenu(context, carModelList, carModel, carBrand) {
         viewModel.onAddCarChange(
             profileCarName,
             carBrand,
@@ -298,10 +295,15 @@ fun CarModelMenu(
     context: Context,
     carModels: List<String>,
     carModel: String,
+    carBrandSelected: String,
     onAddCarChange: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf(carModel) }
+
+    LaunchedEffect(carBrandSelected) {
+        selectedText = "" // Vaciar el campo del modelo cuando se cambia la marca
+    }
 
     Box(
         modifier = Modifier
