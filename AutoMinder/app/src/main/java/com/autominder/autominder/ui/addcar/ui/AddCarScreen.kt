@@ -302,9 +302,7 @@ fun CarModelMenu(
     var selectedText by remember { mutableStateOf(carModel) }
 
     LaunchedEffect(carBrandSelected) {
-        if (carBrandSelected != selectedText) {
-            selectedText = "" // Vaciar el campo del modelo
-        }
+        selectedText = "" // Vaciar el campo del modelo cuando se cambia la marca
     }
 
     Box(
