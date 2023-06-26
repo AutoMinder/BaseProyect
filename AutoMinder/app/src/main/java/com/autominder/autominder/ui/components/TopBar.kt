@@ -16,9 +16,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.autominder.autominder.ui.navigation.Destinations
+import com.autominder.autominder.ui.theme.Typography
 
 @Composable
 fun TopBar(navController: NavHostController, topAppBarState: MutableState<Boolean>) {
+    val customTypography = Typography
     AnimatedVisibility(visible = topAppBarState.value) {
         androidx.compose.material.TopAppBar(
             backgroundColor = MaterialTheme.colorScheme.primary,
@@ -33,7 +35,8 @@ fun TopBar(navController: NavHostController, topAppBarState: MutableState<Boolea
                 }
                     ?: "AutoMinder",
                 modifier = Modifier.padding(18.dp, 0.dp, 0.dp, 0.dp),
-                style = MaterialTheme.typography.headlineSmall,
+                fontFamily = customTypography.titleLarge.fontFamily,
+                style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onPrimary
             )
         }
@@ -45,7 +48,7 @@ fun getTitleByRoute(route: String): String {
     return when (route) {
         Destinations.MyCars.route -> "Mis Carros"
         Destinations.PrincipalMenu.route -> "AutoMinder"
-        Destinations.UserInfo.route -> "Usuario"
+        Destinations.UserInfo.route -> "Mi cuenta"
         else -> "AutoMinder"
     }
 }
