@@ -120,10 +120,9 @@ fun FieldsWrapper(viewModel: AddCarViewModel, navController: NavController) {
             carLastMaintenance,
             carLastCoolantDate
         )
-        
         viewModel.fetchCarModels(it)
     }
-    CarModelMenu(context, carModelList, carModel) {
+    CarModelMenu(context, carModelList, carModel, carBrand) {
         viewModel.onAddCarChange(
             profileCarName,
             carBrand,
@@ -296,12 +295,17 @@ fun CarModelMenu(
     context: Context,
     carModels: List<String>,
     carModel: String,
+    carBrandSelected: String,
     onAddCarChange: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf(carModel) }
 
-
+    LaunchedEffect(carBrandSelected) {
+        if (carBrandSelected != selectedText) {
+            selectedText = "" // Vaciar el campo del modelo
+        }
+    }
 
     Box(
         modifier = Modifier
