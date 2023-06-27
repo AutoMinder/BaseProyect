@@ -1,23 +1,22 @@
 package com.autominder.autominder.ui.carinfo.ui
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -32,22 +31,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.autominder.autominder.R
 import com.autominder.autominder.data.database.models.CarModel
 import com.autominder.autominder.ui.components.LoadingScreen
-import com.autominder.autominder.ui.myCars.data.myCarsdummy
 import com.autominder.autominder.ui.myCars.ui.MyCarsViewModel
 
 //
@@ -68,6 +61,7 @@ fun CarInfoScreen(
     navController: NavController
 ) {
     val isLoading by infoViewModel.isLoading.collectAsState(false)
+    infoViewModel.setCarInfo(car.car_name)
 
 
     Scaffold(
@@ -77,14 +71,18 @@ fun CarInfoScreen(
             if (isLoading) {
                 LoadingScreen()
             } else {
-                CarInfoMainScreen(car, navController)
+                CarInfoMainScreen(car, navController, infoViewModel)
             }
         }
     }
 }
 
 @Composable
-fun CarInfoMainScreen(car: CarModel, navController: NavController) {
+fun CarInfoMainScreen(
+    car: CarModel,
+    navController: NavController,
+    infoViewModel: CarInfoViewModel
+) {
     Card(
         modifier = Modifier.padding(0.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface),
@@ -95,7 +93,7 @@ fun CarInfoMainScreen(car: CarModel, navController: NavController) {
                 .padding(8.dp)
         ) {
             item {
-                CarNameHeader(car)
+                CarNameHeader(car, infoViewModel)
                 CarBrand(car)
                 CarModel(car)
                 CarYearCard(car)
@@ -111,22 +109,65 @@ fun CarInfoMainScreen(car: CarModel, navController: NavController) {
 }
 
 @Composable
-fun CarNameHeader(car: CarModel) {
+fun CarNameHeader(car: CarModel, infoViewModel: CarInfoViewModel) {
     val openDialog = remember { mutableStateOf(false) }
+    val name = infoViewModel.updatedCarName.collectAsState()
+    val isChanged = infoViewModel.isChanged.collectAsState()
+    if (!isChanged.value){
+        infoViewModel.setCarInfo(car.car_name)
+    }
+    val normalName = infoViewModel.carName.collectAsState()
 
     if (openDialog.value) {
         Dialog(
             onDismissRequest = { openDialog.value = false },
         ) {
-            TextField(
-               singleLine = true,
-                value = car.car_name,
-                onValueChange = { },
-                label = { Text(text = "Nombre del auto") },
+            Box(
+                modifier = Modifier
+                    .height(30.dp)
+                    .width(500.dp)
+                    .background(MaterialTheme.colorScheme.secondaryContainer),
+            )
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(20.dp)
-            )
+                    .padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = "Editar nombre",
+                    fontWeight = FontWeight(600),
+                    fontSize = 18.sp,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                OutlinedTextField(
+                    shape = MaterialTheme.shapes.small,
+                    singleLine = true,
+                    value = name.value,
+                    onValueChange = { infoViewModel.setUpdatedCarName(it) },
+                    label = { Text(text = "Nombre del auto") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
+                    textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface),
+                    colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
+                        cursorColor = MaterialTheme.colorScheme.primary
+                    ),
+
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                Button(onClick = {
+
+                    infoViewModel.setCarUpdatedToName(name.value)
+                    openDialog.value = false
+                    infoViewModel.setChanged(true)
+                }) {
+                    Text(text = "Guardar")
+                }
+            }
+
         }
     }
 
@@ -138,7 +179,7 @@ fun CarNameHeader(car: CarModel) {
         shape = MaterialTheme.shapes.small,
         onClick = { openDialog.value = true }
 
-        ) {
+    ) {
 
         Row(
             modifier = Modifier
@@ -148,7 +189,7 @@ fun CarNameHeader(car: CarModel) {
         )
         {
             Text(
-                text = car.car_name,
+                text = normalName.value,
                 fontWeight = FontWeight(600),
                 fontSize = 18.sp,
                 color = MaterialTheme.colorScheme.onSecondary
