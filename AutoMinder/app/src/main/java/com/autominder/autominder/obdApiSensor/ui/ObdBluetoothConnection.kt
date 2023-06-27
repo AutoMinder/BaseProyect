@@ -189,7 +189,7 @@ fun ObdSensorConnectScreen(
                 )
             }
 
-            Card(
+            /*Card(
                 elevation = CardDefaults.cardElevation(
                     defaultElevation = 12.dp,
                 ),
@@ -207,7 +207,7 @@ fun ObdSensorConnectScreen(
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(16.dp)
                 )
-            }
+            }*/
 
         }
     }
