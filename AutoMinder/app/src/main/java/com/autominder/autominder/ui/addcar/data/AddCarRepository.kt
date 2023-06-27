@@ -1,0 +1,13 @@
+package com.autominder.autominder.ui.addcar.data
+
+class AddCarRepository(
+    //TODO()
+    private val cars: MutableList<com.autominder.autominder.data.database.models.CarModel>,
+    private val brands: MutableList<String>
+) {
+
+    fun getCars() = cars
+    //fun addCar(car: CarModel) = cars.add(car)
+
+    fun getCarBrands() = brands
+}
