@@ -81,6 +81,11 @@ fun MyCarsScreen(
     }
 }
 
+/**
+ * Composable function representing the floating action button for adding a car.
+ *
+ * @param navController The NavController for navigating to the "add_car" destination.
+ */
 @Composable
 fun FloatingAddButtonCar(navController: NavController) {
     androidx.compose.material3.FloatingActionButton(
@@ -94,11 +99,7 @@ fun FloatingAddButtonCar(navController: NavController) {
     }
 }
 
-/**
- * Composable function representing the floating action button for adding a car.
- *
- * @param navController The NavController for navigating to the "add_car" destination.
- */
+
 
 /**
  * Composable function representing the main screen for displaying cars.
@@ -132,6 +133,8 @@ fun PagingMyCars(
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 350.dp),
         state = scrollState,
+        modifier = Modifier
+            .fillMaxSize()
     ) {
         cars.apply {
             when {
@@ -144,7 +147,7 @@ fun PagingMyCars(
         if(cars.itemCount != 0) {
             items(
                 cars.itemCount,
-                key = { index -> cars[index]?.carId ?: index }
+                key = { index -> cars[index]?.carId ?: index },
             ) {
                 val car = cars[it]
                 if (car != null) {
@@ -153,7 +156,16 @@ fun PagingMyCars(
                         "Car: $car, name ${car.car_name}, id ${car.carId}, year ${car.year}, coolant ${car.last_coolant_change} "
                     )
                     if (navController != null) {
-                        CardCar(car, navController)
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .clickable {
+                                navController.navigate("car_info/${car.carId}")
+                            }
+                        ) {
+                            CardCar(car, navController)
+                        }
                     }
                 }
             }
