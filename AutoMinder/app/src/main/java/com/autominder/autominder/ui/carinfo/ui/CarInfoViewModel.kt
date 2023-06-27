@@ -12,43 +12,22 @@ import kotlinx.coroutines.flow.StateFlow
 
 class CarInfoViewModel(
     private val repository: MyCarsRepository
-    //TODO(): Descomentar cuando se pueda implementar correctamente:
-    // private val credentialsRepository: CredentialsRepository,
 ) : ViewModel() {
     private val _isLoading = MutableStateFlow<Boolean>(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
-    /*fun fetchCarMaintenanceInfoByCarId(carId: String) {
-        viewModelScope.launch {
-            try {
-                setLoading(true)
-
-                _carInfoList.value = repository.getCarById(carId)!!
-
-                //TODO(): Descomentar cuando se haya implementado correctamente el paso y renderizacion del auto seleccionado
-                //_carInfoList.value = credentialsRepository.getCarById(carId)!!
-
-                Log.d("INFO", "Car info fetched: ${_carInfoList.value.name}")
-            } catch (e: Exception) {
-                e.printStackTrace()
-            } finally {
-                setLoading(false)
-            }
-        }
-    }*/
 
     private fun setLoading(loading: Boolean) {
         _isLoading.value = loading
     }
+
+
 
     companion object {
         val Factory = viewModelFactory {
             initializer {
                 val app = this[APPLICATION_KEY] as AutoMinderApplication
                 CarInfoViewModel(app.myCarsRepository)
-
-                //TODO(): Descomentar cuando se pueda implementar correctamente:
-                //CarInfoViewModel((app).credentialsRepository)
             }
         }
     }

@@ -13,8 +13,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Icon
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -25,6 +28,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,6 +39,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -105,12 +112,34 @@ fun CarInfoMainScreen(car: CarModel, navController: NavController) {
 
 @Composable
 fun CarNameHeader(car: CarModel) {
+    val openDialog = remember { mutableStateOf(false) }
+
+    if (openDialog.value) {
+        Dialog(
+            onDismissRequest = { openDialog.value = false },
+        ) {
+            TextField(
+               singleLine = true,
+                value = car.car_name,
+                onValueChange = { },
+                label = { Text(text = "Nombre del auto") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp)
+            )
+        }
+    }
+
+
     Card(
         modifier = Modifier
             .padding(20.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondary),
-        shape = MaterialTheme.shapes.small
-    ) {
+        shape = MaterialTheme.shapes.small,
+        onClick = { openDialog.value = true }
+
+        ) {
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -133,6 +162,7 @@ fun CarNameHeader(car: CarModel) {
         }
     }
 }
+
 
 @Composable
 fun CarBrand(car: CarModel) {
