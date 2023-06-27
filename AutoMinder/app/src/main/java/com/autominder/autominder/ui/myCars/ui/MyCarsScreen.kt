@@ -216,7 +216,7 @@ fun CardCar(
                 )
                 navController.navigate("car_info")
             },
-        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surfaceVariant),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface),
 
         ) {
         Box(
@@ -270,7 +270,7 @@ fun CardCar(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.onSurfaceVariant)
+                    .background(MaterialTheme.colorScheme.secondary)
                     .padding(10.dp),
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.surfaceVariant,
