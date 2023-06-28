@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
@@ -61,7 +60,7 @@ fun CarInfoScreen(
     navController: NavController
 ) {
     val isLoading by infoViewModel.isLoading.collectAsState(false)
-    infoViewModel.setCarInfo(car.car_name)
+    infoViewModel.setNameInfo(car.car_name)
 
 
     Scaffold(
@@ -97,11 +96,11 @@ fun CarInfoMainScreen(
                 CarBrand(car)
                 CarModel(car)
                 CarYearCard(car)
-                CarMileage(car)
+                CarMileage(car, infoViewModel)
 
-                CarLastMaintenanceDate(car)
-                LastOilChange(car)
-                LastCoolantChange(car)
+                CarLastMaintenanceDate(car, infoViewModel)
+                LastOilChange(car, infoViewModel)
+                LastCoolantChange(car, infoViewModel)
                 ConnectObd(navController)
             }
         }
@@ -112,10 +111,13 @@ fun CarInfoMainScreen(
 fun CarNameHeader(car: CarModel, infoViewModel: CarInfoViewModel) {
     val openDialog = remember { mutableStateOf(false) }
     val name = infoViewModel.updatedCarName.collectAsState()
-    val isChanged = infoViewModel.isChanged.collectAsState()
-    if (!isChanged.value){
-        infoViewModel.setCarInfo(car.car_name)
+    val isChanged = infoViewModel.isChangedName.collectAsState()
+
+    if (!isChanged.value) {
+        infoViewModel.setNameInfo(car.car_name)
     }
+
+
     val normalName = infoViewModel.carName.collectAsState()
 
     if (openDialog.value) {
@@ -156,7 +158,7 @@ fun CarNameHeader(car: CarModel, infoViewModel: CarInfoViewModel) {
                         cursorColor = MaterialTheme.colorScheme.primary
                     ),
 
-                )
+                    )
                 Spacer(modifier = Modifier.height(20.dp))
                 Button(onClick = {
 
@@ -303,12 +305,79 @@ fun CarYearCard(car: CarModel) {
 }
 
 @Composable
-fun CarMileage(carInfo: CarModel) {
+fun CarMileage(carInfo: CarModel, infoViewModel: CarInfoViewModel) {
+
+    val openDialog = remember { mutableStateOf(false) }
+    val name = infoViewModel.mileageUpdated.collectAsState()
+    val isChanged = infoViewModel.isChangedMileage.collectAsState()
+
+    if (!isChanged.value) {
+        infoViewModel.setMileageInfo(carInfo.kilometers)
+    }
+
+    val normalName = infoViewModel.mileage.collectAsState()
+
+
+    if (openDialog.value) {
+        Dialog(
+            onDismissRequest = { openDialog.value = false },
+        ) {
+            Box(
+                modifier = Modifier
+                    .height(30.dp)
+                    .width(500.dp)
+                    .background(MaterialTheme.colorScheme.secondaryContainer),
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = "Editar kilometraje",
+                    fontWeight = FontWeight(600),
+                    fontSize = 18.sp,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                OutlinedTextField(
+                    shape = MaterialTheme.shapes.small,
+                    singleLine = true,
+                    value = name.value,
+                    onValueChange = { infoViewModel.setUpdatedMileage(it) },
+                    label = { Text(text = "Kilometraje") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
+                    textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface),
+                    colors = androidx.compose.material.TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
+                        cursorColor = MaterialTheme.colorScheme.primary
+                    ),
+
+                    )
+                Spacer(modifier = Modifier.height(20.dp))
+                Button(onClick = {
+
+                    infoViewModel.setMileageUpdated(name.value)
+                    openDialog.value = false
+                    infoViewModel.setChangedMileage(true)
+                }) {
+                    Text(text = "Guardar")
+                }
+            }
+
+        }
+    }
+
+
     Card(
         modifier = Modifier
             .padding(20.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondary),
-        shape = MaterialTheme.shapes.small
+        shape = MaterialTheme.shapes.small,
+        onClick = { openDialog.value = true }
     ) {
         Column(
             modifier = Modifier
@@ -333,7 +402,7 @@ fun CarMileage(carInfo: CarModel) {
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
-                    text = carInfo.kilometers,
+                    text = normalName.value,
                     fontWeight = FontWeight(600),
                     fontSize = 18.sp,
                     color = MaterialTheme.colorScheme.onSecondary,
@@ -353,7 +422,7 @@ fun CarMileage(carInfo: CarModel) {
 }
 
 @Composable
-fun CarLastMaintenanceDate(car: CarModel) {
+fun CarLastMaintenanceDate(car: CarModel, infoViewModel: CarInfoViewModel) {
     Card(
         modifier = Modifier
             .padding(20.dp),
@@ -402,7 +471,7 @@ fun CarLastMaintenanceDate(car: CarModel) {
 }
 
 @Composable
-fun LastOilChange(car: CarModel) {
+fun LastOilChange(car: CarModel, infoViewModel: CarInfoViewModel) {
     Card(
         modifier = Modifier
             .padding(20.dp),
@@ -451,7 +520,7 @@ fun LastOilChange(car: CarModel) {
 }
 
 @Composable
-fun LastCoolantChange(car: CarModel) {
+fun LastCoolantChange(car: CarModel, infoViewModel: CarInfoViewModel) {
     Card(
         modifier = Modifier
             .padding(20.dp),
