@@ -41,7 +41,10 @@ interface AutominderApi {
 
     //Update car info service
     @POST("post/update/{post_id}")
-    suspend fun update(@Body credentials: UpdateRequest): UpdateResponse
+    suspend fun update(
+        @Path("post_id") post_id: String,
+        @Body credentials: UpdateRequest
+    ): UpdateResponse
 
     //OwnCarsService
     @GET("post/own")

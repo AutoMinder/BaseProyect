@@ -1,17 +1,24 @@
 package com.autominder.autominder.ui.carinfo.ui
 
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.autominder.autominder.AutoMinderApplication
+import com.autominder.autominder.data.network.ApiResponse
+import com.autominder.autominder.data.network.RepositoryCredentials.CredentialsRepository
+import com.autominder.autominder.ui.addcar.ui.CreateUiStatus
 import com.autominder.autominder.ui.myCars.data.MyCarsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 class CarInfoViewModel(
-    private val repository: MyCarsRepository
+    private val repository: MyCarsRepository,
+    private val credentialsRepository: CredentialsRepository
 ) : ViewModel() {
     private val _isLoading = MutableStateFlow<Boolean>(false)
     val isLoading: StateFlow<Boolean> = _isLoading
@@ -49,6 +56,9 @@ class CarInfoViewModel(
     private val _isMaintenanceChanged = MutableStateFlow<Boolean>(false)
     val isMaintenanceChanged: StateFlow<Boolean> = _isMaintenanceChanged
 
+    private val _status = MutableLiveData<CreateUiStatus>(CreateUiStatus.Resume)
+    val status: MutableLiveData<CreateUiStatus>
+        get() = _status
 
 
     private fun setLoading(loading: Boolean) {
@@ -59,9 +69,11 @@ class CarInfoViewModel(
     fun setNameInfo(carName: String) {
         _carName.value = carName
     }
+
     fun setMileageInfo(mileage: String) {
         _mileage.value = mileage
     }
+
     fun setLastMaintenanceInfo(lastMaintenance: String) {
         _lastMaintenance.value = lastMaintenance
     }
@@ -78,28 +90,19 @@ class CarInfoViewModel(
     fun setUpdatedCarName(updatedCarName: String) {
         _updatedCarName.value = updatedCarName
     }
+
     fun setUpdatedMileage(updatedMileage: String) {
         _mileageUpdated.value = updatedMileage
-    }
-    fun setUpdatedLastMaintenance(updatedLastMaintenance: String) {
-        _lastMaintenanceUpdated.value = updatedLastMaintenance
-    }
-
-
-    fun setLastOilChangeUpdated(lastOilChange: String) {
-        _lastOilChangeUpdated.value = lastOilChange
-    }
-
-    fun setLastCoolantChangeUpdated(lastCoolantChange: String) {
-        _lastCoolantChangeUpdated.value = lastCoolantChange
     }
 
     fun setChanged(changed: Boolean) {
         _isChangedName.value = changed
     }
+
     fun setChangedMileage(changed: Boolean) {
         _isChangedMileage.value = changed
     }
+
     fun setChangedLastMaintenance(changed: Boolean) {
         _isMaintenanceChanged.value = changed
     }
@@ -107,15 +110,55 @@ class CarInfoViewModel(
     fun setChangedLastOilChange(changed: Boolean) {
         _isChangedLastOilChange.value = changed
     }
+
     fun setChangedLastCoolantChange(changed: Boolean) {
         _isChangedLastCoolantChange.value = changed
+    }
+
+    suspend fun sendUpdatesToDatabase(
+        carId: String,
+        carName: String,
+        kilometers: String,
+        lastMaintenance: String,
+        mayorTuning: String,
+        minorTuning: String,
+        lastOilChange: String,
+        lastCoolantChange: String,
+        brand: String,
+        model: String,
+        year: String,
+
+    ) {
+        viewModelScope.launch {
+            _status.postValue(
+                when (
+                    val response = credentialsRepository.updateCar(
+                        carId,
+                        carName,
+                        kilometers,
+                        lastMaintenance,
+                        mayorTuning,
+                        minorTuning,
+                        lastOilChange,
+                        lastCoolantChange,
+                        brand,
+                        model,
+                        year
+                    )
+                ) {
+                    is ApiResponse.Success -> CreateUiStatus.Success
+                    is ApiResponse.Error -> CreateUiStatus.Error(response.exception)
+                    is ApiResponse.ErrorWithMessage -> CreateUiStatus.ErrorWithMessage(response.message)
+                }
+            )
+        }
     }
 
     companion object {
         val Factory = viewModelFactory {
             initializer {
                 val app = this[APPLICATION_KEY] as AutoMinderApplication
-                CarInfoViewModel(app.myCarsRepository)
+                CarInfoViewModel(app.myCarsRepository, app.credentialsRepository)
             }
         }
     }

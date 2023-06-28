@@ -10,4 +10,7 @@ data class UpdateRequest(
     val minorTuning: String  = "",
     val lastOilChange: String  = "",
     val lastCoolantChange: String  = "",
+    val brand: String = "",
+    val model: String = "",
+    val year: String = "",
 )

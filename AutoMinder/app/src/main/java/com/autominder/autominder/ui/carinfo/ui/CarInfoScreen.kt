@@ -1,5 +1,6 @@
 package com.autominder.autominder.ui.carinfo.ui
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,6 +33,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -45,6 +47,7 @@ import androidx.navigation.NavController
 import com.autominder.autominder.data.database.models.CarModel
 import com.autominder.autominder.ui.components.LoadingScreen
 import com.autominder.autominder.ui.myCars.ui.MyCarsViewModel
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
@@ -68,7 +71,6 @@ fun CarInfoScreen(
     val isLoading by infoViewModel.isLoading.collectAsState(false)
     infoViewModel.setNameInfo(car.car_name)
 
-
     Scaffold(
     ) {
         Box(modifier = Modifier.padding(it)) {
@@ -88,6 +90,7 @@ fun CarInfoMainScreen(
     navController: NavController,
     infoViewModel: CarInfoViewModel
 ) {
+    val coroutineScope = rememberCoroutineScope()
     Card(
         modifier = Modifier.padding(0.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface),
@@ -108,6 +111,26 @@ fun CarInfoMainScreen(
                 LastOilChange(car, infoViewModel)
                 LastCoolantChange(car, infoViewModel)
                 ConnectObd(navController)
+                Button(onClick = {
+                    coroutineScope.launch {
+                        infoViewModel.sendUpdatesToDatabase(
+                            car.idMongo,
+                            infoViewModel.carName.value,
+                            infoViewModel.mileage.value,
+                            infoViewModel.lastMaintenance.value,
+                            "",
+                            "",
+                            infoViewModel.lastOilChange.value,
+                            infoViewModel.lastCoolantChange.value,
+                            car.brand,
+                            car.model,
+                            car.year,
+                        )
+                    }
+
+                }) {
+
+                }
             }
         }
     }
@@ -763,6 +786,7 @@ fun LastCoolantChange(car: CarModel, infoViewModel: CarInfoViewModel) {
         }
     }
 }
+
 
 @Composable
 fun ConnectObd(navController: NavController) {

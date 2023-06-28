@@ -194,16 +194,21 @@ class CredentialsRepository(
 
 
     suspend fun updateCar(
+        mongoId: String,
         car_name: String,
         kilometers: String,
         lastMaintenance: String,
         mayorTuning: String,
         minorTuning: String,
         lastOilChange: String,
-        lastCoolantChange: String
+        lastCoolantChange: String,
+        model: String,
+        brand: String,
+        year: String,
     ): ApiResponse<String> {
         return try {
             val response: UpdateResponse = api.update(
+                mongoId,
                 UpdateRequest(
                 car_name,
                 kilometers,
@@ -211,7 +216,10 @@ class CredentialsRepository(
                 mayorTuning,
                 minorTuning,
                 lastOilChange,
-                lastCoolantChange
+                lastCoolantChange,
+                model,
+                brand,
+                year,
                 )
             )
 

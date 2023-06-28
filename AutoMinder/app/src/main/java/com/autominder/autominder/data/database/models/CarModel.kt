@@ -11,6 +11,7 @@ import kotlinx.parcelize.Parcelize
 @Entity(tableName = "car_table")
 data class CarModel(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "car_id") val carId: Long,
+    @SerializedName("_id")@ColumnInfo(name = "_id") val idMongo: String,
     @SerializedName("vin") @ColumnInfo(name = "vin") val vin : String?,
     @SerializedName("car_name") @ColumnInfo(name = "car_name") val car_name : String,
     @SerializedName("brand") @ColumnInfo(name = "brand") val brand : String,
