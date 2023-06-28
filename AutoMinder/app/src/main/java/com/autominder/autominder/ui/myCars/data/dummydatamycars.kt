@@ -17,5 +17,6 @@ val myCarsdummy = mutableListOf(
         minor_tuning = "2021-01-01",
         owner = 1,
         idMongo = "1",
+        hidden = false
     ),
 )

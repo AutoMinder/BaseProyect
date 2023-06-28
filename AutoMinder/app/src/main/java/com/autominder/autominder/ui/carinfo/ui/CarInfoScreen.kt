@@ -129,7 +129,15 @@ fun CarInfoMainScreen(
                     }
 
                 }) {
-                Text(text = "Guardar cambios")
+                    Text(text = "Guardar cambios")
+                }
+                Button(onClick = {
+                    coroutineScope.launch {
+                        infoViewModel.hideCar(car.idMongo)
+                        navController.popBackStack()
+                    }
+                }) {
+                Text(text = "Eliminar auto")
                 }
             }
         }

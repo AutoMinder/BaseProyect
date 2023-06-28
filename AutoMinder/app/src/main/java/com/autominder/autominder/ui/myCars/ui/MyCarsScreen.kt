@@ -100,7 +100,6 @@ fun FloatingAddButtonCar(navController: NavController) {
 }
 
 
-
 /**
  * Composable function representing the main screen for displaying cars.
  *
@@ -127,7 +126,7 @@ fun MainScreenCars(viewModel: MyCarsViewModel, navController: NavController?) {
 fun PagingMyCars(
     cars: LazyPagingItems<CarModel>,
     navController: NavController?,
-    ) {
+) {
 
     val scrollState = rememberLazyGridState(0)
     LazyVerticalGrid(
@@ -144,7 +143,7 @@ fun PagingMyCars(
             }
         }
 
-        if(cars.itemCount != 0) {
+        if (cars.itemCount != 0) {
             items(
                 cars.itemCount,
                 key = { index -> cars[index]?.carId ?: index },
@@ -164,7 +163,9 @@ fun PagingMyCars(
                                 navController.navigate("car_info/${car.carId}")
                             }
                         ) {
-                            CardCar(car, navController)
+                            if (!car.hidden) {
+                                CardCar(car, navController)
+                            }
                         }
                     }
                 }

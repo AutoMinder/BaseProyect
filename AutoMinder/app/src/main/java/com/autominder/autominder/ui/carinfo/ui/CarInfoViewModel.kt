@@ -154,6 +154,19 @@ class CarInfoViewModel(
         }
     }
 
+    suspend fun hideCar(mongoId: String){
+        viewModelScope.launch {
+            _status.postValue(
+                when (
+                    val response = credentialsRepository.hideCar(mongoId)
+                ) {
+                    is ApiResponse.Success -> CreateUiStatus.Success
+                    is ApiResponse.Error -> CreateUiStatus.Error(response.exception)
+                    is ApiResponse.ErrorWithMessage -> CreateUiStatus.ErrorWithMessage(response.message)
+                }
+            )
+        }
+    }
     companion object {
         val Factory = viewModelFactory {
             initializer {
