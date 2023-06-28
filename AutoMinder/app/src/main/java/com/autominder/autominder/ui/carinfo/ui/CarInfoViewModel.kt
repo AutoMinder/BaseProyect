@@ -107,6 +107,9 @@ class CarInfoViewModel(
     fun setChangedLastOilChange(changed: Boolean) {
         _isChangedLastOilChange.value = changed
     }
+    fun setChangedLastCoolantChange(changed: Boolean) {
+        _isChangedLastCoolantChange.value = changed
+    }
 
     companion object {
         val Factory = viewModelFactory {

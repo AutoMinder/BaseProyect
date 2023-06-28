@@ -46,6 +46,7 @@ import com.autominder.autominder.data.database.models.CarModel
 import com.autominder.autominder.ui.components.LoadingScreen
 import com.autominder.autominder.ui.myCars.ui.MyCarsViewModel
 import java.text.SimpleDateFormat
+import java.util.Calendar
 
 //
 // Screen to show the car details
@@ -433,6 +434,7 @@ fun CarLastMaintenanceDate(car: CarModel, infoViewModel: CarInfoViewModel) {
     val isChanged = infoViewModel.isMaintenanceChanged.collectAsState()
     val datePickerState =
         rememberDatePickerState(initialSelectedDateMillis = System.currentTimeMillis())
+    val calendar = Calendar.getInstance()
 
     if (!isChanged.value) {
         infoViewModel.setLastMaintenanceInfo(car.last_maintenance!!)
@@ -449,8 +451,17 @@ fun CarLastMaintenanceDate(car: CarModel, infoViewModel: CarInfoViewModel) {
             confirmButton = {
                 TextButton(
                     onClick = {
-                        infoViewModel.setLastMaintenanceInfo(SimpleDateFormat("yyyy-MM-dd").format(datePickerState.selectedDateMillis)
-                            .toString())
+                        val selectedDate = datePickerState.selectedDateMillis
+                        if (selectedDate != null) {
+                            calendar.timeInMillis = selectedDate
+                        }
+                        calendar.add(Calendar.DAY_OF_MONTH, 1) // Add a day to the selected date
+
+                        val formattedDate = SimpleDateFormat("yyyy-MM-dd").format(calendar.time)
+                        infoViewModel.setLastMaintenanceInfo(
+                            formattedDate
+                                .toString()
+                        )
                         openDialog.value = false
                         infoViewModel.setChangedLastMaintenance(true)
 
@@ -531,11 +542,72 @@ fun CarLastMaintenanceDate(car: CarModel, infoViewModel: CarInfoViewModel) {
 
 @Composable
 fun LastOilChange(car: CarModel, infoViewModel: CarInfoViewModel) {
+
+    val openDialog = remember { mutableStateOf(false) }
+    val date = infoViewModel.lastOilChangeUpdated.collectAsState()
+    val isChanged = infoViewModel.isChangedLastOilChange.collectAsState()
+    val datePickerState =
+        rememberDatePickerState(initialSelectedDateMillis = System.currentTimeMillis())
+    val calendar = Calendar.getInstance()
+
+    if (!isChanged.value) {
+        infoViewModel.setLastOilChangeInfo(car.last_oil_change!!)
+    }
+
+    val normalDate = infoViewModel.lastOilChange.collectAsState()
+
+    if (openDialog.value) {
+        DatePickerDialog(
+            onDismissRequest = {
+                openDialog.value = false
+
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        val selectedDate = datePickerState.selectedDateMillis
+                        if (selectedDate != null) {
+                            calendar.timeInMillis = selectedDate
+                        }
+                        calendar.add(Calendar.DAY_OF_MONTH, 1) // Add a day to the selected date
+
+                        val formattedDate = SimpleDateFormat("yyyy-MM-dd").format(calendar.time)
+                        infoViewModel.setLastOilChangeInfo(
+                            formattedDate
+                                .toString()
+                        )
+                        openDialog.value = false
+                        infoViewModel.setChangedLastOilChange(true)
+
+                    },
+                ) {
+                    Text("OK")
+
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        openDialog.value = false
+                    }
+                ) {
+                    Text("Cancel")
+                }
+            }
+        ) {
+            DatePicker(
+                state = datePickerState,
+            )
+        }
+
+    }
+
     Card(
         modifier = Modifier
             .padding(20.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondary),
-        shape = MaterialTheme.shapes.small
+        shape = MaterialTheme.shapes.small,
+        onClick = { openDialog.value = true }
     ) {
         Column(
             modifier = Modifier
@@ -560,7 +632,7 @@ fun LastOilChange(car: CarModel, infoViewModel: CarInfoViewModel) {
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
-                    text = car.last_oil_change!!,
+                    text = normalDate.value,
                     fontWeight = FontWeight(600),
                     fontSize = 18.sp,
                     color = MaterialTheme.colorScheme.onSecondary,
@@ -580,11 +652,76 @@ fun LastOilChange(car: CarModel, infoViewModel: CarInfoViewModel) {
 
 @Composable
 fun LastCoolantChange(car: CarModel, infoViewModel: CarInfoViewModel) {
+
+    val openDialog = remember { mutableStateOf(false) }
+    val date = infoViewModel.lastCoolantChangeUpdated.collectAsState()
+    val isChanged = infoViewModel.isChangedLastCoolantChange.collectAsState()
+    val datePickerState =
+        rememberDatePickerState(initialSelectedDateMillis = System.currentTimeMillis())
+    val calendar = Calendar.getInstance()
+
+    if (!isChanged.value) {
+        infoViewModel.setLastCoolantChangeInfo(car.last_coolant_change!!)
+    }
+
+    val normalDate = infoViewModel.lastCoolantChange.collectAsState()
+
+    if (openDialog.value) {
+        DatePickerDialog(
+            onDismissRequest = {
+                openDialog.value = false
+
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        val selectedDate = datePickerState.selectedDateMillis
+                        if (selectedDate != null) {
+                            calendar.timeInMillis = selectedDate
+                        }
+                        calendar.add(Calendar.DAY_OF_MONTH, 1) // Add a day to the selected date
+
+                        val formattedDate = SimpleDateFormat("yyyy-MM-dd").format(calendar.time)
+                        infoViewModel.setLastCoolantChangeInfo(
+                            formattedDate
+                                .toString()
+                        )
+                        openDialog.value = false
+                        infoViewModel.setChangedLastCoolantChange(true)
+
+                    },
+                ) {
+                    Text("OK")
+
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        openDialog.value = false
+                    }
+                ) {
+                    Text("Cancel")
+                }
+            }
+        ) {
+            DatePicker(
+                state = datePickerState,
+            )
+        }
+
+    }
+
+
+
+
+
     Card(
         modifier = Modifier
             .padding(20.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondary),
-        shape = MaterialTheme.shapes.small
+        shape = MaterialTheme.shapes.small,
+        onClick = { openDialog.value = true }
     ) {
         Column(
             modifier = Modifier
@@ -609,7 +746,7 @@ fun LastCoolantChange(car: CarModel, infoViewModel: CarInfoViewModel) {
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
-                    text = car.last_coolant_change!!,
+                    text = normalDate.value,
                     fontWeight = FontWeight(600),
                     fontSize = 18.sp,
                     color = MaterialTheme.colorScheme.onSecondary,
