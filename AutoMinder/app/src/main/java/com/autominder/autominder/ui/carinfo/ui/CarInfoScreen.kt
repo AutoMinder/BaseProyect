@@ -14,15 +14,19 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -41,6 +45,7 @@ import androidx.navigation.NavController
 import com.autominder.autominder.data.database.models.CarModel
 import com.autominder.autominder.ui.components.LoadingScreen
 import com.autominder.autominder.ui.myCars.ui.MyCarsViewModel
+import java.text.SimpleDateFormat
 
 //
 // Screen to show the car details
@@ -162,7 +167,7 @@ fun CarNameHeader(car: CarModel, infoViewModel: CarInfoViewModel) {
                 Spacer(modifier = Modifier.height(20.dp))
                 Button(onClick = {
 
-                    infoViewModel.setCarUpdatedToName(name.value)
+                    infoViewModel.setNameInfo(name.value)
                     openDialog.value = false
                     infoViewModel.setChanged(true)
                 }) {
@@ -360,7 +365,7 @@ fun CarMileage(carInfo: CarModel, infoViewModel: CarInfoViewModel) {
                 Spacer(modifier = Modifier.height(20.dp))
                 Button(onClick = {
 
-                    infoViewModel.setMileageUpdated(name.value)
+                    infoViewModel.setMileageInfo(name.value)
                     openDialog.value = false
                     infoViewModel.setChangedMileage(true)
                 }) {
@@ -423,11 +428,65 @@ fun CarMileage(carInfo: CarModel, infoViewModel: CarInfoViewModel) {
 
 @Composable
 fun CarLastMaintenanceDate(car: CarModel, infoViewModel: CarInfoViewModel) {
+    val openDialog = remember { mutableStateOf(false) }
+    val date = infoViewModel.lastMaintenanceUpdated.collectAsState()
+    val isChanged = infoViewModel.isMaintenanceChanged.collectAsState()
+    val datePickerState =
+        rememberDatePickerState(initialSelectedDateMillis = System.currentTimeMillis())
+
+    if (!isChanged.value) {
+        infoViewModel.setLastMaintenanceInfo(car.last_maintenance!!)
+    }
+
+    val normalDate = infoViewModel.lastMaintenance.collectAsState()
+
+    if (openDialog.value) {
+        DatePickerDialog(
+            onDismissRequest = {
+                openDialog.value = false
+
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        infoViewModel.setLastMaintenanceInfo(SimpleDateFormat("yyyy-MM-dd").format(datePickerState.selectedDateMillis)
+                            .toString())
+                        openDialog.value = false
+                        infoViewModel.setChangedLastMaintenance(true)
+
+                    },
+                ) {
+                    Text("OK")
+
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        openDialog.value = false
+                    }
+                ) {
+                    Text("Cancel")
+                }
+            }
+        ) {
+            DatePicker(
+                state = datePickerState,
+            )
+        }
+
+    }
+
+
+
+
+
     Card(
         modifier = Modifier
             .padding(20.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondary),
-        shape = MaterialTheme.shapes.small
+        shape = MaterialTheme.shapes.small,
+        onClick = { openDialog.value = true }
     ) {
         Column(
             modifier = Modifier
@@ -452,7 +511,7 @@ fun CarLastMaintenanceDate(car: CarModel, infoViewModel: CarInfoViewModel) {
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
-                    text = car.last_maintenance!!,
+                    text = normalDate.value,
                     fontWeight = FontWeight(600),
                     fontSize = 18.sp,
                     color = MaterialTheme.colorScheme.onSecondary,

@@ -42,24 +42,28 @@ class CarInfoViewModel(
     private val _lastCoolantChangeUpdated = MutableStateFlow<String>(_lastCoolantChange.value)
     val lastCoolantChangeUpdated: StateFlow<String> = _lastCoolantChangeUpdated
 
+    private val _lastMaintenance = MutableStateFlow<String>("")
+    val lastMaintenance: StateFlow<String> = _lastMaintenance
+    private val _lastMaintenanceUpdated = MutableStateFlow<String>(_lastMaintenance.value)
+    val lastMaintenanceUpdated: StateFlow<String> = _lastMaintenanceUpdated
+    private val _isMaintenanceChanged = MutableStateFlow<Boolean>(false)
+    val isMaintenanceChanged: StateFlow<Boolean> = _isMaintenanceChanged
+
 
 
     private fun setLoading(loading: Boolean) {
         _isLoading.value = loading
     }
 
-    fun setCarUpdatedToName(name: String) {
-        _carName.value = name
-    }
-    fun setMileageUpdated(mileage: String) {
-        _mileage.value = mileage
-    }
 
     fun setNameInfo(carName: String) {
         _carName.value = carName
     }
     fun setMileageInfo(mileage: String) {
         _mileage.value = mileage
+    }
+    fun setLastMaintenanceInfo(lastMaintenance: String) {
+        _lastMaintenance.value = lastMaintenance
     }
 
     fun setLastOilChangeInfo(lastOilChange: String) {
@@ -77,7 +81,9 @@ class CarInfoViewModel(
     fun setUpdatedMileage(updatedMileage: String) {
         _mileageUpdated.value = updatedMileage
     }
-
+    fun setUpdatedLastMaintenance(updatedLastMaintenance: String) {
+        _lastMaintenanceUpdated.value = updatedLastMaintenance
+    }
 
 
     fun setLastOilChangeUpdated(lastOilChange: String) {
@@ -93,6 +99,13 @@ class CarInfoViewModel(
     }
     fun setChangedMileage(changed: Boolean) {
         _isChangedMileage.value = changed
+    }
+    fun setChangedLastMaintenance(changed: Boolean) {
+        _isMaintenanceChanged.value = changed
+    }
+
+    fun setChangedLastOilChange(changed: Boolean) {
+        _isChangedLastOilChange.value = changed
     }
 
     companion object {
