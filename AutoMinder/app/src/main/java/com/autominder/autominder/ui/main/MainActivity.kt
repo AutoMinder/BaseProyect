@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
             AutoMinderTheme(useDarkTheme = isSystemInDarkTheme()) {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     PrincipalScaffold()
-                    promptEnableBluetooth()
+
 
                     requestPermissionLauncher.launch(
                         arrayOf(
