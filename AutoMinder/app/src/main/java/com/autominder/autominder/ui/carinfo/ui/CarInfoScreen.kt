@@ -111,33 +111,55 @@ fun CarInfoMainScreen(
                 LastOilChange(car, infoViewModel)
                 LastCoolantChange(car, infoViewModel)
                 ConnectObd(navController)
-                Button(onClick = {
-                    coroutineScope.launch {
-                        infoViewModel.sendUpdatesToDatabase(
-                            car.idMongo,
-                            infoViewModel.carName.value,
-                            infoViewModel.mileage.value,
-                            infoViewModel.lastMaintenance.value,
-                            "",
-                            "",
-                            infoViewModel.lastOilChange.value,
-                            infoViewModel.lastCoolantChange.value,
-                            car.brand,
-                            car.model,
-                            car.year,
-                        )
-                    }
+                Button(
+                    modifier = Modifier
+                        .padding(25.dp)
+                        .fillMaxWidth(),
+                    shape = MaterialTheme.shapes.small,
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                    onClick = {
+                        coroutineScope.launch {
+                            infoViewModel.sendUpdatesToDatabase(
+                                car.idMongo,
+                                infoViewModel.carName.value,
+                                infoViewModel.mileage.value,
+                                infoViewModel.lastMaintenance.value,
+                                "",
+                                "",
+                                infoViewModel.lastOilChange.value,
+                                infoViewModel.lastCoolantChange.value,
+                                car.brand,
+                                car.model,
+                                car.year,
+                            )
+                        }
 
-                }) {
-                    Text(text = "Guardar cambios")
+                    }) {
+                    Text(
+                        text = "Guardar cambios",
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
                 }
-                Button(onClick = {
-                    coroutineScope.launch {
-                        infoViewModel.hideCar(car.idMongo)
-                        navController.popBackStack()
-                    }
-                }) {
-                Text(text = "Eliminar auto")
+                Button(
+                    modifier = Modifier
+                        .padding(25.dp)
+                        .fillMaxWidth(),
+                    shape = MaterialTheme.shapes.small,
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                    onClick = {
+                        coroutineScope.launch {
+                            infoViewModel.hideCar(car.idMongo)
+                            navController.popBackStack()
+                        }
+                    }) {
+                    Text(
+                        text = "Eliminar auto",
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
                 }
             }
         }
