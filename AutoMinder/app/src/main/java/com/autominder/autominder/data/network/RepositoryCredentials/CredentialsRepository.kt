@@ -14,6 +14,7 @@ import com.autominder.autominder.data.network.dto.register.RegisterRequest
 import com.autominder.autominder.data.network.dto.register.RegisterResponse
 import com.autominder.autominder.data.network.dto.update.UpdateRequest
 import com.autominder.autominder.data.network.dto.update.UpdateResponse
+import com.autominder.autominder.data.network.dto.visibility.VisibilityResponse
 import com.autominder.autominder.data.network.dto.whoami.WhoamiResponse
 import com.autominder.autominder.data.network.services.AutominderApi
 import retrofit2.HttpException
@@ -25,13 +26,15 @@ class CredentialsRepository(
     private val userDataManager: DataStoreManager
 ) {
 
+
     //Login function
     suspend fun login(email: String, password: String): ApiResponse<String> {
 
         Log.d("CredentialsRepository", "login: $email, $password") //Log the email and password
 
         return try { //Try to login
-            val response: LoginResponse = api.login(LoginRequest(email, password)) //Get the response from the api
+            val response: LoginResponse =
+                api.login(LoginRequest(email, password)) //Get the response from the api
             return ApiResponse.Success(response.token) //Return the token
         } catch (e: HttpException) {//If there is an error
             if (e.code() == 400) {//If the error is 400
@@ -46,7 +49,8 @@ class CredentialsRepository(
     //Register function
     suspend fun register(email: String, password: String, name: String): ApiResponse<String> {
         return try {//Try to register
-            val response: RegisterResponse = api.register(RegisterRequest(email, password, name)) //Get the response from the api
+            val response: RegisterResponse =
+                api.register(RegisterRequest(email, password, name)) //Get the response from the api
             return ApiResponse.Success(response.message) //Return the message
         } catch (e: HttpException) { //If there is an error
             if (e.code() == 400) { //If the error is 400
@@ -59,7 +63,7 @@ class CredentialsRepository(
     }
 
     //logout function
-    suspend fun logout(){
+    suspend fun logout() {
         userDataManager.clearUserData()
     }
 
@@ -125,21 +129,22 @@ class CredentialsRepository(
         //create a val to get the current date in string format
 
         return try {
-            val response: CreateResponse = api.create( //Sending car parameters so it can be added to online database
-                CreateRequest(
-                    vin,
-                    car_name,
-                    brand,
-                    model,
-                    year,
-                    kilometers,
-                    lastMaintenance,
-                    mayorTuning,
-                    minorTuning,
-                    lastOilChange,
-                    lastCoolantChange,
+            val response: CreateResponse =
+                api.create( //Sending car parameters so it can be added to online database
+                    CreateRequest(
+                        vin,
+                        car_name,
+                        brand,
+                        model,
+                        year,
+                        kilometers,
+                        lastMaintenance,
+                        mayorTuning,
+                        minorTuning,
+                        lastOilChange,
+                        lastCoolantChange,
+                    )
                 )
-            )
 
             Log.d("CAR CREATED", "Car created succesfully")
 
@@ -171,7 +176,10 @@ class CredentialsRepository(
                 //TODO(): Once function with CarInfoVM is complete, remove this next section
 //                // Process the list of cars
                 carsList?.forEach { car -> //For each car in the list
-                    Log.d("I GOT THE CARS", car.car_name) //Log the name of the car (testing purposes)
+                    Log.d(
+                        "I GOT THE CARS",
+                        car.car_name
+                    ) //Log the name of the car (testing purposes)
                 }
 
                 return ApiResponse.Success(response.body()!!) //Return the body of the response
@@ -186,32 +194,61 @@ class CredentialsRepository(
                 return ApiResponse.ErrorWithMessage("Credenciales incorrectas, email or password")
             }
             return ApiResponse.Error(e)
-        }
-        catch (e: IOException) { //Any other error
+        } catch (e: IOException) { //Any other error
             return ApiResponse.Error(e)
         }
     }
 
+    suspend fun hideCar(
+        mongoId: String,
+    ): ApiResponse<String> {
+        return try {
+            val response: VisibilityResponse = api.visibility(
+                post_id = mongoId
+            )
+
+            Log.d("CAR HIDDEN", "Car hidden succesfully")
+
+            return ApiResponse.Success(response.message)
+        } catch (e: HttpException) {
+            if (e.code() == 404) {
+
+                Log.d("CAR NOT HIDDEN", "ERROR 400")
+
+            }
+            return ApiResponse.Error(e) //Return an error
+        } catch (e: IOException) { //If there is any other error
+            return ApiResponse.Error(e)
+        }
+    }
 
     suspend fun updateCar(
+        mongoId: String,
         car_name: String,
         kilometers: String,
         lastMaintenance: String,
         mayorTuning: String,
         minorTuning: String,
         lastOilChange: String,
-        lastCoolantChange: String
+        lastCoolantChange: String,
+        model: String,
+        brand: String,
+        year: String,
     ): ApiResponse<String> {
         return try {
             val response: UpdateResponse = api.update(
+                mongoId,
                 UpdateRequest(
-                car_name,
-                kilometers,
-                lastMaintenance,
-                mayorTuning,
-                minorTuning,
-                lastOilChange,
-                lastCoolantChange
+                    car_name,
+                    kilometers,
+                    lastMaintenance,
+                    mayorTuning,
+                    minorTuning,
+                    lastOilChange,
+                    lastCoolantChange,
+                    model,
+                    brand,
+                    year,
                 )
             )
 

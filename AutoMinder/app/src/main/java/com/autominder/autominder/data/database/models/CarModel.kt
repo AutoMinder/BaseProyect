@@ -11,6 +11,7 @@ import kotlinx.parcelize.Parcelize
 @Entity(tableName = "car_table")
 data class CarModel(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "car_id") val carId: Long,
+    @SerializedName("_id")@ColumnInfo(name = "_id") val idMongo: String,
     @SerializedName("vin") @ColumnInfo(name = "vin") val vin : String?,
     @SerializedName("car_name") @ColumnInfo(name = "car_name") val car_name : String,
     @SerializedName("brand") @ColumnInfo(name = "brand") val brand : String,
@@ -27,6 +28,6 @@ data class CarModel(
     @SerializedName("lastOilChange") @ColumnInfo(name = "lastOilChange") val last_oil_change : String?,
     @SerializedName("lastCoolantChange") @ColumnInfo(name = "lastCoolantChange") val last_coolant_change : String?,
 //    @ColumnInfo(name = "errorRecord") val error_record : MutableList<String>,
-//    @ColumnInfo(name = "hidden") val hidden : Boolean,
+    @SerializedName("hidden")@ColumnInfo(name = "hidden") val hidden : Boolean,
     @ColumnInfo(name = "owner_id") val owner : Long
 ) : Parcelable
