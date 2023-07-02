@@ -187,7 +187,7 @@ fun LoginBox(
             Spacer(modifier = Modifier.padding(8.dp))
 
             PasswordTextField(password) { viewModel.onLoginChange(email, it) }
-            ForgotPassword(navController)
+
             Spacer(modifier = Modifier.padding(8.dp))
 
             LoginButton(loginEnable) {

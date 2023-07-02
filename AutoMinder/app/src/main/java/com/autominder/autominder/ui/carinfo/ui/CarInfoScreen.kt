@@ -132,6 +132,7 @@ fun CarInfoMainScreen(
                                 car.model,
                                 car.year,
                             )
+                            navController.popBackStack()
                         }
 
                     }) {
