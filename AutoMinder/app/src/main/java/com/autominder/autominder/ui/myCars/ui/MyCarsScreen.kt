@@ -4,8 +4,10 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,6 +24,8 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -227,6 +231,16 @@ fun CardCar(
                 .width(300.dp)
                 .clip(RoundedCornerShape(8.dp))
         ) {
+            Icon(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 8.dp, end = 8.dp)
+                    .size(48.dp)
+                    .wrapContentSize(Alignment.BottomEnd),
+                imageVector = Icons.Default.ArrowForward,
+                contentDescription = "",
+                tint = MaterialTheme.colorScheme.onPrimaryContainer
+            )
             Text(
                 text = car.car_name,
                 modifier = Modifier
@@ -266,17 +280,7 @@ fun CardCar(
                     fontWeight = FontWeight.Bold
                 )
             }
-            Text(
-                text = "Presiona para ver más",
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.secondary)
-                    .padding(10.dp),
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.surfaceVariant,
-                style = MaterialTheme.typography.bodyMedium
-            )
         }
+
     }
 }
