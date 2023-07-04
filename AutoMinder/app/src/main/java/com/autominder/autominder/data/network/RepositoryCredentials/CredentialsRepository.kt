@@ -157,18 +157,16 @@ class CredentialsRepository(
                         lastCoolantChange,
                     )
                 )
-
-            Log.d("CAR CREATED", "Car created succesfully")
-
             return ApiResponse.Success(response.id) //Return the id (will only happen once the car has been created successfully)
         } catch (e: HttpException) {
-            if (e.code() == 400) {
-                Log.d("CAR NOT CREATED", "ERROR 400")
+            if (e.code() == 409) {
+                return ApiResponse.ErrorWithMessage("Error al crear el carro")
             }
-            Log.d("CAR NOT CREATED", "HTTP EXCEPTION")
+            if (e.code() == 500) {
+                return ApiResponse.ErrorWithMessage("Ha ocurrido un error de red")
+            }
             return ApiResponse.Error(e)
         } catch (e: IOException) {
-            Log.d("CAR NOT CREATED", "IO EXCEPTION")
             return ApiResponse.Error(e)
         }
     }
@@ -263,25 +261,16 @@ class CredentialsRepository(
                     year,
                 )
             )
-
-            Log.d("CAR UPDATED", "Car updated succesfully")
-
             return ApiResponse.Success(response.message)
         } catch (e: HttpException) {
             if (e.code() == 404) {
-
-                Log.d("CAR NOT UPDATED", "ERROR 400")
-
-                return ApiResponse.ErrorWithMessage("Post no encontrado")
+                return ApiResponse.ErrorWithMessage("Carro no encontrado")
             }
-
-            Log.d("CAR NOT UPDATED", "ERROR HTTP EXCEPTION")
-
+            if (e.code() == 500) {
+                return ApiResponse.ErrorWithMessage("Ha ocurrido un error de red")
+            }
             return ApiResponse.Error(e)
         } catch (e: IOException) {
-
-            Log.d("CAR NOT UPDATED", "ERROR IO EXCEPTION")
-
             return ApiResponse.Error(e)
         }
     }
