@@ -253,13 +253,13 @@ fun CardCar(
 
             )
             Image(
-                painter = painterResource(id = R.drawable.car_icon_alone),
+                painter = painterResource(id = R.drawable.modern_car_icon),
                 contentDescription = "Car brand",
                 modifier = Modifier
                     .wrapContentSize(Alignment.CenterStart)
                     .fillMaxHeight()
-                    .size(100.dp)
-                    .padding(start = 32.dp)
+                    .size(150.dp)
+                    .padding(start = 8.dp)
             )
             Column(
                 modifier = Modifier
