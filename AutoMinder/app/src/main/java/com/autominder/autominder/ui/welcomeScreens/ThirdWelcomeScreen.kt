@@ -103,7 +103,7 @@ fun HeaderTitleThird() {
     Text(
         text = "Bienvenido a Autominder", fontSize = 24.sp,
         modifier = Modifier
-            .padding(16.dp)
+            .padding(12.dp)
             .fillMaxWidth(),
         textAlign = TextAlign.Center,
         fontWeight = FontWeight.Bold

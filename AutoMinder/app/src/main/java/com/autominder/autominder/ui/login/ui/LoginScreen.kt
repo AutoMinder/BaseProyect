@@ -106,7 +106,7 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
                     is LoginUiStatus.Error -> {
                         Toast.makeText(
                             context,
-                            "Error al iniciar sesión",
+                            "Error al iniciar sesion",
                             Toast.LENGTH_SHORT
                         ).show()
                     }

@@ -2,6 +2,7 @@ package com.autominder.autominder.ui.register
 
 import android.provider.ContactsContract.CommonDataKinds.Email
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -51,39 +52,6 @@ import com.autominder.autominder.ui.login.ui.LoginViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-/*
-@Preview(showBackground = true)
-@Composable
-fun RegisterScreen() {
-    val viewModel: RegisterViewModel = viewModel(factory = RegisterViewModel.Factory)
-    val navController: NavHostController
-    Register(viewModel, navController)
-
-}
-
-@Composable
-fun Register(viewModel: RegisterViewModel, navController: NavHostController) {
-    Box(
-        modifier =
-        Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        RegisterForm(
-            modifier =
-            Modifier
-                .align(Alignment.Center)
-                .fillMaxSize(),
-            viewModel = viewModel,
-            navController = navController
-        )
-    }
-
-}
-
-*/
-
-
 @Composable
 fun RegisterScreen(
     navController: NavHostController,
@@ -120,6 +88,7 @@ fun RegisterForm(
     val coroutineScope = rememberCoroutineScope()
     val status by viewModel.status.observeAsState(initial = RegisterUiStatus.Resume)
     val application: AutoMinderApplication = LocalContext.current.applicationContext as AutoMinderApplication
+    val context = LocalContext.current
 
     if (isLoading) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -138,11 +107,19 @@ fun RegisterForm(
                     }
 
                     is RegisterUiStatus.ErrorWithMessage -> {
-
+                        Toast.makeText(
+                            context,
+                            status.message,
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
 
                     is RegisterUiStatus.Error -> {
-
+                        Toast.makeText(
+                            context,
+                            "Error al registrar usuario",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
 
                     else -> {}

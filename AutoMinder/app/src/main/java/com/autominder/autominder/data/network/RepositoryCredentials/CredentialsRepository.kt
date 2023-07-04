@@ -44,7 +44,7 @@ class CredentialsRepository(
                 return ApiResponse.ErrorWithMessage("Usuario no encontrado") //Return an error with a message
             }
             if (e.code() == 500) {//If the error is 400
-                return ApiResponse.ErrorWithMessage("Error al iniciar sesion") //Return an error with a message
+                return ApiResponse.ErrorWithMessage("Error en el registro. Problema de red") //Return an error with a message
             }
             return ApiResponse.Error(e) //Return an error
         } catch (e: IOException) { //If there is any other error
@@ -63,7 +63,10 @@ class CredentialsRepository(
                 return ApiResponse.ErrorWithMessage("El usuario que desea ingresar ya existe")
             }
             if (e.code() == 500){
-                return ApiResponse.ErrorWithMessage("Error al registrar usuario")
+                return ApiResponse.ErrorWithMessage("Error en el registro. Problema de red")
+            }
+            if (e.code() == 400){
+                return ApiResponse.ErrorWithMessage("Contraseña invalida, utilize una mas segura")
             }
             return ApiResponse.Error(e)
         } catch (e: IOException) {
