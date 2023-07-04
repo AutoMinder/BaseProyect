@@ -37,8 +37,14 @@ class CredentialsRepository(
                 api.login(LoginRequest(email, password)) //Get the response from the api
             return ApiResponse.Success(response.token) //Return the token
         } catch (e: HttpException) {//If there is an error
-            if (e.code() == 400) {//If the error is 400
-                return ApiResponse.ErrorWithMessage("Credenciales incorrectas, email or password") //Return an error with a message
+            if (e.code() == 401) {//If the error is 400
+                return ApiResponse.ErrorWithMessage("Credenciales invalidas") //Return an error with a message
+            }
+            if (e.code() == 404) {//If the error is 400
+                return ApiResponse.ErrorWithMessage("Usuario no encontrado") //Return an error with a message
+            }
+            if (e.code() == 500) {//If the error is 400
+                return ApiResponse.ErrorWithMessage("Error al iniciar sesion") //Return an error with a message
             }
             return ApiResponse.Error(e) //Return an error
         } catch (e: IOException) { //If there is any other error
@@ -53,8 +59,11 @@ class CredentialsRepository(
                 api.register(RegisterRequest(email, password, name)) //Get the response from the api
             return ApiResponse.Success(response.message) //Return the message
         } catch (e: HttpException) { //If there is an error
-            if (e.code() == 400) { //If the error is 400
+            if (e.code() == 409){
                 return ApiResponse.ErrorWithMessage("El usuario que desea ingresar ya existe")
+            }
+            if (e.code() == 500){
+                return ApiResponse.ErrorWithMessage("Error al registrar usuario")
             }
             return ApiResponse.Error(e)
         } catch (e: IOException) {
