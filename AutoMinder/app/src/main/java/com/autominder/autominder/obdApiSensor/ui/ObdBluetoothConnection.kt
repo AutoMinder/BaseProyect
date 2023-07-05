@@ -70,7 +70,7 @@ fun ObdSensorConnectScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {item {
         Text(
-            text = "Esta pantalla es experimental, si sufres muchos errores, te agradeceriamos que nos los reportaras",
+            text = "Esta pantalla es experimental, si sufres muchos errores, te agradeceriamos que nos los reportaras, ¡para scannear es requerido Android 13!",
             color = MaterialTheme.colorScheme.onSurface,
             fontSize = 18.sp,
             fontWeight = FontWeight.Medium,
