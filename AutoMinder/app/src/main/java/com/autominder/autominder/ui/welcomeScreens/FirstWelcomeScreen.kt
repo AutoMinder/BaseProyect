@@ -9,11 +9,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -63,6 +65,7 @@ fun FirstScreen(
     Box(
         Modifier
             .fillMaxSize()
+            .wrapContentSize(align = Alignment.Center)
             .padding(16.dp)
     ) {
         LazyColumn(content = {
@@ -81,7 +84,7 @@ fun First(modifier: Modifier, navController: NavHostController) {
     val coroutineScope = rememberCoroutineScope()
     val application: AutoMinderApplication = LocalContext.current.applicationContext as AutoMinderApplication
 
-    Column(modifier) {
+    Column(modifier){
 
         HeaderTitle()
         Spacer(modifier = Modifier.padding(4.dp))
@@ -123,6 +126,8 @@ fun ImageContainer(
         contentDescription = "Welcome Image",
 
         modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentSize(align = Alignment.Center)
             .height(370.dp)
             .width(400.dp)
             .clip(RoundedCornerShape(16.dp))
