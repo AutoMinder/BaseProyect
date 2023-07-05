@@ -37,8 +37,14 @@ class CredentialsRepository(
                 api.login(LoginRequest(email, password)) //Get the response from the api
             return ApiResponse.Success(response.token) //Return the token
         } catch (e: HttpException) {//If there is an error
-            if (e.code() == 400) {//If the error is 400
-                return ApiResponse.ErrorWithMessage("Credenciales incorrectas, email or password") //Return an error with a message
+            if (e.code() == 401) {//If the error is 400
+                return ApiResponse.ErrorWithMessage("Credenciales invalidas") //Return an error with a message
+            }
+            if (e.code() == 404) {//If the error is 400
+                return ApiResponse.ErrorWithMessage("Usuario no encontrado") //Return an error with a message
+            }
+            if (e.code() == 500) {//If the error is 400
+                return ApiResponse.ErrorWithMessage("Error en el registro. Problema de red") //Return an error with a message
             }
             return ApiResponse.Error(e) //Return an error
         } catch (e: IOException) { //If there is any other error
@@ -53,8 +59,14 @@ class CredentialsRepository(
                 api.register(RegisterRequest(email, password, name)) //Get the response from the api
             return ApiResponse.Success(response.message) //Return the message
         } catch (e: HttpException) { //If there is an error
-            if (e.code() == 400) { //If the error is 400
+            if (e.code() == 409){
                 return ApiResponse.ErrorWithMessage("El usuario que desea ingresar ya existe")
+            }
+            if (e.code() == 500){
+                return ApiResponse.ErrorWithMessage("Error en el registro. Problema de red")
+            }
+            if (e.code() == 400){
+                return ApiResponse.ErrorWithMessage("Contraseña invalida, utilize una mas segura")
             }
             return ApiResponse.Error(e)
         } catch (e: IOException) {
@@ -145,18 +157,16 @@ class CredentialsRepository(
                         lastCoolantChange,
                     )
                 )
-
-            Log.d("CAR CREATED", "Car created succesfully")
-
             return ApiResponse.Success(response.id) //Return the id (will only happen once the car has been created successfully)
         } catch (e: HttpException) {
-            if (e.code() == 400) {
-                Log.d("CAR NOT CREATED", "ERROR 400")
+            if (e.code() == 409) {
+                return ApiResponse.ErrorWithMessage("Error al crear el carro")
             }
-            Log.d("CAR NOT CREATED", "HTTP EXCEPTION")
+            if (e.code() == 500) {
+                return ApiResponse.ErrorWithMessage("Ha ocurrido un error de red")
+            }
             return ApiResponse.Error(e)
         } catch (e: IOException) {
-            Log.d("CAR NOT CREATED", "IO EXCEPTION")
             return ApiResponse.Error(e)
         }
     }
@@ -251,25 +261,16 @@ class CredentialsRepository(
                     year,
                 )
             )
-
-            Log.d("CAR UPDATED", "Car updated succesfully")
-
             return ApiResponse.Success(response.message)
         } catch (e: HttpException) {
             if (e.code() == 404) {
-
-                Log.d("CAR NOT UPDATED", "ERROR 400")
-
-                return ApiResponse.ErrorWithMessage("Post no encontrado")
+                return ApiResponse.ErrorWithMessage("Carro no encontrado")
             }
-
-            Log.d("CAR NOT UPDATED", "ERROR HTTP EXCEPTION")
-
+            if (e.code() == 500) {
+                return ApiResponse.ErrorWithMessage("Ha ocurrido un error de red")
+            }
             return ApiResponse.Error(e)
         } catch (e: IOException) {
-
-            Log.d("CAR NOT UPDATED", "ERROR IO EXCEPTION")
-
             return ApiResponse.Error(e)
         }
     }

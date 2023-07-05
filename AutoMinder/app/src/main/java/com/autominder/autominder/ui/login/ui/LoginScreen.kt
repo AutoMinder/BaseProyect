@@ -74,6 +74,7 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
     val coroutineScope = rememberCoroutineScope()
     val application: AutoMinderApplication =
         LocalContext.current.applicationContext as AutoMinderApplication
+    val context = LocalContext.current
 
     if (isLoading) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -95,11 +96,19 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
                     }
 
                     is LoginUiStatus.ErrorWithMessage -> {
-
+                        Toast.makeText(
+                            context,
+                            status.message,
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
 
                     is LoginUiStatus.Error -> {
-
+                        Toast.makeText(
+                            context,
+                            "Error al iniciar sesion",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
 
                     else -> {}
