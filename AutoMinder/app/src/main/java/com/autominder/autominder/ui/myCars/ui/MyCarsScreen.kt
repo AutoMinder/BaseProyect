@@ -176,9 +176,8 @@ fun PagingMyCars(
             }
         } else {
             item {
-
                 Text(
-                    text = "No cars added yet",
+                    text = "No hemos encontrado carros en tu cuenta",
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(8.dp),

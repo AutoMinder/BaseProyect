@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -61,6 +62,7 @@ fun RegisterScreen(
     Box(
         Modifier
             .fillMaxSize()
+            .wrapContentSize(align = Alignment.Center)
             .padding(16.dp)
     ) {
         RegisterForm(
@@ -130,7 +132,7 @@ fun RegisterForm(
 
 
 
-        Column(modifier) {
+        Column(modifier, verticalArrangement = Arrangement.Center) {
             HeaderTitle()
             RegisterBox(
                 name = name,

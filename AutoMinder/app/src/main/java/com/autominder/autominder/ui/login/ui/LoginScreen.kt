@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -56,7 +57,6 @@ fun LoginScreen(
         Login(
             Modifier
                 .align(Alignment.Center)
-
                 .fillMaxSize(),
             viewModel,
             navController
@@ -118,7 +118,7 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
         }
 
 
-        Column(modifier) {
+        Column(modifier, verticalArrangement = Arrangement.Center) {
 
             HeaderTitle()
             Spacer(modifier = Modifier.padding(40.dp))

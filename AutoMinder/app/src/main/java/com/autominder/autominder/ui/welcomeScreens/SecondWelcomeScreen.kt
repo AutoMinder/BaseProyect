@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -60,6 +61,7 @@ fun SecondScreen(
     Box(
         Modifier
             .fillMaxSize()
+            .wrapContentSize(align = Alignment.Center)
             .padding(16.dp)
     ) {
         LazyColumn(content = {
@@ -120,6 +122,8 @@ fun ImageContainerSecond(
         painter = painterResource(id = R.drawable.img_2),
         contentDescription = "Welcome Image",
         modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentSize(align = Alignment.Center)
             .height(370.dp)
             .width(400.dp)
             .clip(RoundedCornerShape(16.dp))
